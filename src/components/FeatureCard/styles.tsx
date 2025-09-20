@@ -29,12 +29,9 @@ const CardDescription = styled.p`
   margin: 0;
 `;
 
-export function FeatureCard({ icon, title, description }: any) {
-  return (
-    <CardContainer>
-      <IconWrapper>{icon}</IconWrapper>
-      <CardTitle>{title}</CardTitle>
-      <CardDescription>{description}</CardDescription>
-    </CardContainer>
-  );
+export {
+    CardContainer,
+    CardDescription,
+    CardTitle,
+    IconWrapper
 }
