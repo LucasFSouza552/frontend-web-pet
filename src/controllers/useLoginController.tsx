@@ -1,16 +1,5 @@
 import { useState } from "react";
-import { login } from "../services/authService";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { PrimaryButton } from "../components/PrimaryButton";
-
-interface InputProps {
-    label: string;
-    placeholder: string;
-    value: string;
-    type?: string;
-    setValue: (key: string, value: string) => void;
-}
+import { fetchLogin } from "../services/authService";
 
 export default function useLoginController() {
     const [credentials, setCredentials] = useState({
@@ -26,11 +15,9 @@ export default function useLoginController() {
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault();
         try {
-            return await login(credentials.email, credentials.password);
-
+            return await fetchLogin(credentials.email, credentials.password);
         } catch (error: any) {
             setError(error?.message);
-
         }
     }
 

@@ -1,29 +1,28 @@
 import * as authApi from "../api/authApi";
-import type { IAccount } from "../model/account";
+import type { IAccount } from "../models/account";
 
-const TOKEN_KEY = "auth_token";
-
-export function saveToken(token: string) {
-    localStorage.setItem(TOKEN_KEY, token);
+export function saveStorage(key: string, token: string) {
+    localStorage.setItem(key, token);
 }
 
-export function getToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
+export function getStorage(key: string): string | null {
+    return localStorage.getItem(key);
 }
 
-export function removeToken() {
-    localStorage.removeItem(TOKEN_KEY);
+export function removeStorage(key: string) {
+    localStorage.removeItem(key);
 }
 
-export async function login(email: string, password: string): Promise<IAccount> {
+export async function fetchLogin(email: string, password: string): Promise<{ user: IAccount, token: string }> {
     const { token, user } = await authApi.login(email, password);
-    saveToken(token);
-
-    return user;
+    saveStorage("auth_token", token);
+    saveStorage("account_data", JSON.stringify(user));
+    return { user, token };
 }
 
-export async function logout() {
-    removeToken();
+export async function fetchLogout() {
+    removeStorage("auth_token");
+    removeStorage("account_data");
 }
 
 export async function getLoggedUser(): Promise<IAccount | null> {

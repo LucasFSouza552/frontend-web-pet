@@ -1,4 +1,4 @@
-import type { IAccount } from "../model/account";
+import type { IAccount } from "../models/account";
 import api from "./http";
 
 export interface LoginResponse {
