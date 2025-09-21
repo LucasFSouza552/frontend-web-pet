@@ -13,11 +13,28 @@ export function removeStorage(key: string) {
     localStorage.removeItem(key);
 }
 
-export async function fetchLogin(email: string, password: string): Promise<{ user: IAccount, token: string }> {
-    const { token, user } = await authApi.login(email, password);
-    saveStorage("auth_token", token);
-    saveStorage("account_data", JSON.stringify(user));
-    return { user, token };
+export async function tokenValidate() {
+    try {
+        const account = await authApi.getProfile();
+        saveStorage("account_data", JSON.stringify(account));
+        return account;
+    } catch (error: any) {
+        console.log(error);
+        throw Error(error?.message);
+    }
+}
+
+export async function fetchLogin(email: string, password: string): Promise<{ account: IAccount, token: string }> {
+    try {
+        const { token, account } = await authApi.login(email, password);
+        if (token && account) {
+            saveStorage("auth_token", token);
+            saveStorage("account_data", JSON.stringify(account));
+        }
+        return { account, token };
+    } catch (error: any) {
+        throw Error(error.message)
+    }
 }
 
 export async function fetchLogout() {

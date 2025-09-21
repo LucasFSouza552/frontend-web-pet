@@ -1,17 +1,29 @@
+import { ThrowError } from "../Error/ThrowError";
 import type { IAccount } from "../models/account";
 import api from "./http";
 
 export interface LoginResponse {
     token: string;
-    user: IAccount;
+    account: IAccount;
 }
 
 export async function login(email: string, password: string): Promise<LoginResponse> {
-    const { data } = await api.post("/auth/login", { email, password });
-    return data;
+    try {
+        const { data } = await api.post("/auth/login", { email, password });
+        return data;
+    } catch (error: any) {
+        if (error?.response)
+            throw new ThrowError(error?.response?.status, error?.response?.data?.error);
+
+        throw error;
+    }
 }
 
 export async function getProfile(): Promise<IAccount> {
-    const { data } = await api.get("/auth/profile");
-    return data;
+    try {
+        const { data } = await api.get("/auth/profile");
+        return data;
+    } catch (error) {
+        throw error;
+    }
 }

@@ -16,7 +16,6 @@ export default function LoginForm() {
                 <InputComponent placeholder="Senha" label="senha" onChange={handleChange} value={credentials.password} type="password" />
                 <PrimaryButton text="Entrar" type="submit" filled />
                 <p>Não tem conta? <Link to="register">Clique aqui</Link></p>
-
             </FormContainer>
             <ErrorContainer message={error} />
         </>
