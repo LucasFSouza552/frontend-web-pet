@@ -16,7 +16,7 @@ const featuresData = [
   {
     icon: <FaHome />,
     title: 'Adote seu novo amigo',
-    description: 'Ajude adotando um novo amigo.',
+    description: 'Adotando um novo amigo fará a diferença na sua vida e na dele.',
   },
   {
     icon: <FaHandHoldingHeart />,
@@ -26,7 +26,7 @@ const featuresData = [
   {
     icon: <FaSearchLocation />,
     title: 'Encontre Agora',
-    description: 'Ajude a encontrar e ajudar animais.',
+    description: 'Encontrar e ajudar animais pode transformar vidas.',
   },
   {
     icon: <FaHome />,

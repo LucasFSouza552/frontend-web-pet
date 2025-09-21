@@ -33,9 +33,7 @@ const LeftDiv = styled.div`
   flex: 1;
 
   h1 {
-
     font-family: "Sacramento", cursive;
-
     width: 40%;
     font-size: 10rem;
     font-weight: 300;
