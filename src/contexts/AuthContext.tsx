@@ -1,14 +1,16 @@
-// src/contexts/AuthContext.tsx
 import { createContext, useEffect, useState, type ReactNode } from "react";
 import type { IAccount } from "../models/account";
-import { fetchLogin, fetchLogout, getStorage, tokenValidate } from "../services/authService";
+import { authenticateUser, fetchLogout, tokenValidate } from "../services/authService";
 import { ThrowError } from "../Error/ThrowError";
+import { getStorage } from "../utils/storageUtils";
 
 interface AuthContextType {
     account: IAccount | null;
     token: string | null;
     login: (email: string, password: string) => void;
     logout: () => void;
+    setAccount: (account: IAccount | null) => void;
+    loading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -16,15 +18,17 @@ export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [account, setAccount] = useState<IAccount | null>(null);
     const [token, setToken] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchAccount() {
             try {
                 const storedToken = getStorage("auth_token");
-                if (storedToken) {
-                    const account = await tokenValidate();
-                    setAccount(account);
+                if (!storedToken) {
+                    return;
                 }
+                const account = await tokenValidate();
+                setAccount(account);
             } catch (error: any) {
                 if (error instanceof ThrowError) {
                     if (error.statusCode === 401) {
@@ -33,16 +37,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     }
                 }
                 throw Error(error?.message || "Erro ao validar token");
+            } finally {
+                setLoading(false);
             }
         }
         fetchAccount();
     }, []);
 
     const login = async (email: string, password: string) => {
-        const credentials = await fetchLogin(email, password);
-        if (credentials.token && credentials.account) {
-            setToken(credentials.token);
-            setAccount(credentials.account);
+        const fetchToken = await authenticateUser(email, password);
+        if (fetchToken) {
+            setToken(fetchToken);
+        }
+
+        const fetchAccount = await tokenValidate();
+        if (fetchAccount) {
+            setAccount(fetchAccount);
         }
     };
 
@@ -53,7 +63,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ account: account, token, login, logout }}>
+        <AuthContext.Provider value={{ account: account, token, login, logout, loading, setAccount }}>
             {children}
         </AuthContext.Provider>
     );

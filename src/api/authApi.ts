@@ -21,8 +21,8 @@ export async function login(email: string, password: string): Promise<LoginRespo
 
 export async function getProfile(): Promise<IAccount> {
     try {
-        const { data } = await api.get("/auth/profile");
-        return data;
+        const response = await api.get("/account/profile/me");
+        return response.data;
     } catch (error) {
         throw error;
     }

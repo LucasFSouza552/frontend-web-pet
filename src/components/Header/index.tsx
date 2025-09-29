@@ -2,8 +2,10 @@
 import { Link } from "react-router-dom"
 import { PrimaryButton } from "../PrimaryButton";
 import { HeaderConteiner, HeaderMenu, Logo, Navigation } from "./style";
+import type { IAccount } from "../../models/account";
+import ProfileMenu from "../ProfileMenu";
 
-export const HeaderComponent = () => {
+export const HeaderComponent = ({ account }: { account?: IAccount | null }) => {
 
     return (
         <HeaderConteiner>
@@ -16,8 +18,14 @@ export const HeaderComponent = () => {
                 <Link to="/suport">Suporte</Link>
             </Navigation>
             <HeaderMenu>
-                <PrimaryButton text="Anunciar" type="button" filled to="/" />
-                <PrimaryButton text="Entrar" type="button" filled={false} to="/login" />
+                {!account ?
+                    <>
+                        <PrimaryButton text="Anunciar" type="button" filled to="/" />
+                        <PrimaryButton text="Entrar" type="button" filled={false} to="/login" />
+                    </>
+                    :
+                    <ProfileMenu />
+                }
             </HeaderMenu>
         </HeaderConteiner>
     )

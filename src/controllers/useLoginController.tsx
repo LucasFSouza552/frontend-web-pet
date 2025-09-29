@@ -1,7 +1,9 @@
-import { useState } from "react";
-import { fetchLogin } from "../services/authService";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 export default function useLoginController() {
+    const navigate = useNavigate();
     const [credentials, setCredentials] = useState({
         email: "",
         password: ""
@@ -12,12 +14,21 @@ export default function useLoginController() {
         setCredentials(prev => ({ ...prev, [key]: value }));
     };
 
+    const { login } = useContext(AuthContext);
+
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault();
         try {
-            return await fetchLogin(credentials.email, credentials.password);
-        } catch (error: any) {
-            setError(error?.message);
+            login(credentials.email, credentials.password);
+            setError("");
+            navigate("/dashboard");
+
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                setError("Erro inesperado ao tentar logar.");
+            }
         }
     }
 

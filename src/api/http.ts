@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getStorage } from "../services/authService";
+import { getStorage } from "../utils/storageUtils";
 
 const api = axios.create({
     baseURL: "http://localhost:3000/api",
@@ -12,5 +12,7 @@ api.interceptors.request.use(config => {
     }
     return config;
 });
+
+
 
 export default api;

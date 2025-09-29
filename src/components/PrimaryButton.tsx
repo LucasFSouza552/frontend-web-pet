@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom";
 
-export const PrimaryButton = ({ text, type = "button", to, filled = true }: { text: string, type: "button" | "submit" | "reset", to?: string, filled: boolean }) => {
+export const PrimaryButton = ({ text, type = "button", to, filled = true, onClick }: { text: string, type: "button" | "submit" | "reset", to?: string, filled: boolean, onClick?: () => void }) => {
 
     const navigate = useNavigate();
 
@@ -12,7 +12,7 @@ export const PrimaryButton = ({ text, type = "button", to, filled = true }: { te
     };
 
     return (
-        <Button type={type} $filled={filled} value={text} onClick={handleClick} />
+        <Button type={type} $filled={filled} value={text} onClick={onClick || handleClick} />
     );
 }
 

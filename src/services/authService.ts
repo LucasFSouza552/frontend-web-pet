@@ -1,17 +1,6 @@
 import * as authApi from "../api/authApi";
 import type { IAccount } from "../models/account";
-
-export function saveStorage(key: string, token: string) {
-    localStorage.setItem(key, token);
-}
-
-export function getStorage(key: string): string | null {
-    return localStorage.getItem(key);
-}
-
-export function removeStorage(key: string) {
-    localStorage.removeItem(key);
-}
+import { removeStorage, saveStorage } from "../utils/storageUtils";
 
 export async function tokenValidate() {
     try {
@@ -24,14 +13,14 @@ export async function tokenValidate() {
     }
 }
 
-export async function fetchLogin(email: string, password: string): Promise<{ account: IAccount, token: string }> {
+export async function authenticateUser(email: string, password: string): Promise<string> {
     try {
-        const { token, account } = await authApi.login(email, password);
-        if (token && account) {
-            saveStorage("auth_token", token);
-            saveStorage("account_data", JSON.stringify(account));
+        const { token } = await authApi.login(email, password);
+        if (!token) {
+            throw Error("Falha ao realizar login");
         }
-        return { account, token };
+        saveStorage("auth_token", token);
+        return token;
     } catch (error: any) {
         throw Error(error.message)
     }

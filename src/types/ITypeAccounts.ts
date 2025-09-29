@@ -1,0 +1,1 @@
+export type ITypeAccounts = "user" | "institution" | "admin";
