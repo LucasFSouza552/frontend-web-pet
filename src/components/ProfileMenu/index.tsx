@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { PrimaryButton } from "../PrimaryButton";
 import ProfileAvatar from "../ProfileAvatar";
 
+import avatarDefault from "../../assets/avatar-default.png";
+
 const ProfileMenuContainer = styled.div`
   display: flex;
   align-items: center;
@@ -30,7 +32,7 @@ export default function ProfileMenu() {
     const { account, logout } = useContext(AuthContext);
     return (
         <ProfileMenuContainer>
-            <ProfileAvatar avatar={account?.avatar || ""} alt="avatar" />
+            <ProfileAvatar avatar={account?.avatar || avatarDefault} alt="avatar" />
             <p>{account?.name}</p>
             <PrimaryButton text="Sair" type="button" filled onClick={logout} />
         </ProfileMenuContainer>

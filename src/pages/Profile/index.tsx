@@ -39,7 +39,7 @@ export default function ProfileSection() {
             <HeaderComponent account={account} />
 
             <SectionContent>
-                {loading && <DotLottieReact src={animationFile} autoplay loop style={{ width: "500px" }} />}
+                {!loading && <DotLottieReact src={animationFile} autoplay loop style={{ width: "500px" }} />}
 
                 {account && <ProfileCard />}
 
