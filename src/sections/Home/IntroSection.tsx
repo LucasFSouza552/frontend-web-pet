@@ -1,21 +1,24 @@
 import styled from "styled-components";
 import girlImg from "../../assets/Women with Cat.png";
+import Section from "../../styles/SectionStyle";
 
 export default function IntroSection() {
-    return (
-        <Container>
-            <LeftDiv>
-                <h1>
-                    <span className="left">Conheça</span>
-                    <span className="center">seu</span>
-                    <span className="right">amigo</span>
-                </h1>
-            </LeftDiv>
-            <RightDiv>
-                <img src={girlImg} />
-            </RightDiv>
-        </Container>
-    )
+  return (
+    <Section>
+      <Container>
+        <LeftDiv>
+          <h1>
+            <span className="left">Conheça</span>
+            <span className="center">seu</span>
+            <span className="right">amigo</span>
+          </h1>
+        </LeftDiv>
+        <RightDiv>
+          <img src={girlImg} />
+        </RightDiv>
+      </Container>
+    </Section>
+  )
 }
 
 const Container = styled.div`

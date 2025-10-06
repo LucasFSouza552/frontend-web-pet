@@ -5,22 +5,14 @@ import LoginForm from "../../components/LoginForm";
 
 export default function LoginSection() {
     return (
-        <Section>
+        <>
             <HeaderComponent />
-            <Container>
+            <main>
                 <LoginForm />
-            </Container>
-        </Section>
+            </main>
+        </>
     );
 }
 
-const Container = styled.div`
-    width: 100%;
-    flex: 1;
-    display: flex;
-    gap: 5px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-`;
+
 

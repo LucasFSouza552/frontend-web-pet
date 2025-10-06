@@ -5,6 +5,7 @@ const HeaderConteiner = styled.header`
     height: 80px;
     padding: 5px;
     display: flex;
+    position: absolute;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
