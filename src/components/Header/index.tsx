@@ -15,7 +15,7 @@ export const HeaderComponent = ({ account }: { account?: IAccount | null }) => {
             <Navigation>
                 <Link to="/">Home</Link>
                 <Link to="/disclosure">Divulgação</Link>
-                <Link to="/suport">Suporte</Link>
+                <Link to="/support">Suporte</Link>
             </Navigation>
             <HeaderMenu>
                 {!account ?

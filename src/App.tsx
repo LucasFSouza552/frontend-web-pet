@@ -8,6 +8,10 @@ import GlobalStyle from './styles/GlobalStyle';
 import theme from './styles/Theme';
 import LoginSection from './pages/Login';
 import ProfileSection from './pages/Profile';
+import { useContext } from 'react';
+import { AuthContext } from './contexts/AuthContext';
+import MatchSection from './pages/Match';
+import RegisterSection from './pages/Register';
 
 function App() {
 
@@ -18,6 +22,8 @@ function App() {
         <Route path="/" element={<HomeSection />} />
         <Route path="/login" element={<LoginSection />} />
         <Route path="/dashboard" element={<ProfileSection />} />
+        <Route path="/match" element={<MatchSection />} />
+        <Route path="/register" element={<RegisterSection />} />
       </NavigationRouter>
     </ThemeProvider>
   )
