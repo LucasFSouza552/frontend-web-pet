@@ -3,6 +3,7 @@ import styled from "styled-components"
 const HeaderConteiner = styled.header`
     width: 100%;
     height: 80px;
+    padding: 5px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;

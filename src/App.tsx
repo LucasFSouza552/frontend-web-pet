@@ -15,6 +15,9 @@ import RegisterSection from './pages/Register';
 
 function App() {
 
+  const { account, token, logout } = useContext(AuthContext);
+  console.log('account: ', account);
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle theme={theme} />

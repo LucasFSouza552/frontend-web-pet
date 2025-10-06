@@ -16,7 +16,7 @@ export default function LoginSection() {
 
 const Container = styled.div`
     width: 100%;
-    height: 100%;
+    flex: 1;
     display: flex;
     gap: 5px;
     flex-direction: column;

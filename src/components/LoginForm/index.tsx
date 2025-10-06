@@ -29,7 +29,7 @@ const FormContainer = styled.form`
     border-radius: 5px;
     gap: 5px;
     padding: 10px;
-    height: 40%;
+    height: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
