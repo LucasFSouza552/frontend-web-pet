@@ -5,10 +5,13 @@ import { removeStorage, saveStorage } from "../../shared/utils/storageUtils";
 export async function tokenValidate() {
     try {
         const account = await authApi.getProfile();
+        if (!account) {
+            throw Error("Falha ao validar token");
+        }
         saveStorage("account_data", JSON.stringify(account));
+
         return account;
     } catch (error: any) {
-        console.log(error);
         throw Error(error?.message);
     }
 }

@@ -7,8 +7,8 @@ export default function HomeSection() {
     <>
       <HeaderComponent />
       <main>
-          <IntroSection />
-          <FeaturesSection />
+        <IntroSection />
+        <FeaturesSection />
       </main>
     </>
   );

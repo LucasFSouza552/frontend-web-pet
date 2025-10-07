@@ -27,7 +27,7 @@ const Input = styled.div`
     width: clamp(300px, 50%, 600px);
     
     input { 
-        padding: 10px;
+        padding: 15px 10px;
         border-radius: 10px;
         border: none;
         outline: none;

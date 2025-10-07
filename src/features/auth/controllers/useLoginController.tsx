@@ -20,9 +20,9 @@ export default function useLoginController() {
         e.preventDefault();
         try {
             login(credentials.email, credentials.password);
+            
             setError("");
             navigate("/dashboard");
-
         } catch (error: unknown) {
             if (error instanceof Error) {
                 setError(error.message);

@@ -16,7 +16,7 @@ export default function AuthForm() {
                     <p>Digite seu email e senha para continuar</p>
                     <InputComponent placeholder="Email" label="email" onChange={handleChange} value={credentials.email} type="email" />
                     <InputComponent placeholder="Senha" label="senha" onChange={handleChange} value={credentials.password} type="password" />
-                    <PrimaryButton text="Entrar" type="submit" filled />
+                    <PrimaryButton text="Entrar" type="submit" filled width="50%" height="50px" />
                     <p>Não tem conta? <Link to="register">Clique aqui</Link></p>
                 </FormContainer>
                 <ErrorContainer message={error} />
@@ -40,10 +40,11 @@ const FormContainer = styled.form`
     color: #fff;
     border-radius: 5px;
     gap: 5px;
-    padding: 10px;
+    padding: 30px;
     height: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
 `;

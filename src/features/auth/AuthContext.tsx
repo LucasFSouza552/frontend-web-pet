@@ -45,14 +45,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const login = async (email: string, password: string) => {
-        const fetchToken = await authenticateUser(email, password);
-        if (fetchToken) {
-            setToken(fetchToken);
-        }
+        try {
+            const fetchToken = await authenticateUser(email, password);
+            if (fetchToken) {
+                setToken(fetchToken);
+            }
 
-        const fetchAccount = await tokenValidate();
-        if (fetchAccount) {
-            setAccount(fetchAccount);
+            const fetchAccount = await tokenValidate();
+            if (fetchAccount) {
+                setAccount(fetchAccount);
+            }
+        } catch (error) {
+            throw error;
         }
     };
 
