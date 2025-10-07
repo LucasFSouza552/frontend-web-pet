@@ -1,4 +1,4 @@
-import NavigationRouter from './utils/NavigationRouter'
+import NavigationRouter from './shared/utils/NavigationRouter'
 import HomeSection from './features/home/pages/HomePage'
 
 import { ThemeProvider } from "styled-components";
@@ -11,7 +11,7 @@ import ProfileSection from './features/profile/pages/ProfilePage';
 import { useContext } from 'react';
 import MatchSection from './features/match/pages/matchPage';
 import RegisterSection from './features/auth/pages/RegisterPage';
-import { AuthContext } from './app/contexts/AuthContext';
+import { AuthContext } from './features/auth/AuthContext';
 
 function App() {
 
@@ -19,8 +19,8 @@ function App() {
   console.log('account: ', account);
 
   return (
-    <ThemeProvider theme={darkTheme}>
-      <GlobalStyle theme={darkTheme} />
+    <ThemeProvider theme={lightTheme}>
+      <GlobalStyle theme={lightTheme} />
       <NavigationRouter>
         <Route path="/" element={<HomeSection />} />
         <Route path="/login" element={<LoginSection />} />

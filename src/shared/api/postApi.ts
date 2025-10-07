@@ -1,5 +1,6 @@
 import type { Post } from "../models/post";
 import buildQuery from "../utils/BuilderQuery";
+
 import api from "./http";
 
 interface PostQuery {

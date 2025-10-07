@@ -1,5 +1,5 @@
-import type { Post } from "../models/post";
-import * as postApi from "../api/postApi";
+import * as postApi from "../../shared/api/postApi";
+import type { Post } from "../../shared/models/post";
 
 export async function fetchPosts(accountId?: string, page?: number, limit?: number): Promise<Post[]> {
     try {

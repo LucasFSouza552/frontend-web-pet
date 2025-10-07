@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { PrimaryButton } from "./PrimaryButton";
 import ProfileAvatar from "./ProfileAvatar";
 
-import avatarDefault from "../../assets/avatar-default.png";
-import { AuthContext } from "../../app/contexts/AuthContext";
+import avatarDefault from "../assets/images/avatar-default.png";  
+import { AuthContext } from "../../features/auth/AuthContext";
 
 const ProfileMenuContainer = styled.div`
   display: flex;

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getStorage } from "../../utils/storageUtils";
+import { getStorage } from "../../shared/utils/storageUtils";
 
 const api = axios.create({
     baseURL: "http://localhost:3000/api",

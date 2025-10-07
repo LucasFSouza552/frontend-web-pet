@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import WomenImg from "@/shared/assets/images/Women-with-Cat.png";
+import WomenImg from "@/shared/assets/images/women-with-cat.png";
+
 import Section from "../../shared/styles/SectionStyle";
 
 export default function IntroSection() {

@@ -1,6 +1,7 @@
 import { createContext, useState, type ReactNode, useEffect } from "react";
 import type { Post } from "../../shared/models/post";
-import { fetchPosts } from "../../services/postService";
+import { fetchPosts } from "./postService";
+
 
 interface PostsContextType {
     posts: Post[];

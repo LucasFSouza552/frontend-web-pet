@@ -1,11 +1,11 @@
 import { useContext } from "react";
 
 
-import avatarDefault from "@/assets/avatar-default.png";
+import avatarDefault from "@/shared/assets/images/avatar-default.png";
 
 import ProfileDetails from "./ProfileDetails";
 import ProfileAvatar from "../../../shared/components/ProfileAvatar";
-import { AuthContext } from "../../../app/contexts/AuthContext";
+import { AuthContext } from "../../auth/AuthContext";
 
 export default function ProfileCard() {
 

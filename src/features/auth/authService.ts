@@ -1,6 +1,6 @@
-import type { IAccount } from "../shared/models/account";
-import * as authApi from "../app/api/authApi";
-import { removeStorage, saveStorage } from "../utils/storageUtils";
+import type { IAccount } from "../../shared/models/account";
+import * as authApi from "../../shared/api/authApi";
+import { removeStorage, saveStorage } from "../../shared/utils/storageUtils";
 
 export async function tokenValidate() {
     try {

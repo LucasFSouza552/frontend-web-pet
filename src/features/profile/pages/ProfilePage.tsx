@@ -1,15 +1,15 @@
 import { useCallback, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 
-import animationFile from "../../assets/lottie/loading.lottie?url";
+import animationFile from "@/shared/assets/lottie/loading.lottie?url";
 import Section from "../../../shared/styles/SectionStyle";
 import ProfileCard from "../components/ProfileCard";
 import { HeaderComponent } from "../../../shared/components/HeaderComponent";
 import PostCard from "../../../shared/components/PostCardComponent";
 
-import { AuthContext } from "../../../app/contexts/AuthContext";
-import { PostsContext } from "../../../app/contexts/PostContext";
+import { AuthContext } from "../../auth/AuthContext";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { PostsContext } from "../../post/postContext";
 
 export default function ProfileSection() {
 
