@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import girlImg from "../../assets/Women with Cat.png";
-import Section from "../../styles/SectionStyle";
+import WomenImg from "@/shared/assets/images/Women-with-Cat.png";
+import Section from "../../shared/styles/SectionStyle";
 
 export default function IntroSection() {
   return (
@@ -14,7 +14,7 @@ export default function IntroSection() {
           </h1>
         </LeftDiv>
         <RightDiv>
-          <img src={girlImg} />
+          <img src={WomenImg} />
         </RightDiv>
       </Container>
     </Section>
