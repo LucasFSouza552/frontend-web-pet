@@ -8,16 +8,10 @@ import GlobalStyle from './shared/styles/GlobalStyle';
 import { lightTheme, darkTheme } from './shared/styles/Theme';
 import LoginSection from './features/auth/pages/LoginPage';
 import ProfileSection from './features/profile/pages/ProfilePage';
-import { useContext } from 'react';
 import MatchSection from './features/match/pages/matchPage';
 import RegisterSection from './features/auth/pages/RegisterPage';
-import { AuthContext } from './features/auth/AuthContext';
 
 function App() {
-
-  const { account, token, logout } = useContext(AuthContext);
-  console.log('account: ', account);
-
   return (
     <ThemeProvider theme={lightTheme}>
       <GlobalStyle theme={lightTheme} />
