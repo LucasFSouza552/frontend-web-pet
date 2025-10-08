@@ -28,7 +28,7 @@ const featuresData = [
 
 export default function FeaturesSection() {
   return (
-    <Section>
+    <Section height="auto">
       <Container>
         <GridContainer>
           {featuresData.map((feature, index) => (
@@ -50,14 +50,15 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.colors.secondary};
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  background-color: #ffffff;
   width: 100%;
-  padding: 10px;
 `;
 
 const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  display: flex;
+  background-color: #1b1b1b;
   flex-direction: row;
-  width: fit-content;
+  width: 100%;
+  justify-content: center;
+  padding: 50px;
 `;
