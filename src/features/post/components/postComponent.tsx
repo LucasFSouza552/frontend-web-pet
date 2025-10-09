@@ -8,12 +8,13 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
+
     return (
         <PostContainer>
 
             <PostHeader>
-                <ProfileAvatar avatar={post.account.avatar || ""} alt="" />
-                {/* Imagem do usuário */}
+                <ProfileAvatar avatar={post.account.avatar} alt="" />
+                <span>{post.account.name || "Unknown"}</span>
                 {/* Nome do usuário */}
                 {/* Data do post */}
             </PostHeader>
@@ -43,12 +44,19 @@ export default PostCard;
 
 
 const PostContainer = styled.div`
-    background-color: blueviolet;
     border-radius: 12px;
-    width: 30px;
+    height: auto;
+    background-color: red;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    
 `
 
 const PostHeader = styled.div`
-    
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
 `
 

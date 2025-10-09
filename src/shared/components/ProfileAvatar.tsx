@@ -1,9 +1,11 @@
 import styled from "styled-components";
 
-export default function ProfileAvatar({ avatar, alt, width = 40 }: { avatar: string, alt: string, width?: number }) {
+import avatarDefault from "@/shared/assets/images/avatar-default.png";
+
+export default function ProfileAvatar({ avatar, alt, width = 40 }: { avatar?: string, alt: string, width?: number }) {
     return (
         <AvatarContainer width={width}>
-            <img src={avatar} alt={alt} />
+            <img src={avatar || avatarDefault} alt={alt} />
         </AvatarContainer>
     );
 }

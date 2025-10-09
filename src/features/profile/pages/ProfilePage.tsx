@@ -46,7 +46,8 @@ export default function ProfileSection() {
                 {/* {account && <ProfileCard />} */}
 
                 <PostContainer>
-                    {<h2>Posts</h2>}
+                    <div>AAAA</div>
+                    {/* {<h2>Posts</h2>}
 
                     {!loadingPosts && posts.length > 0 ? posts?.map((post: any, index: number) => {
                         if (index === posts.length - 1) {
@@ -54,7 +55,7 @@ export default function ProfileSection() {
                         }
                         return <PostComponent key={post.id} post={post} />;
                     }) :
-                        <DotLottieReact src={animationFile} autoplay loop style={{ width: "500px" }} />}
+                        <DotLottieReact src={animationFile} autoplay loop style={{ width: "500px" }} />} */}
                 </PostContainer>
             </SectionContent >
         </ProfileContainer>
@@ -63,10 +64,10 @@ export default function ProfileSection() {
 
 const PostContainer = styled.div`
     width: 100%;
-    overflow: auto;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    align-items: center;
+    min-height: 100dvh;
 `;
 
 const ProfileContainer = styled.div`
@@ -80,6 +81,4 @@ const ProfileContainer = styled.div`
 const SectionContent = styled(Section)`
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
 `;
