@@ -1,30 +1,33 @@
 import styled from "styled-components";
-import { FaHome, FaHandHoldingHeart, FaSearchLocation } from "react-icons/fa";
+import {
+  FaHome, FaHandHoldingHeart, FaSearchLocation, FaPaw
+} from "react-icons/fa";
+
 import Section from "../../../shared/styles/SectionStyle";
 import { FeatureCard } from "../../../shared/components/FeatureCard";
 
 const featuresData = [
   {
-    icon: <FaHome />,
+    icon: <FaPaw />,
     title: "Adote seu novo amigo",
-    description: "Adotando um novo amigo fará a diferença na sua vida e na dele.",
+    description: "Adotar é abrir as portas do coração. Dê um lar e receba amor incondicional em troca.",
   },
   {
     icon: <FaHandHoldingHeart />,
-    title: "Faça Doações",
-    description: "Ajude a nossa plataforma a crescer através de doações.",
+    title: "Contribua com Doações",
+    description: "Sua doação ajuda a salvar vidas e manter nossa causa viva. Cada gesto faz a diferença.",
   },
   {
     icon: <FaSearchLocation />,
-    title: "Encontre Agora",
-    description: "Encontrar e ajudar animais pode transformar vidas.",
+    title: "Encontre um Companheiro",
+    description: "Descubra animais próximos a você e transforme o destino de quem só precisa de uma chance.",
   },
   {
     icon: <FaHome />,
-    title: "Encontre Agora",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis feugiat lacinia felis ac pulvinar.",
-  },
+    title: "Transforme Vidas",
+    description: "Juntos podemos mudar o mundo, um animal de cada vez. Participe dessa jornada de amor e esperança.",
+  }
+
 ];
 
 export default function FeaturesSection() {
@@ -60,7 +63,6 @@ const SectionWrapper = styled(Section)`
 const Container = styled.div`
   width: 100%;
   max-width: 1200px;
-  background-color: #ffffff;
   padding: 40px;
   border-radius: 12px;
   display: flex;

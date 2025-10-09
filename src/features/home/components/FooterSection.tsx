@@ -1,51 +1,55 @@
-import React from "react";
 import styled from "styled-components";
-
+import Section from "../../../shared/styles/SectionStyle";
 
 export default function DuvidasSection() {
   return (
     <Section>
-      <Title>DUVIDAS?</Title>
-      <Description>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis feugiat
-        lacinia felis ac pulvinar. Cras commodo velit non tortor faucibus tempus
-        eu elementum orci. Sed eu volutpat est. Etiam mattis venenatis neque, sed
-        venenatis enim. Phasellus euismod tincidunt sapien eu scelerisque.
-        Suspendisse et nunc porta, blandit lectus et, ornare massa.
-      </Description>
-      <Button>TIRAR DÚVIDAS</Button>
+      <FooterContainer>
 
-      <FooterCurve>
-        <FooterColumn>
-          <FooterTitle>Institucional</FooterTitle>
-          <FooterLink href="#">Sobre</FooterLink>
-          <FooterLink href="#">Unidade</FooterLink>
-          <FooterLink href="#">FAQ</FooterLink>
-          <FooterLink href="#">Histórias</FooterLink>
-        </FooterColumn>
+        <Title>DUVIDAS?</Title>
+        <Description>
+          Tem alguma pergunta? Estamos aqui para ajudar!
+          Nossa equipe está pronta para esclarecer qualquer dúvida sobre adoções, doações ou uso da plataforma.
+          Entre em contato e teremos prazer em orientar você em cada passo.
+        </Description>
+        <Button>TIRAR DÚVIDAS</Button>
 
-        <FooterColumn>
-          <FooterTitle>Como ajudar?</FooterTitle>
-          <FooterLink href="#">Quero adotar</FooterLink>
-          <FooterLink href="#">Quero doar</FooterLink>
-        </FooterColumn>
-      </FooterCurve>
+        <FooterCurve>
+          <FooterColumn>
+            <FooterTitle>Institucional</FooterTitle>
+            <FooterLink href="#">Sobre</FooterLink>
+            <FooterLink href="#">Unidade</FooterLink>
+            <FooterLink href="#">FAQ</FooterLink>
+            <FooterLink href="#">Histórias</FooterLink>
+          </FooterColumn>
+
+          <FooterColumn>
+            <FooterTitle>Como ajudar?</FooterTitle>
+            <FooterLink href="#">Quero adotar</FooterLink>
+            <FooterLink href="#">Quero doar</FooterLink>
+          </FooterColumn>
+        </FooterCurve>
+      </FooterContainer>
     </Section>
   );
 }
 
-const Section = styled.section`
-  background-color: #2d2a2f; 
-  color: #fff;
-  text-align: center;
-  padding: 80px 20px 0 20px;
-  position: relative;
+const FooterContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex:1;
+  overflow: hidden;
+  justify-content: space-between;
+  flex-direction: column;
+  background-color: ${({ theme }) => theme.colors.secondary};
+  padding-top: 40px;
 `;
 
 const Title = styled.h2`
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 20px;
+  color: white;
 `;
 
 const Description = styled.p`
@@ -56,7 +60,7 @@ const Description = styled.p`
 `;
 
 const Button = styled.button`
-  border: 2px solid #b14ebf;
+  border: 2px solid ${({ theme }) => theme.colors.primary};
   background: transparent;
   color: #b14ebf;
   padding: 10px 25px;
@@ -66,20 +70,20 @@ const Button = styled.button`
   transition: all 0.3s;
 
   &:hover {
-    background: #b14ebf;
+    background: ${({ theme }) => theme.colors.primary};
     color: #fff;
   }
 `;
 
 const FooterCurve = styled.div`
-  background-color: #b14ebf; /* cor roxa */
-  height: 150px;
+  background-color: ${({ theme }) => theme.colors.primary};
   border-top-left-radius: 50% 20%;
   border-top-right-radius: 50% 20%;
   display: flex;
-  justify-content: space-around;
+  width: 100%;
+  padding: 40px 0;
+  justify-content: space-evenly;
   align-items: center;
-  padding-top: 40px;
   color: #fff;
 `;
 

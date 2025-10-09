@@ -13,6 +13,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         <PostContainer>
 
             <PostHeader>
+                <ProfileAvatar avatar={post.account.avatar || ""} alt={post.account.name} />
+                {/* Imagem do usuário */}
                 <ProfileAvatar avatar={post.account.avatar} alt="" />
                 <span>{post.account.name || "Unknown"}</span>
                 {/* Nome do usuário */}
@@ -20,10 +22,12 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             </PostHeader>
             <div>
                 {/* Titulo do post */}
+                <div>{post.title}</div>
             </div>
-            <div>
+            <PictureContainer>
                 {/* Imagem do post */}
-            </div>
+                {post.images?.map((image) => <PostPicture>{image}</PostPicture>)}
+            </PictureContainer>
             <div>
                 <div>
                     {/* Likes */}
@@ -42,6 +46,19 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
 export default PostCard;
 
+const PictureContainer = styled.div`
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    background-color: aqua;
+    width: 100%;
+    height: 300px;
+    
+`;
+
+const PostPicture = styled.div`
+    
+`;
 
 const PostContainer = styled.div`
     border-radius: 12px;

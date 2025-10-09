@@ -15,7 +15,9 @@ const AvatarContainer = styled.div<{ width: number }>`
     overflow: hidden;
     width: ${({ width }) => width}px;
     height: ${({ width }) => width}px;
-
+    border: solid 1px #ccc;
+    background-color: white;
+    padding: 5px;
     img {
         width: 100%;
         height: 100%;

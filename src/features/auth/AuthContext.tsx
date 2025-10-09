@@ -63,7 +63,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const logout = () => {
         setAccount(null);
         setToken(null);
+
         fetchLogout();
+        window.location.reload();
     };
 
     return (
