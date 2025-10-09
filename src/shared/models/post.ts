@@ -13,7 +13,7 @@ export interface Post {
     images?: string[];
     date: string;
     likes: string[];
-    accountId: ITypeAccounts;
+    account: ITypeAccounts;
     createdAt: string;
     updatedAt: string;
 }
