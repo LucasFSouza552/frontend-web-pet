@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { PrimaryButton } from "./PrimaryButton";
 import ProfileAvatar from "./ProfileAvatar";
 
-import avatarDefault from "../assets/images/avatar-default.png";  
+import avatarDefault from "../assets/images/avatar-default.png";
 import { AuthContext } from "../../features/auth/AuthContext";
 
 const ProfileMenuContainer = styled.div`
@@ -35,7 +35,7 @@ export default function ProfileMenu() {
   const { account, logout } = useContext(AuthContext);
   return (
     <ProfileMenuContainer>
-      <ProfileAvatar avatar={account?.avatar || avatarDefault} alt="avatar" />
+      <ProfileAvatar avatar={account?.avatar} alt="avatar" />
       <p>{account?.name}</p>
       <PrimaryButton text="Sair" type="button" filled onClick={logout} />
     </ProfileMenuContainer>
