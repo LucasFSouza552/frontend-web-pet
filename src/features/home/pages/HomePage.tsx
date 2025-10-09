@@ -1,7 +1,7 @@
-import IntroSection from "../../../sections/Home/IntroSection";
-import FeaturesSection from "../../../sections/Home/FeaturesSection";
+import IntroSection from "../components/IntroSection";
+import FeaturesSection from "../components/FeaturesSection";
 import { HeaderComponent } from "../../../shared/components/HeaderComponent";
-import FooterSection from "../../../sections/Home/FooterSection";
+import FooterSection from "../components/FooterSection";
 
 export default function HomeSection() {
   return (

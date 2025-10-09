@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { FaHome, FaHandHoldingHeart, FaSearchLocation } from 'react-icons/fa';
-import Section from '../../shared/styles/SectionStyle';
-import { FeatureCard } from '../../shared/components/FeatureCard';
+import Section from '../../../shared/styles/SectionStyle';
+import { FeatureCard } from '../../../shared/components/FeatureCard';
 
 const featuresData = [
   {
