@@ -3,17 +3,17 @@ import Section from "../../../shared/styles/SectionStyle";
 
 export default function DuvidasSection() {
   return (
-    <Section>
+    <Section height="70dvh">
       <FooterContainer>
-
-        <Title>DUVIDAS?</Title>
-        <Description>
-          Tem alguma pergunta? Estamos aqui para ajudar!
-          Nossa equipe está pronta para esclarecer qualquer dúvida sobre adoções, doações ou uso da plataforma.
-          Entre em contato e teremos prazer em orientar você em cada passo.
-        </Description>
-        <Button>TIRAR DÚVIDAS</Button>
-
+        <ContentQuestions>
+          <Title>Dúvidas?</Title>
+          <Description>
+            Tem alguma pergunta? Estamos aqui para ajudar!
+            Nossa equipe está pronta para esclarecer qualquer dúvida sobre adoções, doações ou uso da plataforma.
+            Entre em contato e teremos prazer em orientar você em cada passo.
+          </Description>
+          <Button>TIRAR DÚVIDAS</Button>
+        </ContentQuestions>
         <FooterCurve>
           <FooterColumn>
             <FooterTitle>Institucional</FooterTitle>
@@ -34,6 +34,13 @@ export default function DuvidasSection() {
   );
 }
 
+const ContentQuestions = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
 const FooterContainer = styled.div`
   display: flex;
   align-items: center;
@@ -46,8 +53,8 @@ const FooterContainer = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 3.8rem;
+  font-weight: lighter;
   margin-bottom: 20px;
   color: white;
 `;
@@ -64,6 +71,7 @@ const Button = styled.button`
   background: transparent;
   color: #b14ebf;
   padding: 10px 25px;
+  margin-bottom: 20px;
   font-size: 1rem;
   border-radius: 5px;
   cursor: pointer;
