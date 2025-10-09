@@ -10,6 +10,7 @@ import LoginSection from './features/auth/pages/LoginPage';
 import ProfileSection from './features/profile/pages/ProfilePage';
 import MatchSection from './features/match/pages/matchPage';
 import RegisterSection from './features/auth/pages/RegisterPage';
+import CommunityPage from './sections/Home/CommunityPage';
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
         <Route path="/dashboard" element={<ProfileSection />} />
         <Route path="/match" element={<MatchSection />} />
         <Route path="/register" element={<RegisterSection />} />
+        <Route path="/community" element={<CommunityPage />} />
+
       </NavigationRouter>
     </ThemeProvider>
   )
