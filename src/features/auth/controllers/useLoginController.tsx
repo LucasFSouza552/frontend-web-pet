@@ -8,6 +8,7 @@ export default function useLoginController() {
         email: "",
         password: ""
     });
+
     const [error, setError] = useState("");
 
     const handleChange = (key: string, value: string) => {
@@ -19,8 +20,8 @@ export default function useLoginController() {
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault();
         try {
-            login(credentials.email, credentials.password);
-            
+            await login(credentials.email, credentials.password);
+
             setError("");
             navigate("/dashboard");
         } catch (error: unknown) {

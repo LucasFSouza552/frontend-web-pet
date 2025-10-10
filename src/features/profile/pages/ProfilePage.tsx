@@ -45,8 +45,8 @@ export default function ProfileSection() {
 
                 {account && <ProfileCard />}
 
-                {/* <PostContainer> */}
-                {/* {<h2>Posts</h2>}
+                <PostContainer>
+                    {<h2>Posts</h2>}
 
                     {!loadingPosts && posts.length > 0 ? posts?.map((post: any, index: number) => {
                         if (index === posts.length - 1) {
@@ -54,8 +54,8 @@ export default function ProfileSection() {
                         }
                         return <PostComponent key={post.id} post={post} />;
                     }) :
-                        <DotLottieReact src={animationFile} autoplay loop style={{ width: "500px" }} />} */}
-                {/* </PostContainer> */}
+                        <DotLottieReact src={animationFile} autoplay loop style={{ width: "500px" }} />}
+                </PostContainer>
             </SectionContent >
         </ProfileContainer>
     );

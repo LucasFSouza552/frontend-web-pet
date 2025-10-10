@@ -47,14 +47,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = async (email: string, password: string) => {
         try {
             const fetchToken = await authenticateUser(email, password);
-            if (fetchToken) {
-                setToken(fetchToken);
+            if (!fetchToken) {
+                throw Error("Falha ao realizar login");
             }
+            setToken(fetchToken);
 
             const fetchAccount = await tokenValidate();
-            if (fetchAccount) {
-                setAccount(fetchAccount);
+            if (!fetchAccount) {
+                throw Error("Falha ao validar token");
             }
+            setAccount(fetchAccount);
         } catch (error) {
             throw error;
         }

@@ -11,10 +11,11 @@ import styled from "styled-components";
 export default function ProfileCard() {
 
     const { account } = useContext(AuthContext);
+    
     return (
         <ProfileContainer>
             {<ProfileAvatar avatar={account?.avatar || avatarDefault} alt="avatar" width={150} />}
-          
+
             <ProfileDetails account={account || null} />
         </ProfileContainer>
     )

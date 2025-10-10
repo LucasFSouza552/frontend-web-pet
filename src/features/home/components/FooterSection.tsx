@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Section from "../../../shared/styles/SectionStyle";
+import { PrimaryButton } from "../../../shared/components/PrimaryButton";
 
 export default function DuvidasSection() {
   return (
@@ -12,7 +13,10 @@ export default function DuvidasSection() {
             Nossa equipe está pronta para esclarecer qualquer dúvida sobre adoções, doações ou uso da plataforma.
             Entre em contato e teremos prazer em orientar você em cada passo.
           </Description>
-          <Button>TIRAR DÚVIDAS</Button>
+          <PrimaryButton text="TIRAR DÚVIDAS" filled={false} width="200px" height="50px"  />
+          <Button>
+            TIRAR DÚVIDAS
+          </Button>
         </ContentQuestions>
         <FooterCurve>
           <FooterColumn>

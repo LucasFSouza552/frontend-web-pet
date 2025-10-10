@@ -13,7 +13,7 @@ interface PostQuery {
 export async function getPosts(query: PostQuery = {}): Promise<Post[]> {
     try {
         const queryString = buildQuery(query);
-        const response = await api.get(`/post/posts/full${queryString}`);
+        const response = await api.get(`/post/posts/with-author${queryString}`);
         return response.data;
     } catch (error) {
         throw error;

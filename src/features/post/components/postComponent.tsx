@@ -7,7 +7,18 @@ interface PostCardProps {
     onLike?: (postId: string) => void;
 }
 
+const PostPictureContainer = ({ images }: { images: string[] }) => {
+    if (!images || images.length === 0) return null;
+    return (
+        <PictureContainer>
+            {images.map((image) => <PostPicture>{image}</PostPicture>)}
+        </PictureContainer>
+    )
+}
+
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
+
+    if (!post || !post.account) return null;
 
     return (
         <PostContainer>
@@ -15,7 +26,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             <PostHeader>
                 <ProfileAvatar avatar={post.account.avatar || ""} alt={post.account.name} />
                 {/* Imagem do usuário */}
-                <ProfileAvatar avatar={post.account.avatar} alt="" />
                 <span>{post.account.name || "Unknown"}</span>
                 {/* Nome do usuário */}
                 {/* Data do post */}
@@ -24,10 +34,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
                 {/* Titulo do post */}
                 <div>{post.title}</div>
             </div>
-            <PictureContainer>
-                {/* Imagem do post */}
-                {post.images?.map((image) => <PostPicture>{image}</PostPicture>)}
-            </PictureContainer>
+            <PostPictureContainer images={post.images || []} />
             <div>
                 <div>
                     {/* Likes */}
