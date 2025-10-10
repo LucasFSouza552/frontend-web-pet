@@ -6,10 +6,10 @@ import { Route } from 'react-router-dom';
 import LoginSection from './features/auth/pages/LoginPage';
 import ProfileSection from './features/profile/pages/ProfilePage';
 import MatchSection from './features/match/pages/matchPage';
-import RegisterSection from './features/auth/pages/RegisterPage';
 import CommunityPage from './features/home/components/CommunityPage';
 import { ThemeProvider } from './app/contexts/ThemeContext';
 import FAQSection from './features/support/pages/FAQPage';
+import RegisterSection from './features/auth/pages/RegisterPage';
 
 function App() {
   return (

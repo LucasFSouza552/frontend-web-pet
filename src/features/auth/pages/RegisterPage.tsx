@@ -1,23 +1,14 @@
-import styled from "styled-components";
+import { HeaderComponent } from "../../../shared/components/HeaderComponent";
+import Section from "../../../shared/styles/SectionStyle";
+import FooterSection from "../../home/components/FooterSection";
+import Forms from "../components/Forms";
 
 export default function RegisterSection() {
     return (
-        <Container>
-            <div>
-                <h1>Registrar-se</h1>
-                <form>
-                    <input type="text" placeholder="Nome" />
-                    <input type="email" placeholder="Email" />
-                    <input type="password" placeholder="Senha" />
-                    <button type="submit">Registrar</button>
-                </form>
-            </div>
-        </Container>
+        <Section height="auto">
+            <HeaderComponent />
+            <Forms />
+            <FooterSection />
+        </Section>
     );
 }
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 150px;
-`;
