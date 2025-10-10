@@ -9,6 +9,7 @@ import MatchSection from './features/match/pages/matchPage';
 import RegisterSection from './features/auth/pages/RegisterPage';
 import CommunityPage from './features/home/components/CommunityPage';
 import { ThemeProvider } from './app/contexts/ThemeContext';
+import FAQSection from './features/support/components/FAQSection';
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
         <Route path="/match" element={<MatchSection />} />
         <Route path="/register" element={<RegisterSection />} />
         <Route path="/community" element={<CommunityPage />} />
-
+        <Route path="support" element={<FAQSection />} />
       </NavigationRouter>
     </ThemeProvider>
   )

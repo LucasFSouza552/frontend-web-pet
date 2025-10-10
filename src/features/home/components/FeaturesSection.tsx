@@ -32,7 +32,7 @@ const featuresData = [
 
 export default function FeaturesSection() {
   return (
-    <SectionWrapper>
+    <SectionWrapper height="auto">
       <Container>
         <GridContainer>
           {featuresData.map((feature, index) => (
@@ -51,12 +51,11 @@ export default function FeaturesSection() {
 
 const SectionWrapper = styled(Section)`
   background-color: #2d2a2f;
+  padding: 60px 0;
   width: 100%;
-  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 80px 0; 
   overflow: visible; 
 `;
 
@@ -75,6 +74,5 @@ const GridContainer = styled.div`
   gap: 30px;
   justify-content: center;
   background-color: #2d2a2f;
-  padding: 60px;
   border-radius: 12px;
 `;
