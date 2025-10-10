@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Section from "../../../shared/styles/SectionStyle";
 
-export default function DuvidasSection() {
+export default function FooterSection() {
   return (
     <Section height="70dvh">
       <FooterContainer>

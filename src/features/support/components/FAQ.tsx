@@ -2,12 +2,12 @@ import styled from "styled-components";
 import Section from "../../../shared/styles/SectionStyle";
 import FAQList from "./FAQList";
 
-export default function FAQSection() {
+export default function FAQ() {
     return (
-        <Section>
+        <Section height="auto">
             <FAQTitleDiv>
                 <Title>Dúvidas Frequentes</Title>
-                <h4>Encontre respostas para as perguntas mais comuns.</h4>
+                <Subtitle>Encontre respostas para as perguntas mais comuns.</Subtitle>
             </FAQTitleDiv>
             <FAQList />
         </Section>
@@ -16,13 +16,19 @@ export default function FAQSection() {
 
 const Title = styled.h1`
     font-family: "Sacramento";
-    font-size: 50px;
+    color: #B648A0;
+    font-size: 5.3rem;
+    margin-top: 20px
+`;
+
+const Subtitle = styled.h4`
+    color: #332630;
 `;
 
 const FAQTitleDiv = styled.div`
     display: flex;
     flex-direction: column;
     text-align: center;
-    margin: 10% 0 3%;
-    color: ${({ theme }) => theme.colors.text};
+    margin: 25px 0 25px 0;
+    color: white;
 `;
