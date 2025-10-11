@@ -11,7 +11,7 @@ export default function AuthForm() {
   const { credentials, error, handleChange, handleLogin } = useLoginController();
 
   return (
-    <Section height="100dvh-80px">
+    <Section height={"100dvh - var(--header-height)"}>
       <OndaBackground />
       <Wrapper>
         <FormContainer onSubmit={handleLogin}>

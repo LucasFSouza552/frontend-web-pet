@@ -5,6 +5,7 @@ import ProfileAvatar from "./ProfileAvatar";
 
 import avatarDefault from "../assets/images/avatar-default.png";
 import { AuthContext } from "../../features/auth/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const ProfileMenuContainer = styled.div`
   display: flex;
@@ -17,6 +18,7 @@ const ProfileMenuContainer = styled.div`
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   gap: 15px;
+  cursor: pointer;
 
   p {
     margin: 0;
@@ -27,14 +29,24 @@ const ProfileMenuContainer = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  &:hover {
+    background-color:  #dfdfdf;
+  }
 `;
 
 // Gera um menu de perfil com avatar, nome do usuário e botão de sair
 // Normalmente usado no lado superior direito da tela no header
 export default function ProfileMenu() {
   const { account, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const profileClick = () => {
+    navigate("/profile");
+  }
+
   return (
-    <ProfileMenuContainer>
+    <ProfileMenuContainer onClick={profileClick}>
       <ProfileAvatar avatar={account?.avatar} alt="avatar" />
       <p>{account?.name}</p>
       <PrimaryButton text="Sair" type="button" filled onClick={logout} />

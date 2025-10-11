@@ -9,7 +9,7 @@ import { useContext, useState } from "react";
 
 interface PostCardProps {
     post: Post;
-    accountId: string;
+    accountId?: string;
     onLike?: (postId: string) => void;
 }
 
@@ -29,16 +29,16 @@ const PostPictureContainer = ({ images }: { images: string[] }) => {
 
 const PostCard: React.FC<PostCardProps> = ({ post, accountId }) => {
 
-    if (!post || !post.account) return null;
+    if (!post) return null;
 
     const { likePost } = useContext(PostsContext);
     const [animateLike, setAnimateLike] = useState(false);
 
     const handleLike = () => {
+        if (!accountId) return;
         setAnimateLike(true);
         likePost(post.id);
 
-        // reseta a animação para poder reutilizar
         setTimeout(() => setAnimateLike(false), 400);
     }
 
@@ -53,12 +53,11 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId }) => {
                 <PostPictureContainer images={post.image || []} />
             </PostContent>
             <RowContainer>
-                <RowContainer onClick={handleLike}>
-                    <AnimatedCircleIcon $animate={animateLike}>
-                        <FaHeart color={post.likes.includes(accountId) ? "red" : "white"} />
-                        {post.likes.length}
-                    </AnimatedCircleIcon>
-                    Curtir
+                <RowContainer className="no-select">
+                    <CircleIcon onClick={handleLike}>
+                        <HeartIcon $animate={animateLike} color={accountId && post.likes.includes(accountId) ? "red" : "white"} />
+                    </CircleIcon>
+                    {post.likes.length} Curtidas
                 </RowContainer>
                 <RowContainer onClick={() => { }}>
                     <CircleIcon><BsChatFill /></CircleIcon>
@@ -79,6 +78,8 @@ const RowContainer = styled.div`
     display: flex;
     align-items: center;
     gap: 5px;
+    width: 70%;
+    min-width: 120px;
 `;
 
 const pulse = keyframes`
@@ -101,17 +102,15 @@ const CircleIcon = styled.div`
     
 `;
 
-const AnimatedCircleIcon = styled(CircleIcon) <{ $animate?: boolean }>`
-  ${({ $animate }) =>
+const HeartIcon = styled(FaHeart) <{ $animate?: boolean }>`
+    color: red;
+    ${({ $animate }) =>
         $animate &&
         css`
-      animation: ${pulse} 0.4s ease;
+      animation: ${pulse} 0.4s ease-in-out;
     `}
-
-    width: 40px;
-    flex: 1;
-    border-radius: 30px;
 `;
+
 
 
 

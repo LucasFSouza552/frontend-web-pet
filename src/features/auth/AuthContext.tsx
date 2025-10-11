@@ -1,8 +1,9 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
 import type { IAccount } from "../../shared/models/account";
 import { getStorage } from "../../shared/utils/storageUtils";
-import { authenticateUser, fetchLogout, tokenValidate } from "./authService";
+import { authenticateUser, fetchLogout, tokenValidate, AccountStatus } from "./authService";
 import { ThrowError } from "../../shared/Error/ThrowError";
+import type { IAccountStatus } from "../../shared/models/accountStatus";
 
 interface AuthContextType {
     account: IAccount | null;
@@ -11,12 +12,15 @@ interface AuthContextType {
     logout: () => void;
     setAccount: (account: IAccount | null) => void;
     loading: boolean;
+    status: () => void;
+    accountStatus: IAccountStatus | null;
 }
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [account, setAccount] = useState<IAccount | null>(null);
+    const [accountStatus, setAccountStatus] = useState<IAccountStatus | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -62,6 +66,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const status = async () => {
+        try {
+            const fetchAccountStatus = await AccountStatus();
+            if (!fetchAccountStatus) {
+                throw Error("Falha ao validar token");
+            }
+            setAccountStatus(fetchAccountStatus);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
     const logout = () => {
         setAccount(null);
         setToken(null);
@@ -71,7 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ account: account, token, login, logout, loading, setAccount }}>
+        <AuthContext.Provider value={{ account: account, token, login, logout, loading, setAccount, status, accountStatus }}>
             {children}
         </AuthContext.Provider>
     );

@@ -41,3 +41,11 @@ export async function getLoggedUser(): Promise<IAccount | null> {
         return null;
     }
 }
+
+export async function AccountStatus() {
+    try {
+        return await authApi.getStatusProfile();
+    } catch (error) {
+        return null;
+    }
+}

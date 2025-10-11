@@ -4,7 +4,7 @@ import buildQuery from "../utils/BuilderQuery";
 import api from "./http";
 
 interface PostQuery {
-    accountId?: string;
+    account?: string;
     limit?: number;
     page?: number;
     orderBy?: string;
@@ -23,6 +23,15 @@ export async function getPosts(query: PostQuery = {}): Promise<Post[]> {
 export async function toggleLike(postId: string): Promise<Post> {
     try {
         const response = await api.post(`/post/${postId}/like`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getPostById(id: string) {
+    try {
+        const response = await api.get(`/post/${id}`);
         return response.data;
     } catch (error) {
         throw error;

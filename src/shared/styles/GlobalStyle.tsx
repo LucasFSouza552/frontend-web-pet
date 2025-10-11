@@ -13,6 +13,15 @@ const GlobalStyle = createGlobalStyle`
   html, body, #root {
     width: 100%;
     display: block;
+    --header-height: 80px;
+
+    .no-select {
+      -webkit-user-select: none; /* Safari/Chrome */
+      -moz-user-select: none;    /* Firefox */
+      -ms-user-select: none;     /* IE/Edge */
+      user-select: none;         /* Standard */
+      -webkit-touch-callout: none; /* iOS: desativa o menu de contexto ao segurar */
+    }
 
   }
 

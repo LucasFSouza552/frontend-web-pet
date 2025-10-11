@@ -23,7 +23,7 @@ export default function useLoginController() {
             await login(credentials.email, credentials.password);
 
             setError("");
-            navigate("/dashboard");
+            navigate("/profile");
         } catch (error: unknown) {
             if (error instanceof Error) {
                 setError(error.message);

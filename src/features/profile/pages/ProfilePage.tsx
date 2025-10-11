@@ -20,28 +20,29 @@ export default function ProfileSection() {
 
     const { account, loading } = useContext(AuthContext);
 
-    if(!account) {
+    if (!account && !loading) {
         navigate("/");
     }
 
-    const { posts, refreshPosts, loadMorePosts, hasMore, loading: loadingPosts } = useContext(PostsContext);
+    const { userPosts, refreshUserPosts, loadMoreUserPosts, hasMoreUserPosts, loadingUserPosts } = useContext(PostsContext);
     const observer = useRef<IntersectionObserver>(null);
 
+
     useEffect(() => {
-        refreshPosts(account?.id);
+        refreshUserPosts(account?.id);
     }, [account?.id]);
 
     const lastPostRef = useCallback(
         (node: HTMLDivElement | null) => {
             if (observer.current) observer.current.disconnect();
             observer.current = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting && hasMore) {
-                    loadMorePosts(account?.id);
+                if (entries[0].isIntersecting && hasMoreUserPosts) {
+                    loadMoreUserPosts(account?.id);
                 }
             });
             if (node) observer.current.observe(node);
         },
-        [hasMore, loadMorePosts, account?.id, loadingPosts]
+        [hasMoreUserPosts, loadMoreUserPosts, account?.id, loadingUserPosts]
     );
 
     if (loading) {
@@ -59,8 +60,8 @@ export default function ProfileSection() {
                 <PostContainer>
                     {<h2>Suas Publicações</h2>}
 
-                    {posts.length > 0 && posts?.map((post: any, index: number) => {
-                        if (index === posts.length - 1) {
+                    {userPosts.length > 0 && userPosts?.map((post: any, index: number) => {
+                        if (index === userPosts.length - 1) {
                             return <LastPostWrapper ref={lastPostRef} key={post.id}><PostComponent post={post} accountId={account?.id || ""} /></LastPostWrapper>;
                         }
                         return <PostComponent key={post.id} post={post} accountId={account?.id || ""} />;
@@ -102,6 +103,7 @@ const SectionContent = styled(Section)`
     width: 100%;
     flex-direction: column; width: 100%;
     height: 100%;
+    min-height: calc(100dvh - var(--header-height));
     background-image: url(${backgroundPage});
     background-size: cover;
     background-position: center;

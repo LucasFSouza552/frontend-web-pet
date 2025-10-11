@@ -1,7 +1,5 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
-
-import avatarDefault from "@/shared/assets/images/avatar-default.png";
 import background from "../../../shared/assets/images/background.png";
 
 
@@ -12,14 +10,21 @@ import styled from "styled-components";
 
 export default function ProfileCard() {
 
-    const { account } = useContext(AuthContext);
+    const { account, loading, status, accountStatus } = useContext(AuthContext);
+
+    useEffect(() => {
+        status();
+    }, []);
+
     return (
         <ProfileContainer>
-            {/* <ProfileBackground /> */}
             <ProfileContent>
-                {<ProfileAvatar avatar={account?.avatar || avatarDefault} alt="avatar" width={150} />}
+                {<ProfileAvatar avatar={account?.avatar} alt="avatar" width={150} border />}
 
-                <ProfileDetails account={account || null} />
+                <ProfileDetails
+                    account={account || null}
+                    accountStatus={accountStatus}
+                     />
             </ProfileContent>
         </ProfileContainer>
     )
@@ -28,11 +33,10 @@ export default function ProfileCard() {
 const ProfileContent = styled.div`
     width: 80%;
     display: flex;
-
-`
+`;
 
 const ProfileContainer = styled.div`
-  display: flex;  
+  display: flex;
   width: 100%;
   padding: 15px;
   justify-content: center;
