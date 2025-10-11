@@ -7,6 +7,8 @@ import { BsChatFill } from "react-icons/bs";
 import { PostsContext } from "../postContext";
 import { useContext, useState } from "react";
 
+import AvatarDefault from "../../../shared/assets/images/avatar-default.png";
+
 interface PostCardProps {
     post: Post;
     accountId?: string;
@@ -20,7 +22,7 @@ const PostPictureContainer = ({ images }: { images: string[] }) => {
             {images.map((image) => <PostPicture>
                 <img src={`http://localhost:3000/api/picture/${image}`} alt={image || ""}
                     onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = "./avatar-default.png";
+                        (e.currentTarget as HTMLImageElement).src = AvatarDefault;
                     }} />
             </PostPicture>)}
         </PictureContainer>

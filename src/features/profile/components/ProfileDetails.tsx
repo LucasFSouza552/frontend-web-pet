@@ -12,7 +12,7 @@ import type { IconType } from "react-icons";
 
 
 
-export default function ProfileDetails({ account, accountStatus }: { account: IAccount | null, accountStatus: IAccountStatus | null }) {
+export default function ProfileDetails({ account, accountStatus }: { account: IAccount | null, accountStatus?: IAccountStatus | null }) {
 
   if (!account) { return null; }
   return (

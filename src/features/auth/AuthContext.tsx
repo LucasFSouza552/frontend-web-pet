@@ -7,13 +7,15 @@ import type { IAccountStatus } from "../../shared/models/accountStatus";
 
 interface AuthContextType {
     account: IAccount | null;
+    accountStatus: IAccountStatus | null;
     token: string | null;
+
     login: (email: string, password: string) => void;
     logout: () => void;
+    
     setAccount: (account: IAccount | null) => void;
     loading: boolean;
     status: () => void;
-    accountStatus: IAccountStatus | null;
 }
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -61,6 +63,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 throw Error("Falha ao validar token");
             }
             setAccount(fetchAccount);
+            return fetchAccount.id;
         } catch (error) {
             throw error;
         }

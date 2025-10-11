@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { PrimaryButton } from "./PrimaryButton";
 import ProfileAvatar from "./ProfileAvatar";
 
-import avatarDefault from "../assets/images/avatar-default.png";
 import { AuthContext } from "../../features/auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -41,12 +40,14 @@ export default function ProfileMenu() {
   const { account, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const profileClick = () => {
-    navigate("/profile");
+  const profileClick = (accountId: string) => {
+    navigate(`/profile/${accountId}`);
   }
 
+  if (!account) return null;
+
   return (
-    <ProfileMenuContainer onClick={profileClick}>
+    <ProfileMenuContainer onClick={() => profileClick(account?.id)}>
       <ProfileAvatar avatar={account?.avatar} alt="avatar" />
       <p>{account?.name}</p>
       <PrimaryButton text="Sair" type="button" filled onClick={logout} />

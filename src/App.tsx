@@ -18,7 +18,7 @@ function App() {
       <NavigationRouter>
         <Route path="/" element={<HomeSection />} />
         <Route path="/login" element={<LoginSection />} />
-        <Route path="/profile" element={<ProfileSection />} />
+        <Route path="/profile/:username" element={<ProfileSection />} />
         <Route path="/comments" element={<PostPage />} />
         <Route path="/match" element={<MatchSection />} />
         <Route path="/register" element={<RegisterSection />} />

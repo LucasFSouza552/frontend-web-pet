@@ -13,36 +13,45 @@ import { PostsContext } from "../../post/postContext";
 import PostComponent from "../../post/components/postComponent"
 
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { ProfileContext } from "../profileContext";
 
 export default function ProfileSection() {
     const navigate = useNavigate();
 
     const { account, loading } = useContext(AuthContext);
+    const { account: currentProfile, accountStatus, loadProfile, loading: loadingProfile } = useContext(ProfileContext);
 
     if (!account && !loading) {
         navigate("/");
     }
+    
+    const profileAccountId = useParams().username;
+
+    useEffect(() => {
+        if (!profileAccountId) return
+        loadProfile(profileAccountId);
+    }, []);
+
 
     const { userPosts, refreshUserPosts, loadMoreUserPosts, hasMoreUserPosts, loadingUserPosts } = useContext(PostsContext);
     const observer = useRef<IntersectionObserver>(null);
 
-
     useEffect(() => {
-        refreshUserPosts(account?.id);
-    }, [account?.id]);
+        refreshUserPosts(profileAccountId);
+    }, [profileAccountId]);
 
     const lastPostRef = useCallback(
         (node: HTMLDivElement | null) => {
             if (observer.current) observer.current.disconnect();
             observer.current = new IntersectionObserver((entries) => {
                 if (entries[0].isIntersecting && hasMoreUserPosts) {
-                    loadMoreUserPosts(account?.id);
+                    loadMoreUserPosts(profileAccountId);
                 }
             });
             if (node) observer.current.observe(node);
         },
-        [hasMoreUserPosts, loadMoreUserPosts, account?.id, loadingUserPosts]
+        [hasMoreUserPosts, loadMoreUserPosts, profileAccountId, loadingUserPosts]
     );
 
     if (loading) {
@@ -55,7 +64,7 @@ export default function ProfileSection() {
 
             <SectionContent>
 
-                {account && <ProfileCard />}
+                {currentProfile && accountStatus && <ProfileCard account={currentProfile} accountStatus={accountStatus} />}
 
                 <PostContainer>
                     {<h2>Suas Publicações</h2>}

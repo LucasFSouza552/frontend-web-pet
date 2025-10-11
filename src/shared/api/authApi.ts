@@ -29,11 +29,3 @@ export async function getProfile(): Promise<IAccount> {
     }
 }
 
-export async function getStatusProfile() {
-    try {
-        const response = await api.get("/account/profile/status");
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-}

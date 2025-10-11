@@ -5,7 +5,7 @@ import { PostsContext } from "../postContext";
 
 
 import PostComponent from "../../post/components/postComponent"
-import { AuthContext } from "../../auth/AuthContext";
+import { AuthContext } from "../../auth/authContext";
 
 export default function PostPage() {
 

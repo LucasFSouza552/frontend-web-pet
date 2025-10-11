@@ -1,20 +1,11 @@
-import { useContext, useEffect } from "react";
-
 import background from "../../../shared/assets/images/background.png";
-
-
 import ProfileDetails from "./ProfileDetails";
 import ProfileAvatar from "../../../shared/components/ProfileAvatar";
-import { AuthContext } from "../../auth/AuthContext";
 import styled from "styled-components";
+import type { IAccountStatus } from "../../../shared/models/accountStatus";
+import type { IAccount } from "../../../shared/models/account";
 
-export default function ProfileCard() {
-
-    const { account, loading, status, accountStatus } = useContext(AuthContext);
-
-    useEffect(() => {
-        status();
-    }, []);
+export default function ProfileCard({ account, accountStatus }: { account: IAccount | null, accountStatus?: IAccountStatus | null }) {
 
     return (
         <ProfileContainer>
@@ -24,7 +15,7 @@ export default function ProfileCard() {
                 <ProfileDetails
                     account={account || null}
                     accountStatus={accountStatus}
-                     />
+                />
             </ProfileContent>
         </ProfileContainer>
     )
