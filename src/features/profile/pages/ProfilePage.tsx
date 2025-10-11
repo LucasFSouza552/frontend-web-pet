@@ -12,9 +12,17 @@ import { PostsContext } from "../../post/postContext";
 
 import PostComponent from "../../post/components/postComponent"
 
+import backgroundPage from "../../../shared/assets/images/background-page.jpg";
+import { useNavigate } from "react-router-dom";
+
 export default function ProfileSection() {
+    const navigate = useNavigate();
 
     const { account, loading } = useContext(AuthContext);
+
+    if(!account) {
+        navigate("/");
+    }
 
     const { posts, refreshPosts, loadMorePosts, hasMore, loading: loadingPosts } = useContext(PostsContext);
     const observer = useRef<IntersectionObserver>(null);
@@ -33,39 +41,51 @@ export default function ProfileSection() {
             });
             if (node) observer.current.observe(node);
         },
-        [hasMore, loadMorePosts, account?.id]
+        [hasMore, loadMorePosts, account?.id, loadingPosts]
     );
+
+    if (loading) {
+        return <DotLottieReact src={animationFile} autoplay loop style={{ width: "500px" }} />;
+    }
 
     return (
         <ProfileContainer>
             <HeaderComponent account={account} />
 
             <SectionContent>
-                {/* {!loading && <DotLottieReact src={animationFile} autoplay loop style={{ width: "500px" }} />} */}
 
                 {account && <ProfileCard />}
 
                 <PostContainer>
-                    {<h2>Posts</h2>}
+                    {<h2>Suas Publicações</h2>}
 
-                    {!loadingPosts && posts.length > 0 ? posts?.map((post: any, index: number) => {
+                    {posts.length > 0 && posts?.map((post: any, index: number) => {
                         if (index === posts.length - 1) {
-                            return <div ref={lastPostRef} key={post.id}><PostComponent post={post} /></div>;
+                            return <LastPostWrapper ref={lastPostRef} key={post.id}><PostComponent post={post} accountId={account?.id || ""} /></LastPostWrapper>;
                         }
-                        return <PostComponent key={post.id} post={post} />;
-                    }) :
-                        <DotLottieReact src={animationFile} autoplay loop style={{ width: "500px" }} />}
+                        return <PostComponent key={post.id} post={post} accountId={account?.id || ""} />;
+                    })}
                 </PostContainer>
             </SectionContent >
         </ProfileContainer>
     );
 }
 
+const LastPostWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
 const PostContainer = styled.div`
     width: 100%;
     flex-direction: column;
     align-items: center;
-    min-height: 100dvh;
+    flex-direction: column;
+    gap: 1rem;
+    display: flex;
+    padding: 1rem;
+    color: white;
 `;
 
 const ProfileContainer = styled.div`
@@ -80,5 +100,11 @@ const SectionContent = styled(Section)`
     display: flex;
     align-items: center;
     width: 100%;
-    flex-direction: column;
+    flex-direction: column; width: 100%;
+    height: 100%;
+    background-image: url(${backgroundPage});
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
 `;

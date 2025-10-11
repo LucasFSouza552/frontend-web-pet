@@ -8,5 +8,13 @@ export async function fetchPosts(accountId?: string, page?: number, limit?: numb
     } catch (error: any) {
         throw Error(error?.message);
     }
+}
 
+export async function ToggleLike(postId: string): Promise<Post> {
+    try {
+        const post = await postApi.toggleLike(postId);
+        return post;
+    } catch (error: any) {
+        throw Error(error?.message);
+    }
 }

@@ -1,6 +1,6 @@
 import { createContext, useState, type ReactNode, useEffect } from "react";
 import type { Post } from "../../shared/models/post";
-import { fetchPosts } from "./postService";
+import { fetchPosts, ToggleLike } from "./postService";
 
 
 interface PostsContextType {
@@ -9,7 +9,8 @@ interface PostsContextType {
     refreshPosts: (accountId?: string) => Promise<void>;
     loadMorePosts: (accountId?: string) => Promise<void>;
     hasMore: boolean;
-    loading: boolean
+    loading: boolean;
+    likePost: (postId: string) => Promise<void>;
 }
 
 export const PostsContext = createContext<PostsContextType>({} as PostsContextType);
@@ -24,10 +25,14 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(false);
 
 
+
+
+
     const loadMorePosts = async (accountId?: string) => {
         setLoading(true);
         try {
             const newPosts = await fetchPosts(accountId, page, limit);
+
             setPosts(prevPosts => [...prevPosts, ...newPosts]);
             setPage(prevPage => prevPage + 1);
             setHasMore(newPosts.length === limit);
@@ -52,12 +57,20 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
+    const likePost = async (postId: string) => {
+        try {
+            const post = await ToggleLike(postId);
+            setPosts(prevPosts => prevPosts.map(p => p.id === post.id ? post : p));
+        } catch (error) {
+            throw error;
+        }
+    };
+
     return (
         <PostsContext.Provider
             value={{
-                posts, setPosts, refreshPosts, loadMorePosts, hasMore, loading
-            }}
-        >
+                posts, setPosts, refreshPosts, loadMorePosts, hasMore, loading, likePost
+            }}>
             {children}
         </PostsContext.Provider>
     );

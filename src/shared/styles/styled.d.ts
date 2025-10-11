@@ -9,6 +9,7 @@ declare module "styled-components" {
       secondary?: string;
       tertiary: string;
       quarternary: string;
+      quinary: string;
       danger?: string;
       success?: string;
       warning?: string;

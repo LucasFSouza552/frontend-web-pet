@@ -8,7 +8,9 @@ const lightTheme: DefaultTheme = {
     primary: "#B648A0", // Rosa/Violeta
     secondary: "#363135", //  Cinza
     tertiary: "#61475C", 
-    quarternary: "#332630"
+    quarternary: "#332630",
+    quinary: "#4A3A46" 
+    
     
   },
 };
@@ -20,7 +22,9 @@ const darkTheme: DefaultTheme = {
     primary: "#B648A0",
     secondary: "#E3D9E8",
     tertiary: "#61475C",
-    quarternary: "#332630"
+    quarternary: "#332630",
+    quinary: "#4A3A46"
+
   },
 };
 

@@ -19,3 +19,12 @@ export async function getPosts(query: PostQuery = {}): Promise<Post[]> {
         throw error;
     }
 }
+
+export async function toggleLike(postId: string): Promise<Post> {
+    try {
+        const response = await api.post(`/post/${postId}/like`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
