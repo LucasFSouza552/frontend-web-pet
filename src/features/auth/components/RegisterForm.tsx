@@ -2,13 +2,11 @@ import { InputComponent } from "../../../shared/components/InputComponent";
 import { useState } from "react";
 import { styled } from "styled-components";
 
-const [formData, setFormData] = useState({ nome: "", sobrenome: "", email: "", endereço: "" });
-
-const handleInputChange = (type: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [type]: value }));
-}
-
-export default function Forms() {
+export default function RegisterForm() {
+    const [formData, setFormData] = useState({ nome: "", sobrenome: "", email: "", endereço: "" });
+    const handleInputChange = (type: string, value: string) => {
+        setFormData((prev) => ({ ...prev, [type]: value }));
+    }
     return (
         <FormContainer>
             <Container>
