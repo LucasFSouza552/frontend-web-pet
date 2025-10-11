@@ -11,9 +11,9 @@ export default function AuthForm() {
   const { credentials, error, handleChange, handleLogin } = useLoginController();
 
   return (
-    <Section>
+    <Section height={"100dvh - var(--header-height)"}>
+      <OndaBackground />
       <Wrapper>
-        <OndaBackground />
         <FormContainer onSubmit={handleLogin}>
           <h2>Entrar</h2>
           <p>Digite seu email e senha para continuar</p>
@@ -55,12 +55,13 @@ export default function AuthForm() {
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 100vh;
+  height: calc(100dvh - 80px);
   background-color: #ffffff;
   display: flex;
+  flex-direction: column;
+  gap: 15px;
   justify-content: center;
   align-items: center;
-  position: relative;
 `;
 
 const OndaBackground = styled.div`
@@ -71,7 +72,6 @@ const OndaBackground = styled.div`
   background-color: #b84ba0;
   border-top-left-radius: 60% 25%;
   border-top-right-radius: 60% 25%;
-  z-index: 1;
 `;
 
 const FormContainer = styled.form`
@@ -82,6 +82,7 @@ const FormContainer = styled.form`
   border-radius: 6px;
   padding: 40px 60px;
   display: flex;
+  justify-content: center;
   flex-direction: column;
   align-items: center;
   gap: 15px;

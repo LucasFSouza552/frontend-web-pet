@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../AuthContext";
+import { AuthContext } from "../authContext";
 
 export default function useLoginController() {
     const navigate = useNavigate();
@@ -8,6 +8,7 @@ export default function useLoginController() {
         email: "",
         password: ""
     });
+
     const [error, setError] = useState("");
 
     const handleChange = (key: string, value: string) => {
@@ -19,10 +20,10 @@ export default function useLoginController() {
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault();
         try {
-            login(credentials.email, credentials.password);
-            
+            const account = await login(credentials.email, credentials.password);
+
             setError("");
-            navigate("/dashboard");
+            navigate(`/profile/${account}`);
         } catch (error: unknown) {
             if (error instanceof Error) {
                 setError(error.message);

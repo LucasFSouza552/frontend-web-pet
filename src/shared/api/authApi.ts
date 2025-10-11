@@ -28,3 +28,4 @@ export async function getProfile(): Promise<IAccount> {
         throw error;
     }
 }
+

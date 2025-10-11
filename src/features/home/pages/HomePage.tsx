@@ -4,11 +4,15 @@ import { HeaderComponent } from "../../../shared/components/HeaderComponent";
 import styled from "styled-components";
 import FooterSection from "../components/FooterSection";
 import Assessment from "../components/Assessment";
+import { useContext } from "react";
+import { AuthContext } from "../../auth/authContext";
 
 export default function HomeSection() {
+
+  const { account } = useContext(AuthContext);
   return (
     <Container>
-      <HeaderComponent />
+      <HeaderComponent account={account} />
       <MainFlex>
         <IntroSection />
         <FeaturesSection />

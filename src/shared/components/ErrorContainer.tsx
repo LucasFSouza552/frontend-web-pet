@@ -2,14 +2,15 @@ import styled from "styled-components";
 import { ImWarning } from 'react-icons/im';
 
 export default function ErrorContainer({ message }: { message: string }) {
-    if (!message) return null;
-    return (
-        <ErrorCard>
-            <ImWarning color='red' />
-            <ErrorMessage>{message}</ErrorMessage>
-        </ErrorCard>
-    );
+  if (!message) return null;
+  return (
+    <ErrorCard>
+      <ImWarning color='red' />
+      <ErrorMessage>{message}</ErrorMessage>
+    </ErrorCard>
+  );
 }
+
 
 export const ErrorCard = styled.div`
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -25,6 +26,7 @@ export const ErrorCard = styled.div`
   border: 1px solid #ef665b;
   box-shadow: 0px 0px 5px -3px #111;
   gap: 5px;
+  z-index: 99999;
 `;
 
 export const ErrorMessage = styled.span`

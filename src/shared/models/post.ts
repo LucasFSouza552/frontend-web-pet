@@ -1,6 +1,6 @@
 
 interface ITypeAccounts {
-  id: string;
+  _id: string;
   name: string;
   avatar?: string;
   role: "user" | "admin" | "institution";
@@ -10,7 +10,7 @@ export interface Post {
     title: string;
     comments?: number;
     content: string;
-    images?: string[];
+    image?: string[];
     date: string;
     likes: string[];
     account: ITypeAccounts;

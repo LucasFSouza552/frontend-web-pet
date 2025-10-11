@@ -10,6 +10,7 @@ import CommunityPage from './features/home/components/CommunityPage';
 import { ThemeProvider } from './app/contexts/ThemeContext';
 import FAQSection from './features/support/pages/FAQPage';
 import RegisterSection from './features/auth/pages/RegisterPage';
+import PostPage from './features/post/pages/postPage';
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
       <NavigationRouter>
         <Route path="/" element={<HomeSection />} />
         <Route path="/login" element={<LoginSection />} />
-        <Route path="/dashboard" element={<ProfileSection />} />
+        <Route path="/profile/:username" element={<ProfileSection />} />
+        <Route path="/comments" element={<PostPage />} />
         <Route path="/match" element={<MatchSection />} />
         <Route path="/register" element={<RegisterSection />} />
         <Route path="/community" element={<CommunityPage />} />

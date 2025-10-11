@@ -1,79 +1,174 @@
-import styled from "styled-components"
+import styled, { css, keyframes } from "styled-components"
 import ProfileAvatar from "../../../shared/components/ProfileAvatar"
 import type { Post } from "../../../shared/models/post";
 
+import { FaHeart, FaShareAlt } from "react-icons/fa";
+import { BsChatFill } from "react-icons/bs";
+import { PostsContext } from "../postContext";
+import { useContext, useState } from "react";
+
+import AvatarDefault from "../../../shared/assets/images/avatar-default.png";
+
 interface PostCardProps {
     post: Post;
+    accountId?: string;
     onLike?: (postId: string) => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post }) => {
+const PostPictureContainer = ({ images }: { images: string[] }) => {
+    if (!images || images.length === 0) return null;
+    return (
+        <PictureContainer>
+            {images.map((image) => <PostPicture>
+                <img src={`http://localhost:3000/api/picture/${image}`} alt={image || ""}
+                    onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = AvatarDefault;
+                    }} />
+            </PostPicture>)}
+        </PictureContainer>
+    )
+}
+
+const PostCard: React.FC<PostCardProps> = ({ post, accountId }) => {
+
+    if (!post) return null;
+
+    const { likePost } = useContext(PostsContext);
+    const [animateLike, setAnimateLike] = useState(false);
+
+    const handleLike = () => {
+        if (!accountId) return;
+        setAnimateLike(true);
+        likePost(post.id);
+
+        setTimeout(() => setAnimateLike(false), 400);
+    }
 
     return (
         <PostContainer>
-
             <PostHeader>
                 <ProfileAvatar avatar={post.account.avatar || ""} alt={post.account.name} />
-                {/* Imagem do usuário */}
-                <ProfileAvatar avatar={post.account.avatar} alt="" />
                 <span>{post.account.name || "Unknown"}</span>
-                {/* Nome do usuário */}
-                {/* Data do post */}
             </PostHeader>
-            <div>
-                {/* Titulo do post */}
+            <PostContent>
                 <div>{post.title}</div>
-            </div>
-            <PictureContainer>
-                {/* Imagem do post */}
-                {post.images?.map((image) => <PostPicture>{image}</PostPicture>)}
-            </PictureContainer>
-            <div>
-                <div>
-                    {/* Likes */}
-                </div>
-                <div>
-                    {/* Comentarios */}
-                </div>
-                <div>
-                    {/* Compartilhar */}
-                </div>
-            </div>
-
+                <PostPictureContainer images={post.image || []} />
+            </PostContent>
+            <RowContainer>
+                <RowContainer className="no-select">
+                    <CircleIcon onClick={handleLike}>
+                        <HeartIcon $animate={animateLike} color={accountId && post.likes.includes(accountId) ? "red" : "white"} />
+                    </CircleIcon>
+                    {post.likes.length} Curtidas
+                </RowContainer>
+                <RowContainer onClick={() => { }}>
+                    <CircleIcon><BsChatFill /></CircleIcon>
+                    Comentar
+                </RowContainer>
+                <RowContainer onClick={() => { }}>
+                    <CircleIcon><FaShareAlt /></CircleIcon>
+                    Compartilhar
+                </RowContainer>
+            </RowContainer>
         </PostContainer>
     )
 }
 
 export default PostCard;
 
+const RowContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 70%;
+    min-width: 120px;
+`;
+
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+`;
+
+const CircleIcon = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: ${({ theme }) => theme.colors.quinary};
+    min-width: 30px;
+    gap: 5px;
+    height: 30px;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    
+`;
+
+const HeartIcon = styled(FaHeart) <{ $animate?: boolean }>`
+    color: red;
+    ${({ $animate }) =>
+        $animate &&
+        css`
+      animation: ${pulse} 0.4s ease-in-out;
+    `}
+`;
+
+
+
+
+const PostContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    background-color: ${({ theme }) => theme.colors.quinary};
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    padding: 10px;
+    gap: 5px;
+    
+`;
+
 const PictureContainer = styled.div`
     display: flex;
     overflow-x: auto;
     gap: 8px;
-    background-color: aqua;
     width: 100%;
     height: 300px;
-    
 `;
 
 const PostPicture = styled.div`
+width: 100%;
+height: 100%;
     
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+        border-radius: 5px;
+    }
 `;
 
 const PostContainer = styled.div`
-    border-radius: 12px;
+    /* border-radius: 20px; */
     height: auto;
-    background-color: red;
+    background-color: ${({ theme }) => theme.colors.quarternary};
     padding: 10px;
     display: flex;
     flex-direction: column;
-    
-`
+    max-width: 600px;
+    width: 100%;
+    gap: 5px;
+    color: white;
+`;
 
 const PostHeader = styled.div`
     display: flex;
     align-items: center;
     flex-direction: row;
     gap: 10px;
-`
-
+    background-color: ${({ theme }) => theme.colors.quinary};
+    padding: 8px;
+    border-radius: 50px;
+`;

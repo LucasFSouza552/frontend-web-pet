@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AuthContext } from "../../features/auth/AuthContext";
+import { AuthContext } from "../../features/auth/authContext";
 
 export function bufferToBase64(buffer: number[]): string {
     const binary = String.fromCharCode(...buffer);
