@@ -39,7 +39,7 @@ const UnorderedList = styled.ul`
 `;
 
 const Paragraph = styled.p`
-    width: 500px;
+    width: 700px;
     background-color: #61475C;
     border-radius: 0 0 15px 15px;
     padding: 20px
@@ -58,7 +58,8 @@ const ListItem = styled.li`
 
 const ListItemTitle = styled.h3`
     user-select: none;
-    width: 500px;
+    width: 700px;
+    text-align: center;
     cursor: pointer;
     background-color: #B648A0;
     border-radius: 15px 15px 0 0;
