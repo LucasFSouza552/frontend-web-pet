@@ -43,8 +43,7 @@ export default function AuthForm() {
           />
 
           <SmallText>
-            Não tem conta? <Link to="/PersonalizeForm">Clique aqui</Link>
-          </SmallText>
+            Não tem conta? <Link to="/register">Clique aqui</Link></SmallText>
         </FormContainer>
 
         <ErrorContainer message={error} />
