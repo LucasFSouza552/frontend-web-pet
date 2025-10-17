@@ -5,7 +5,8 @@ import { PostsContext } from "../postContext";
 
 
 import PostComponent from "../../post/components/postComponent"
-import { AuthContext } from "../../auth/authContext";
+import { AuthContext } from "../../auth/AuthContext";
+import PostComments from "../components/PostComments";
 
 export default function PostPage() {
 
@@ -19,9 +20,19 @@ export default function PostPage() {
 
     useEffect(() => {
         if (!id) return;
-        loadPostDetails(id).then(post => setPost(post));
+
+        loadPostDetails(id).then(post => {
+            console.log(post);
+            setPost(post);
+        });
     }, []);
 
-    return (<div>{post && <PostComponent post={post} accountId={account?.id} />}</div>)
+    if (!post) return (<div></div>);
+
+    return (
+        <div>
+            {<PostComponent post={post} accountId={account?.id} />}
+            {post?.comments && <PostComments comments={post.comments} />}
+        </div>)
 
 }

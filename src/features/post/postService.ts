@@ -27,3 +27,12 @@ export async function ToggleLike(postId: string): Promise<Post> {
         throw Error(error?.message);
     }
 }
+
+export async function addCommentService(postId: string, content: string) {
+    try {
+        const post = await postApi.addComment(postId, content);
+        return post;
+    } catch (error: any) {
+        throw Error(error?.message);
+    }
+}

@@ -1,6 +1,6 @@
 import { createContext, useState, type ReactNode } from "react";
 import type { Post } from "../../shared/models/post";
-import { fetchPostById, fetchPosts, ToggleLike } from "./postService";
+import { fetchPostById, fetchPosts, ToggleLike, addCommentService } from "./postService";
 
 
 
@@ -95,6 +95,15 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
             const post = await ToggleLike(postId);
             setPosts(prev => prev.map(p => (p.id === post.id ? post : p)));
             setUserPosts(prev => prev.map(p => (p.id === post.id ? post : p)));
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    const addComment = async (postId: string, content: string) => {
+        try {
+            const comment = await addCommentService(postId, content);
+            
         } catch (error) {
             throw error;
         }

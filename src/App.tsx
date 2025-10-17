@@ -19,7 +19,7 @@ function App() {
         <Route path="/" element={<HomeSection />} />
         <Route path="/login" element={<LoginSection />} />
         <Route path="/profile/:username" element={<ProfileSection />} />
-        <Route path="/comments" element={<PostPage />} />
+        <Route path="/post/:id" element={<PostPage />} />
         <Route path="/match" element={<MatchSection />} />
         <Route path="/register" element={<RegisterSection />} />
         <Route path="/community" element={<CommunityPage />} />

@@ -8,6 +8,7 @@ import { PostsContext } from "../postContext";
 import { useContext, useState } from "react";
 
 import AvatarDefault from "../../../shared/assets/images/avatar-default.png";
+import { useNavigate } from "react-router-dom";
 
 interface PostCardProps {
     post: Post;
@@ -30,7 +31,7 @@ const PostPictureContainer = ({ images }: { images: string[] }) => {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, accountId }) => {
-
+    const navigate = useNavigate();
     if (!post) return null;
 
     const { likePost } = useContext(PostsContext);
@@ -42,6 +43,11 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId }) => {
         likePost(post.id);
 
         setTimeout(() => setAnimateLike(false), 400);
+    }
+
+    const handleComments = (postId: string) => {
+        if (!accountId) return;
+        navigate(`/post/${postId}`);
     }
 
     return (
@@ -61,7 +67,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId }) => {
                     </CircleIcon>
                     {post.likes.length} Curtidas
                 </RowContainer>
-                <RowContainer onClick={() => { }}>
+                <RowContainer onClick={() => handleComments(post.id)}>
                     <CircleIcon><BsChatFill /></CircleIcon>
                     Comentar
                 </RowContainer>
