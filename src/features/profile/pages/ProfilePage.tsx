@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef } from "react";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 import animationFile from "@/shared/assets/lottie/loading.lottie?url";
@@ -25,7 +25,7 @@ export default function ProfileSection() {
     if (!account && !loading) {
         navigate("/");
     }
-    
+
     const profileAccountId = useParams().username;
 
     useEffect(() => {
@@ -70,10 +70,15 @@ export default function ProfileSection() {
                     {<h2>Suas Publicações</h2>}
 
                     {userPosts.length > 0 && userPosts?.map((post: any, index: number) => {
-                        if (index === userPosts.length - 1) {
-                            return <LastPostWrapper ref={lastPostRef} key={post.id}><PostComponent post={post} accountId={account?.id || ""} /></LastPostWrapper>;
-                        }
-                        return <PostComponent key={post.id} post={post} accountId={account?.id || ""} />;
+                        const isLast = index === userPosts.length - 1;
+
+                        const Wrapper = isLast ? LastPostWrapper : React.Fragment;
+
+                        return (
+                            <Wrapper ref={isLast ? lastPostRef : null} key={post.id}>
+                                <PostComponent key={post.id} post={post} accountId={account?.id || ""} />
+                            </Wrapper>
+                        );
                     })}
                 </PostContainer>
             </SectionContent >

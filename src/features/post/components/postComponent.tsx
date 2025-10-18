@@ -9,6 +9,7 @@ import { useContext, useState } from "react";
 
 import AvatarDefault from "../../../shared/assets/images/avatar-default.png";
 import { useNavigate } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 interface PostCardProps {
     post: Post;
@@ -21,7 +22,7 @@ const PostPictureContainer = ({ images }: { images: string[] }) => {
     return (
         <PictureContainer>
             {images.map((image) => <PostPicture>
-                <img src={`http://localhost:3000/api/picture/${image}`} alt={image || ""}
+                <img src={`${apiUrl}/api/picture/${image}`} alt={image || ""}
                     onError={(e) => {
                         (e.currentTarget as HTMLImageElement).src = AvatarDefault;
                     }} />
@@ -49,11 +50,10 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId }) => {
         if (!accountId) return;
         navigate(`/post/${postId}`);
     }
-
     return (
         <PostContainer>
             <PostHeader>
-                <ProfileAvatar avatar={post.account.avatar || ""} alt={post.account.name} />
+                <ProfileAvatar avatar={post.account.avatar} alt={post.account.name} />
                 <span>{post.account.name || "Unknown"}</span>
             </PostHeader>
             <PostContent>
@@ -65,13 +65,13 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId }) => {
                     <CircleIcon onClick={handleLike}>
                         <HeartIcon $animate={animateLike} color={accountId && post.likes.includes(accountId) ? "red" : "white"} />
                     </CircleIcon>
-                    {post.likes.length} Curtidas
+                    {post.likes.length || 0} Curtidas
                 </RowContainer>
-                <RowContainer onClick={() => handleComments(post.id)}>
+                <RowContainer className="no-select" onClick={() => handleComments(post.id)}>
                     <CircleIcon><BsChatFill /></CircleIcon>
-                    Comentar
+                    Comentários
                 </RowContainer>
-                <RowContainer onClick={() => { }}>
+                <RowContainer className="no-select" onClick={() => { }}>
                     <CircleIcon><FaShareAlt /></CircleIcon>
                     Compartilhar
                 </RowContainer>

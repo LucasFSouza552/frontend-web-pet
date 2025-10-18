@@ -1,3 +1,4 @@
+import type IComment from "../models/Comments";
 import type { Post } from "../models/post";
 import buildQuery from "../utils/BuilderQuery";
 
@@ -40,9 +41,19 @@ export async function getPostById(id: string) {
 
 export async function addComment(postId: string, content: string) {
     try {
-        const response = await api.post(`/post/${postId}`, { content });
+        const response = await api.post(`/comment/${postId}`, { content });
         return response.data;
     } catch (error) {
         throw error;
     }
 }
+export async function getComments(postId: string, query: PostQuery = {}): Promise<IComment[] | null> {
+    try {
+        const queryString = buildQuery(query);
+        const response = await api.get(`/comment/post/${postId}${queryString}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+

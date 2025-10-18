@@ -1,9 +1,7 @@
 import { createContext, useState, type ReactNode } from "react";
 import type { Post } from "../../shared/models/post";
-import { fetchPostById, fetchPosts, ToggleLike, addCommentService } from "./postService";
-
-
-
+import { fetchPostById, fetchPosts, ToggleLike, addCommentService, fetchComments } from "./postService";
+import type IComment from "../../shared/models/Comments";
 
 export const PostsContext = createContext<PostsContextType>({} as PostsContextType);
 
@@ -16,17 +14,49 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     const [hasMorePosts, setHasMorePosts] = useState(true);
     const [loadingPosts, setLoadingPosts] = useState(false);
 
+
     // Feed do usuário
     const [userPosts, setUserPosts] = useState<Post[]>([]);
     const [userPage, setUserPage] = useState(1);
     const [hasMoreUserPosts, setHasMoreUserPosts] = useState(true);
     const [loadingUserPosts, setLoadingUserPosts] = useState(false);
 
+    const getPostById = async (id: string) => {
+        try {
+            const post = posts.find(p => p.id === id);
+            if (!post) {
+                const fPost = await fetchPostById(id);
+                setPosts(prev => [...prev, fPost]);
+                return fPost;
+            }
+            return post;
+        } catch (error) {
+            throw error;
+        }
+    }
 
     const loadPostDetails = async (id: string) => {
         try {
-            const post = await fetchPostById(id);
-            return post;
+            const existingPost = posts.find(p => p.id === id);
+            if (existingPost) {
+                return existingPost;
+            }
+
+            const fetchedPost = await fetchPostById(id);
+
+            setPosts(prev => [...prev, fetchedPost]);
+
+            return fetchedPost;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const loadPostComments = async (postId: string, page: number = 1) => {
+        try {
+            const comments = await fetchComments({ postId, page, limit: LIMIT });
+            if (!comments) return [];
+            return comments;
         } catch (error) {
             throw error;
         }
@@ -59,7 +89,6 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
             setLoadingUserPosts(false);
         }
     }
-
 
     const loadMorePosts = async () => {
         setLoadingPosts(true);
@@ -95,6 +124,8 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
             const post = await ToggleLike(postId);
             setPosts(prev => prev.map(p => (p.id === post.id ? post : p)));
             setUserPosts(prev => prev.map(p => (p.id === post.id ? post : p)));
+            console.log("Atualizando post:", post);
+            return post;
         } catch (error) {
             throw error;
         }
@@ -103,23 +134,31 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     const addComment = async (postId: string, content: string) => {
         try {
             const comment = await addCommentService(postId, content);
-            
-        } catch (error) {
-            throw error;
-        }
-    };
+            setPosts(prev => prev.map(p => {
+                const comments = p.comments ? [...p.comments, comment] : [comment];
+                
+                return { ...p, comments };
+            }));
 
-    return (
-        <PostsContext.Provider
-            value={{
-                posts, setPosts, refreshPosts, loadMorePosts, loadingPosts,
-                userPosts, setUserPosts, refreshUserPosts, loadMoreUserPosts, loadingUserPosts,
-                hasMorePosts, hasMoreUserPosts, likePost,
-                loadPostDetails
-            }}>
-            {children}
-        </PostsContext.Provider>
-    );
+            return comment;
+    } catch (error) {
+        throw error;
+    }
+};
+
+return (
+    <PostsContext.Provider
+        value={{
+            posts, setPosts, refreshPosts, loadMorePosts, loadingPosts,
+            userPosts, setUserPosts, refreshUserPosts, loadMoreUserPosts, loadingUserPosts,
+            hasMorePosts, hasMoreUserPosts, likePost,
+            loadPostDetails,
+            loadPostComments, addComment,
+            getPostById
+        }}>
+        {children}
+    </PostsContext.Provider>
+);
 };
 
 
@@ -143,5 +182,10 @@ interface PostsContextType {
     loadingPosts: boolean;
     loadingUserPosts: boolean;
 
-    likePost: (postId: string) => Promise<void>;
+    likePost: (post: string) => Promise<Post>;
+
+    loadPostComments: (id: string, page: number) => Promise<IComment[] | null>;
+    addComment: (postId: string, content: string) => Promise<IComment>;
+
+    getPostById: (id: string) => Promise<Post>;
 }
