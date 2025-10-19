@@ -1,5 +1,5 @@
 import type IComment from "../models/Comments";
-import type { Post } from "../models/post";
+import type { IPost } from "../models/Post";
 import buildQuery from "../utils/BuilderQuery";
 
 import api from "./http";
@@ -11,7 +11,7 @@ interface PostQuery {
     orderBy?: string;
     order?: "asc" | "desc";
 }
-export async function getPosts(query: PostQuery = {}): Promise<Post[]> {
+export async function getPosts(query: PostQuery = {}): Promise<IPost[]> {
     try {
         const queryString = buildQuery(query);
         const response = await api.get(`/post/posts/with-author${queryString}`);
@@ -21,7 +21,7 @@ export async function getPosts(query: PostQuery = {}): Promise<Post[]> {
     }
 }
 
-export async function toggleLike(postId: string): Promise<Post> {
+export async function toggleLike(postId: string): Promise<IPost> {
     try {
         const response = await api.post(`/post/${postId}/like`);
         return response.data;

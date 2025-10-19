@@ -3,7 +3,7 @@ import ProfileDetails from "./ProfileDetails";
 import ProfileAvatar from "../../../shared/components/ProfileAvatar";
 import styled from "styled-components";
 import type { IAccountStatus } from "../../../shared/models/accountStatus";
-import type { IAccount } from "../../../shared/models/account";
+import type { IAccount } from "../../../shared/models/Account";
 
 export default function ProfileCard({ account, accountStatus }: { account: IAccount | null, accountStatus?: IAccountStatus | null }) {
 

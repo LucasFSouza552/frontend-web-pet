@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom"
 import { PrimaryButton } from "./PrimaryButton";
-import type { IAccount } from "../models/account";
+import type { IAccount } from "../models/Account";
 import ProfileMenu from "./ProfileMenu";
 import { styled } from "styled-components";
 

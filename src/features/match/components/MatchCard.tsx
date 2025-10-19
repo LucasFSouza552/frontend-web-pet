@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import type IPet from "../../../shared/models/pet";
+import type IPet from "../../../shared/models/Pet";
 
 export default function MatchCard({ Pet }: { Pet: IPet }) {
     return (

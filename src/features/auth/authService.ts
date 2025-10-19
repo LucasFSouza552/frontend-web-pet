@@ -1,4 +1,4 @@
-import type { IAccount } from "../../shared/models/account";
+import type { IAccount } from "../../shared/models/Account";
 import * as authApi from "../../shared/api/authApi";
 import { removeStorage, saveStorage } from "../../shared/utils/storageUtils";
 

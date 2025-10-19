@@ -15,6 +15,7 @@ import PostComponent from "../../post/components/postComponent"
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProfileContext } from "../profileContext";
+import PostsContainer from "../../post/components/PostsContainer";
 
 export default function ProfileSection() {
     const navigate = useNavigate();
@@ -61,47 +62,20 @@ export default function ProfileSection() {
     return (
         <ProfileContainer>
             <HeaderComponent account={account} />
-
+            
             <SectionContent>
 
                 {currentProfile && accountStatus && <ProfileCard account={currentProfile} accountStatus={accountStatus} />}
-
-                <PostContainer>
-                    {<h2>Suas Publicações</h2>}
-
-                    {userPosts.length > 0 && userPosts?.map((post: any, index: number) => {
-                        const isLast = index === userPosts.length - 1;
-
-                        const Wrapper = isLast ? LastPostWrapper : React.Fragment;
-
-                        return (
-                            <Wrapper ref={isLast ? lastPostRef : null} key={post.id}>
-                                <PostComponent key={post.id} post={post} accountId={account?.id || ""} />
-                            </Wrapper>
-                        );
-                    })}
-                </PostContainer>
+                <PostsContainer account={account} posts={userPosts} title={"Suas publicações"} refCallback={lastPostRef} />
+               
             </SectionContent >
         </ProfileContainer>
     );
 }
 
-const LastPostWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-`;
 
-const PostContainer = styled.div`
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    flex-direction: column;
-    gap: 1rem;
-    display: flex;
-    padding: 1rem;
-    color: white;
-`;
+
+
 
 const ProfileContainer = styled.div`
     display: flex;

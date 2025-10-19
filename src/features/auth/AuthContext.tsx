@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
-import type { IAccount } from "../../shared/models/account";
+import type { IAccount } from "../../shared/models/Account";
 import { getStorage } from "../../shared/utils/storageUtils";
 import { authenticateUser, fetchLogout, tokenValidate, AccountStatus } from "./authService";
 import { ThrowError } from "../../shared/Error/ThrowError";

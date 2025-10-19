@@ -1,12 +1,12 @@
 import type IComment from "./Comments";
 
 export interface ITypeAccounts {
-  _id: string;
+  id: string;
   name: string;
   avatar?: string;
   role: "user" | "admin" | "institution";
 }
-export interface Post {
+export interface IPost {
   id: string;
   title: string;
   comments?: IComment[];

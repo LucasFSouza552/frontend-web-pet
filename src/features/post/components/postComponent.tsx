@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from "styled-components"
 import ProfileAvatar from "../../../shared/components/ProfileAvatar"
-import type { Post } from "../../../shared/models/post";
+import type { IPost } from "../../../shared/models/Post";
 
 import { FaHeart, FaShareAlt } from "react-icons/fa";
 import { BsChatFill } from "react-icons/bs";
@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 interface PostCardProps {
-    post: Post;
+    post: IPost;
     accountId?: string;
     onLike?: (postId: string) => void;
 }

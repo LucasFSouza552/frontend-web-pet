@@ -27,6 +27,8 @@ const GlobalStyle = createGlobalStyle`
 
   /* Estilo global */
   body {
+    
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
     font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background: ${({ theme }) => theme.colors.bg};
     color: ${({ theme }) => theme.colors.text};

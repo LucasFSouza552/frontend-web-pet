@@ -1,6 +1,6 @@
 
 import { ThrowError } from "../Error/ThrowError";
-import type { IAccount } from "../models/account";
+import type { IAccount } from "../models/Account";
 import api from "./http";
 
 export interface LoginResponse {

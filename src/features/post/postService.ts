@@ -1,8 +1,8 @@
 import * as postApi from "../../shared/api/postApi";
 import type IComment from "../../shared/models/Comments";
-import type { Post } from "../../shared/models/post";
+import type { IPost } from "../../shared/models/Post";
 
-export async function fetchPosts({ account, page, limit }: { account?: string, page?: number, limit?: number }): Promise<Post[]> {
+export async function fetchPosts({ account, page, limit }: { account?: string, page?: number, limit?: number }): Promise<IPost[]> {
     try {
         const post = await postApi.getPosts({ account, limit, page, orderBy: "createdAt" });
         return post;
@@ -20,7 +20,7 @@ export async function fetchPostById(id: string) {
     }
 }
 
-export async function ToggleLike(postId: string): Promise<Post> {
+export async function ToggleLike(postId: string): Promise<IPost> {
     try {
         const post = await postApi.toggleLike(postId);
         return post;

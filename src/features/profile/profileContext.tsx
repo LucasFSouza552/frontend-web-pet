@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import type { IAccount } from "../../shared/models/account";
+import type { IAccount } from "../../shared/models/Account";
 
 import { fetchAccountById, fetchStatusProfile } from "./profileService";
 import type { IAccountStatus } from "../../shared/models/accountStatus";

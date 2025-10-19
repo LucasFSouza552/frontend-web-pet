@@ -1,4 +1,4 @@
-import type { IAccount } from "./account";
+import type { IAccount } from "./Account";
 
 
 export default interface IComment {

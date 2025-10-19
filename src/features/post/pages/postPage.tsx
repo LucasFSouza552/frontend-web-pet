@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import type { Post } from "../../../shared/models/post";
+import type { IPost } from "../../../shared/models/Post";
 import { PostsContext } from "../postContext";
 
 import PostComponent from "../../post/components/postComponent"
@@ -16,7 +16,7 @@ export default function PostPage() {
     const { account } = useContext(AuthContext);
     const { loadPostDetails, loadPostComments, posts, addComment } = useContext(PostsContext);
 
-    const [post, setPost] = useState<Post | null>(null);
+    const [post, setPost] = useState<IPost | null>(null);
 
     const { id } = useParams<{ id: string }>();
 
@@ -53,7 +53,7 @@ export default function PostPage() {
     useEffect(() => {
         if (!id) return;
         setLoadingPost(true);
-        loadPostDetails(id).then((p: Post) => {
+        loadPostDetails(id).then((p: IPost) => {
             if (!p) return;
             setPost((prevPost) => prevPost ? { ...p, comments: [...(p.comments || []), ...(prevPost.comments || [])] } : p);
         })
