@@ -7,10 +7,7 @@ interface PetContextProps {
     selectedPet: IPet | null;
     loadingPets: boolean;
     hasMorePets: boolean;
-    loadPets: () => Promise<void>;
-    loadMorePets: () => Promise<void>;
-    selectPet: (pet: IPet | null) => void;
-    refreshPets: () => Promise<void>;
+    setSelectedPet: (pet: IPet | null) => void;
 }
 
 export const PetsContext = createContext<PetContextProps>({} as PetContextProps)
@@ -22,14 +19,13 @@ export function PetsProvider({ children }: { children: React.ReactNode }) {
     const [loadingPets, setLoadingPets] = useState(false);
     const [hasMorePets, setHasMorePets] = useState(false);
 
-    
-
     return (
         <PetsContext.Provider value={{
             pets,
             selectedPet,
             loadingPets,
             hasMorePets,
+            setSelectedPet
         }}>{children}</PetsContext.Provider>
     )
 }

@@ -18,7 +18,6 @@ export default function MatchSection() {
         loadFeed();
     }, []);
 
-    console.log(petFeed);
 
     return (
         <Container>
