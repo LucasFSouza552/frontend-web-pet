@@ -1,7 +1,7 @@
 import { createContext, useState, type ReactNode } from "react";
-import type { Post } from "../../shared/models/post";
 import { fetchPostById, fetchPosts, ToggleLike, addCommentService, fetchComments } from "./postService";
 import type IComment from "../../shared/models/Comments";
+import type { IPost } from "../../shared/models/Post";
 
 export const PostsContext = createContext<PostsContextType>({} as PostsContextType);
 
@@ -9,14 +9,14 @@ const LIMIT = 10;
 
 export const PostsProvider = ({ children }: { children: ReactNode }) => {
     // Feed geral
-    const [posts, setPosts] = useState<Post[]>([]);
+    const [posts, setPosts] = useState<IPost[]>([]);
     const [page, setPage] = useState(1);
     const [hasMorePosts, setHasMorePosts] = useState(true);
     const [loadingPosts, setLoadingPosts] = useState(false);
 
 
     // Feed do usuário
-    const [userPosts, setUserPosts] = useState<Post[]>([]);
+    const [userPosts, setUserPosts] = useState<IPost[]>([]);
     const [userPage, setUserPage] = useState(1);
     const [hasMoreUserPosts, setHasMoreUserPosts] = useState(true);
     const [loadingUserPosts, setLoadingUserPosts] = useState(false);
@@ -163,10 +163,10 @@ return (
 
 
 interface PostsContextType {
-    posts: Post[];
-    userPosts: Post[];
-    setPosts: (posts: Post[]) => void;
-    setUserPosts: (usersPosts: Post[]) => void;
+    posts: IPost[];
+    userPosts: IPost[];
+    setPosts: (posts: IPost[]) => void;
+    setUserPosts: (usersPosts: IPost[]) => void;
 
     refreshPosts: (accountId?: string) => Promise<void>;
     refreshUserPosts: (accountId?: string) => Promise<void>;
@@ -174,7 +174,7 @@ interface PostsContextType {
     loadMorePosts: (accountId?: string) => Promise<void>;
     loadMoreUserPosts: (accountId?: string) => Promise<void>;
 
-    loadPostDetails: (id: string) => Promise<Post>;
+    loadPostDetails: (id: string) => Promise<IPost>;
 
     hasMorePosts: boolean;
     hasMoreUserPosts: boolean;
@@ -182,10 +182,10 @@ interface PostsContextType {
     loadingPosts: boolean;
     loadingUserPosts: boolean;
 
-    likePost: (post: string) => Promise<Post>;
+    likePost: (post: string) => Promise<IPost>;
 
     loadPostComments: (id: string, page: number) => Promise<IComment[] | null>;
     addComment: (postId: string, content: string) => Promise<IComment>;
 
-    getPostById: (id: string) => Promise<Post>;
+    getPostById: (id: string) => Promise<IPost>;
 }

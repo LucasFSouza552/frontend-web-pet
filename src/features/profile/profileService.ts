@@ -17,3 +17,12 @@ export async function fetchStatusProfile(accountId: string) {
         throw error;
     }
 }
+
+export async function fetchFeed() {
+    try {
+        const response = await accountApi.getFeed();
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

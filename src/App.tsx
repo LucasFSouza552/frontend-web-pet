@@ -1,16 +1,16 @@
 import NavigationRouter from './shared/utils/NavigationRouter'
-import HomeSection from './features/home/pages/HomePage'
+import HomeSection from './features/home/views/HomePage'
 
 import { Route } from 'react-router-dom';
 
-import LoginSection from './features/auth/pages/LoginPage';
-import ProfileSection from './features/profile/pages/ProfilePage';
-import MatchSection from './features/match/pages/matchPage';
+import LoginSection from './features/auth/views/LoginPage';
+import ProfileSection from './features/profile/views/ProfilePage';
+import MatchSection from './features/match/views/matchPage';
 import { ThemeProvider } from './app/contexts/ThemeContext';
-import FAQSection from './features/support/pages/FAQPage';
-import RegisterSection from './features/auth/pages/RegisterPage';
-import PostPage from './features/post/pages/postPage';
-import CommunityPage from './features/community/pages/CommunityPage';
+import FAQSection from './features/support/views/FAQPage';
+import RegisterSection from './features/auth/views/RegisterPage';
+import PostPage from './features/post/views/postPage';
+import CommunityPage from './features/community/views/CommunityPage';
 import CommunityPag  from './features/home/components/CommunityPage';
 
 function App() {

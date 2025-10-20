@@ -5,4 +5,5 @@ export default interface IAddress {
     city: string;
     cep: string;
     state: string;
+    neighborhood: string;
 }

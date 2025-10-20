@@ -1,4 +1,5 @@
 import type { ITypeAccounts } from "../types/ITypeAccounts";
+import type { IAccount } from "./Account";
 
 export default interface IPet {
     id: string;
@@ -10,7 +11,7 @@ export default interface IPet {
     images: string[];
     description?: string;
     adopted: boolean;
-    account: ITypeAccounts;
+    account: IAccount;
     adoptedAt?: Date;
     createdAt: string;
     updatedAt: string;

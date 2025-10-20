@@ -17,4 +17,16 @@ export async function getStatusProfile(accountId: string) {
     } catch (error) {
         throw error;
     }
+
+}
+
+export async function getFeed() {
+    try {
+        console.log("pegando feed")
+        const response = await api.get(`/account/feed`);
+        console.log(response)
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 }
