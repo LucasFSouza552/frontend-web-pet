@@ -16,7 +16,7 @@ export const InputComponent = ({ label, placeholder, value, onChange, type }: In
                 type={type}
                 placeholder={placeholder}
                 value={value}
-                onChange={(e) => onChange(type, e.target.value)} />
+                onChange={(e) => onChange(label, e.target.value)} />
         </Input>
     );
 }

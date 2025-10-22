@@ -13,6 +13,7 @@ export default function useRegisterController() {
 
     const handleChange = (key: string, value: string) => {
         setCredentials(prev => ({ ...prev, [key]: value }));
+        console.log(credentials);
     };
 
     return {

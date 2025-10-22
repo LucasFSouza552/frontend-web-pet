@@ -1,22 +1,19 @@
 import { InputComponent } from "../../../shared/components/InputComponent";
-import useRegisterController from "../controllers/useRegisterController";
 
-export default function Step1() {
-    const { credentials, handleChange } = useRegisterController();
-
+export default function Step1({ name, age, handleChange }: { name: string, age: number, handleChange: (key: string, value: string) => void }) {
     return (
         <>
             <InputComponent
-                label="Nome"
+                label="name"
                 type="text"
                 placeholder="Insira o nome do animal"
-                value={credentials.name}
+                value={name}
                 onChange={handleChange} />
             <InputComponent
-                label="Idade"
+                label="age"
                 type="number"
                 placeholder="Insira a idade"
-                value={credentials.age?.toString() ?? ''}
+                value={age?.toString() ?? ''}
                 onChange={handleChange} />
         </>
 

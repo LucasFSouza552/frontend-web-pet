@@ -1,21 +1,20 @@
 import { InputComponent } from "../../../shared/components/InputComponent";
-import useRegisterController from "../controllers/useRegisterController";
 
-export default function Step3() {
-    const { credentials, handleChange } = useRegisterController();
-
-    <>
-        <InputComponent 
-            label="Peso"
-            type="number"
-            placeholder="Digite o peso do animal"
-            value={credentials.weight}
-            onChange={handleChange}/>
-        <InputComponent 
-            label="Descrição"
-            type="textarea"
-            placeholder="Descreva mais sobre o animal!"
-            value={credentials.description}
-            onChange={handleChange}/>
-    </>
+export default function Step3({ weight, description, handleChange }: { weight: string, description: string, handleChange: (key: string, value: string) => void }) {
+    return (
+        <>
+            <InputComponent 
+                label="Peso"
+                type="number"
+                placeholder="Digite o peso do animal"
+                value={weight}
+                onChange={handleChange}/>
+            <InputComponent 
+                label="Descrição"
+                type="textarea"
+                placeholder="Descreva mais sobre o animal!"
+                value={description}
+                onChange={handleChange}/>
+        </>
+    );
 }
