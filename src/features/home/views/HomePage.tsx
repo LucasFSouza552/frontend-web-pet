@@ -6,6 +6,7 @@ import FooterSection from "../components/FooterSection";
 import Assessment from "../components/Assessment";
 import { useContext } from "react";
 import { AuthContext } from "../../auth/AuthContext";
+import GallerySection from "../components/GallerySection";
 
 export default function HomeSection() {
 
@@ -16,6 +17,7 @@ export default function HomeSection() {
       <MainFlex>
         <IntroSection />
         <FeaturesSection />
+        <GallerySection />
         <Assessment />
         <FooterSection />
       </MainFlex>
