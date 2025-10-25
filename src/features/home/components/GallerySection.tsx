@@ -1,16 +1,17 @@
+import { FaHeart } from "react-icons/fa";
 import styled from "styled-components";
 
 const pets = [
   { name: "Rex", img: "/dog1.png" },
   { name: "Luna", img: "/dog2.png" },
   { name: "Bolt", img: "/dog3.png" },
-  { name: "Mimi", img: "/dog4.png" }, 
+  { name: "Mimi", img: "/dog4.png" },
 ];
 
 export default function GallerySection() {
   return (
     <Section>
-      <Title>Amigos esperando por um lar ❤️</Title>
+      <Title>Amigos esperando por um lar <FaHeart color="red" /></Title>
       <Grid>
         {pets.map((p, i) => (
           <Card key={i}>
@@ -32,6 +33,12 @@ const Section = styled.section`
 const Title = styled.h2`
   color: #b84ba0;
   margin-bottom: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
 `;
 
 const Grid = styled.div`
