@@ -22,10 +22,10 @@ export default function PostComments({ comments, lastCommentRef }: PostCommentsP
                         <CommentArea>
 
                             <CommentAvatar src={
-                                comment.account.avatar ? `${apiUrl}/api/picture/${comment.account.avatar}` : defaultAvatar} alt="" />
+                                comment?.account?.avatar ? `${apiUrl}/api/picture/${comment.account.avatar}` : defaultAvatar} alt="" />
                             <div>
                                 <AvatarContainer>
-                                    <p>{comment.account.name}</p>
+                                    <p>{comment.account?.name}</p>
                                 </AvatarContainer>
                                 <CommentContent>{comment.content}</CommentContent>
 

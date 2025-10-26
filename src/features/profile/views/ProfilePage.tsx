@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef } from "react";
+import { useCallback, useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 import animationFile from "@/shared/assets/lottie/loading.lottie?url";
@@ -10,18 +10,16 @@ import { AuthContext } from "../../auth/AuthContext";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { PostsContext } from "../../post/postContext";
 
-import PostComponent from "../../post/components/postComponent"
-
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProfileContext } from "../profileContext";
-import PostsContainer from "../../post/components/PostsContainer";
+import PostsContainerList from "../../post/components/PostsContainerList";
 
 export default function ProfileSection() {
     const navigate = useNavigate();
 
     const { account, loading } = useContext(AuthContext);
-    const { account: currentProfile, accountStatus, loadProfile, loading: loadingProfile } = useContext(ProfileContext);
+    const { account: currentProfile, accountStatus, loadProfile } = useContext(ProfileContext);
 
     if (!account && !loading) {
         navigate("/");
@@ -62,12 +60,12 @@ export default function ProfileSection() {
     return (
         <ProfileContainer>
             <HeaderComponent account={account} />
-            
+
             <SectionContent>
 
                 {currentProfile && accountStatus && <ProfileCard account={currentProfile} accountStatus={accountStatus} />}
-                <PostsContainer account={account} posts={userPosts} title={"Suas publicações"} refCallback={lastPostRef} />
-               
+                <PostsContainerList account={account} posts={userPosts} title={"Suas publicações"} refCallback={lastPostRef} />
+
             </SectionContent >
         </ProfileContainer>
     );

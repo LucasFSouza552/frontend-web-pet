@@ -1,4 +1,5 @@
 import type IAddress from "../interfaces/IAddress";
+import type { IAccountAchievement } from "./AccountAchievement";
 
 export interface IAccount {
     id: string;
@@ -13,4 +14,6 @@ export interface IAccount {
     avatar?: string;
     createdAt?: string;
     updatedAt?: string;
+    achievements?: IAccountAchievement[]
+    postCount?: number
 }

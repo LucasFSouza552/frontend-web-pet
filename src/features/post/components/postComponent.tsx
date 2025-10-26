@@ -9,12 +9,17 @@ import { useContext, useState } from "react";
 
 import AvatarDefault from "../../../shared/assets/images/avatar-default.png";
 import { useNavigate } from "react-router-dom";
+import { HiDotsVertical } from "react-icons/hi";
+import SmallProfile from "../../../shared/components/SmallProfile";
+import type { IAccount } from "../../../shared/models/Account";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 interface PostCardProps {
     post: IPost;
     accountId?: string;
     onLike?: (postId: string) => void;
+    handleOptions: (postId: string) => void
 }
 
 const PostPictureContainer = ({ images }: { images: string[] }) => {
@@ -31,12 +36,13 @@ const PostPictureContainer = ({ images }: { images: string[] }) => {
     )
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, accountId }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions }) => {
     const navigate = useNavigate();
     if (!post) return null;
 
     const { likePost } = useContext(PostsContext);
     const [animateLike, setAnimateLike] = useState(false);
+    const [showSmallProfile, setShowSmallProfile] = useState(false);
 
     const handleLike = () => {
         if (!accountId) return;
@@ -49,14 +55,30 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId }) => {
     const handleComments = (postId: string) => {
         if (!accountId) return;
         navigate(`/post/${postId}`);
+    }   
+
+    const handleProfile = (accountId: string) => {
+        navigate(`/profile/${accountId}`);
     }
+
+    const handleSmallProfile = () => {
+        setShowSmallProfile(!showSmallProfile);
+    }
+
     return (
         <PostContainer>
-            <PostHeader>
-                <ProfileAvatar avatar={post.account.avatar} alt={post.account.name} />
-                <span>{post.account.name || "Unknown"}</span>
-            </PostHeader>
             <PostContent>
+                <PostHeader className="no-select">
+                    <PostProfileContainer onMouseEnter={handleSmallProfile} onMouseLeave={handleSmallProfile} onClick={() => handleProfile(post.account.id)}>
+                        <ProfileAvatar avatar={post.account.avatar} alt={post.account.name} />
+                        <span>{post.account.name || "Unknown"}</span>   
+                        {showSmallProfile && post.account && <SmallProfile account={post.account as IAccount} />}
+                    </PostProfileContainer>
+                    <PostOptions onClick={() => handleOptions(post.id)}>
+                        <HiDotsVertical size={25} />
+                    </PostOptions>
+                    
+                </PostHeader>
                 <div>{post.title}</div>
                 <PostPictureContainer images={post.image || []} />
             </PostContent>
@@ -65,15 +87,15 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId }) => {
                     <CircleIcon onClick={handleLike}>
                         <HeartIcon $animate={animateLike} color={accountId && post.likes.includes(accountId) ? "red" : "white"} />
                     </CircleIcon>
-                    {post.likes.length || 0} Curtidas
+                    <p>{post.likes.length || 0} Curtidas</p>
                 </RowContainer>
                 <RowContainer className="no-select" onClick={() => handleComments(post.id)}>
                     <CircleIcon><BsChatFill /></CircleIcon>
-                    Comentários
+                    <p>Comentários</p>
                 </RowContainer>
                 <RowContainer className="no-select" onClick={() => { }}>
                     <CircleIcon><FaShareAlt /></CircleIcon>
-                    Compartilhar
+                    <p>Compartilhar</p>
                 </RowContainer>
             </RowContainer>
         </PostContainer>
@@ -82,12 +104,56 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId }) => {
 
 export default PostCard;
 
+const PostOptions = styled.div`
+    display: flex;
+    align-items: center;
+    background-color: ${({ theme }) => theme.colors.quarternary};
+    padding: 5px;
+    border-radius: 100%;
+    --size: 35px;
+    justify-content: center;
+    align-items: center;
+    width: var(--size);
+    height: var(--size);
+    cursor: pointer;
+
+    &:hover {
+        background-color: ${({ theme }) => theme.colors.tertiary};
+    }
+`;
+
+const PostProfileContainer = styled.div`
+     display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 50px;
+    cursor: pointer;
+    
+    span {
+        font-weight: bold;
+    }
+
+    &:hover {
+        text-decoration: underline;
+    }
+`;
+
 const RowContainer = styled.div`
     display: flex;
     align-items: center;
     gap: 5px;
-    width: 70%;
-    min-width: 120px;
+    inline-size: 70%;
+    justify-content: space-evenly;
+    width: auto;
+
+    @media (max-width: 600px) {
+        p {
+            display: none;
+        }
+    }
+
 `;
 
 const pulse = keyframes`
@@ -101,12 +167,16 @@ const CircleIcon = styled.div`
     align-items: center;
     justify-content: center;
     background-color: ${({ theme }) => theme.colors.quinary};
-    min-width: 30px;
+    min-inline-size: 30px;
     gap: 5px;
-    height: 30px;
+    block-size: 30px;
     border-radius: 50%;
     color: white;
     cursor: pointer;
+
+    &:hover {
+        background-color: ${({ theme }) => theme.colors.tertiary};
+    }
     
 `;
 
@@ -126,8 +196,8 @@ const PostContent = styled.div`
     display: flex;
     flex-direction: column;
     background-color: ${({ theme }) => theme.colors.quinary};
-    width: 100%;
-    height: auto;
+    inline-size: 100%;
+    block-size: auto;
     border-radius: 8px;
     padding: 10px;
     gap: 5px;
@@ -138,17 +208,17 @@ const PictureContainer = styled.div`
     display: flex;
     overflow-x: auto;
     gap: 8px;
-    width: 100%;
-    height: 300px;
+    inline-size: 100%;
+    block-size: 300px;
 `;
 
 const PostPicture = styled.div`
-width: 100%;
-height: 100%;
+inline-size: 100%;
+block-size: 100%;
     
     img {
-        width: 100%;
-        height: 100%;
+        inline-size: 100%;
+        block-size: 100%;
         object-fit: cover;
         object-position: center;
         display: block;
@@ -157,14 +227,13 @@ height: 100%;
 `;
 
 const PostContainer = styled.div`
-    /* border-radius: 20px; */
-    height: auto;
+    block-size: auto;
     background-color: ${({ theme }) => theme.colors.quarternary};
     padding: 10px;
     display: flex;
     flex-direction: column;
-    max-width: 600px;
-    width: 100%;
+    max-inline-size: 600px;
+    inline-size: 100%;
     gap: 5px;
     color: white;
 `;
@@ -173,8 +242,10 @@ const PostHeader = styled.div`
     display: flex;
     align-items: center;
     flex-direction: row;
-    gap: 10px;
+    justify-content: space-between;
     background-color: ${({ theme }) => theme.colors.quinary};
     padding: 8px;
+    
+    position: relative;
     border-radius: 50px;
 `;

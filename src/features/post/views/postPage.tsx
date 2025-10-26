@@ -3,14 +3,13 @@ import { useParams } from "react-router-dom";
 import type { IPost } from "../../../shared/models/Post";
 import { PostsContext } from "../postContext";
 
-import PostComponent from "../../post/components/postComponent"
 import { AuthContext } from "../../auth/AuthContext";
 import PostComments from "../components/PostComments";
 import { styled } from "styled-components";
 import { HeaderComponent } from "../../../shared/components/HeaderComponent";
 import Section from "../../../shared/styles/SectionStyle";
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
-import type IComment from "../../../shared/models/Comments";
+import PostsContainerList from "../components/PostsContainerList";
 
 export default function PostPage() {
     const { account } = useContext(AuthContext);
@@ -86,7 +85,8 @@ export default function PostPage() {
             <HeaderComponent account={account} />
             <SectionContent>
                 <PostArea>
-                    <PostComponent key={post.id} post={post} accountId={account?.id} />
+                    <PostsContainerList account={account} posts={[post]} title="" refCallback={() => { }} />
+                    {/* <PostComponent key={post.id} post={post} accountId={account?.id} handleOptions={() => { }} /> */}
                     <AddCommentContainer>
                         <CommentInputArea>
                             <CommentInput
