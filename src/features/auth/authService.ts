@@ -42,6 +42,17 @@ export async function getLoggedUser(): Promise<IAccount | null> {
     }
 }
 
+export async function recoveryAccount(email: string): Promise<Object> {
+    try {
+        if(!email.trim()) {
+            throw new Error("O e-mail deve ser preenchido.");
+        }
+        return await authApi.forgotPassword(email);
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function AccountStatus() {
     try {
         return await authApi.getStatusProfile();

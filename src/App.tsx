@@ -13,6 +13,7 @@ import PostPage from './features/post/views/postPage';
 import CommunityPage from './features/community/views/CommunityPage';
 import CommunityPag from './features/home/components/CommunityPage';
 import InstitutePage from './features/addPets/views/InstitutePage';
+import ForgotPasswordPage from './features/forgotPassword/views/ForgotPasswordPage';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/community2" element={<CommunityPag />} />
         <Route path="/support" element={<FAQSection />} />
         <Route path="/institution/:id" element={<InstitutePage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       </NavigationRouter>
     </ThemeProvider>
   )
