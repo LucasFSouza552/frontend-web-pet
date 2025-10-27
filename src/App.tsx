@@ -11,7 +11,8 @@ import FAQSection from './features/support/views/FAQPage';
 import RegisterSection from './features/auth/views/RegisterPage';
 import PostPage from './features/post/views/postPage';
 import CommunityPage from './features/community/views/CommunityPage';
-import CommunityPag  from './features/home/components/CommunityPage';
+import CommunityPag from './features/home/components/CommunityPage';
+import InstitutePage from './features/addPets/views/InstitutePage';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/community2" element={<CommunityPag />} />
         <Route path="/support" element={<FAQSection />} />
+        <Route path="/institution/:id" element={<InstitutePage />} />
       </NavigationRouter>
     </ThemeProvider>
   )
