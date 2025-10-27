@@ -1,108 +1,67 @@
 import styled, { keyframes } from "styled-components";
 import Section from "../../../shared/styles/SectionStyle";
+import { useState } from "react";
 
-export default function FAQList() {
-  return (
-    <Section height="auto">
-      <ListContainer>
-        {faqItems.map(({ id, title, text }, index) => (
-          <Card key={id} $delay={index * 0.15}>
-            <Question>{title}</Question>
-            <Answer>{text}</Answer>
-          </Card>
-        ))}
-      </ListContainer>
-    </Section>
-  );
-}
-
-const faqItems = [
-  {
-    id: 1,
-    title: "Como funciona o processo de adoção?",
-    text: `Basta criar uma conta, escolher o animal que deseja adotar e preencher 
-           o formulário de interesse. Nossa equipe entrará em contato para validar 
-           as informações e agendar uma visita.`,
-  },
-  {
-    id: 2,
-    title: "Há algum custo para adotar?",
-    text: `Não! A adoção é gratuita. Porém, pedimos uma pequena contribuição opcional 
-           para ajudar a manter o projeto e cuidar de outros animais.`,
-  },
-  {
-    id: 3,
-    title: "Como posso ajudar sem adotar?",
-    text: `Você pode contribuir com doações de ração, medicamentos, itens de limpeza 
-           ou apoio financeiro. Toda ajuda faz diferença.`,
-  },
-  {
-    id: 4,
-    title: "Posso visitar os animais antes da adoção?",
-    text: `Sim! Agende uma visita presencial para conhecer os animais disponíveis e 
-           conversar com nossa equipe de voluntários.`,
-  },
-  {
-    id: 5,
-    title: "Como entro em contato com o suporte?",
-    text: `Você pode enviar uma mensagem pelo formulário abaixo ou entrar em contato 
-           via e-mail e WhatsApp. Nossa equipe responde em até 24h úteis.`,
-  },
+const faqs = [
+    { question: "Como funciona o processo de adoção?", answer: "Basta criar uma conta, escolher o animal que deseja adotar e preencher o formulário de interesse. Nossa equipe entrará em contato para validar as informações e agendar uma visita." },
+    { question: "Há algum custo para adotar?", answer: "Não! A adoção é gratuita. Porém, pedimos uma pequena contribuição opcional para ajudar a manter o projeto e cuidar de outros animais." },
+    { question: "Como posso ajudar sem adotar?", answer: "Você pode contribuir com doações de ração, medicamentos, itens de limpeza ou apoio financeiro. Toda ajuda faz diferença" },
+    { question: "Posso visitar os animais antes da adoção?", answer: "Sim! Agende uma visita presencial para conhecer os animais disponíveis e conversar com nossa equipe de voluntários." },
+    { question: "Como entro em contato com o suporte?", answer: "Você pode enviar uma mensagem pelo formulário abaixo ou entrar em contato via e-mail e WhatsApp. Nossa equipe responde em até 24h úteis." }
 ];
 
-const fadeUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+export default function FAQList() {
+    const [actualIndex, setActualIndex] = useState<number | null>(null);
+
+    return (
+        <Section height="auto">
+            <FormContainer>
+                <UnorderedList>
+                    {faqs.map((faqs, index) => (
+                        <ListItem
+                            onClick={() => setActualIndex(actualIndex == index ? null : index)}>
+                            <ListItemTitle>{faqs.question}</ListItemTitle>
+                            {actualIndex == index && <Paragraph>{faqs.answer}</Paragraph>}
+                        </ListItem>
+                    ))}
+                </UnorderedList>
+            </FormContainer>
+        </Section>
+    );
+}
+
+const UnorderedList = styled.ul`
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    color: white;
+    align-items: center;
 `;
 
-const ListContainer = styled.ul`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 25px;
-  padding: 50px 40px;
-  margin: 50px 180px;
-  background: linear-gradient(145deg, #61475c 0%, #4a344a 100%);
-  border-radius: 40px;
-  color: white;
-  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.25);
+const Paragraph = styled.p`
+    width: 700px;
+    background-color: #61475C;
+    border-radius: 0 0 15px 15px;
+    padding: 20px
 `;
 
-const Card = styled.li<{ $delay: number }>`
-  width: 100%;
-  max-width: 800px;
-  background-color: #332630;
-  border-radius: 18px;
-  padding: 25px 30px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
-  transition: all 0.3s ease;
-  opacity: 0;
-  animation: ${fadeUp} 0.8s ease-out forwards;
-  animation-delay: ${({ $delay }) => $delay}s;
-
-  &:hover {
-    transform: translateY(-4px) scale(1.02);
-    background-color: #3c2b39;
-    box-shadow: 0 8px 18px rgba(182, 72, 160, 0.35);
-  }
+const FormContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 50px;
 `;
 
-const Question = styled.h3`
-  color: #b648a0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  margin-bottom: 12px;
+const ListItem = styled.li`
+    padding: 5px;
 `;
 
-const Answer = styled.p`
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #f3f3f3;
+const ListItemTitle = styled.h3`
+    user-select: none;
+    width: 700px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #B648A0;
+    border-radius: 15px 15px 0 0;
+    padding: 10px;
 `;
