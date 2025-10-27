@@ -12,6 +12,7 @@ import RegisterSection from './features/auth/views/RegisterPage';
 import PostPage from './features/post/views/postPage';
 import CommunityPage from './features/community/views/CommunityPage';
 import CommunityPag  from './features/home/components/CommunityPage';
+import ForgotPasswordPage from './features/forgotPassword/views/ForgotPasswordPage';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/community2" element={<CommunityPag />} />
         <Route path="/support" element={<FAQSection />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       </NavigationRouter>
     </ThemeProvider>
   )

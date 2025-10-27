@@ -29,3 +29,12 @@ export async function getProfile(): Promise<IAccount> {
     }
 }
 
+export async function forgotPassword(email: string): Promise<Object> {
+    try {
+        const response = await api.post("/auth/forgot-password", { email });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
