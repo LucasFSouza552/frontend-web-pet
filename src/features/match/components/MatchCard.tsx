@@ -8,6 +8,7 @@ import { IoMdMale, IoMdFemale, IoMdStar } from "react-icons/io";
 import { FaHeart, FaHeartBroken, FaInfo } from "react-icons/fa";
 import { useState } from "react";
 import { usePetInteractionController } from "../../pet/controllers/usePetInteractionController";
+import MatchCardSkeleton from "./MatchCardSkeleton";
 
 export default function MatchCard({ Pet }: { Pet: IPet }) {
     const [imagePage, setImagePage] = useState(0);
@@ -20,7 +21,7 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
     }
 
     if (loading || !Pet) {
-        return <p>Carregando... Pet</p>
+        return (<MatchCardSkeleton/>);
     }
 
     return (

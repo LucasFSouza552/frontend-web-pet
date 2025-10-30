@@ -32,7 +32,7 @@ export async function toggleLike(postId: string): Promise<IPost> {
 
 export async function getPostById(id: string) {
     try {
-        const response = await api.get(`/post/${id}`);
+        const response = await api.get(`/post/${id}/with-author`);
         return response.data;
     } catch (error) {
         throw error;

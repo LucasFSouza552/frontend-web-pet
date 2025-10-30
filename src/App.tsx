@@ -31,7 +31,7 @@ function App() {
         <Route path="/support" element={<FAQSection />} />
         <Route path="/institution/:id" element={<InstitutePage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/pets/desejados" element={<DesiredPetsPage />} />
+        <Route path="/pets" element={<DesiredPetsPage />} />
       </NavigationRouter>
     </ThemeProvider>
   )

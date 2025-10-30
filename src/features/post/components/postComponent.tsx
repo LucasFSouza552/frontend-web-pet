@@ -64,14 +64,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions }) =
     const handleSmallProfile = () => {
         setShowSmallProfile(!showSmallProfile);
     }
-
-    return (
+    
+    return (    
         <PostContainer>
             <PostContent>
                 <PostHeader className="no-select">
                     <PostProfileContainer onMouseEnter={handleSmallProfile} onMouseLeave={handleSmallProfile} onClick={() => handleProfile(post.account.id)}>
                         <ProfileAvatar avatar={post.account.avatar} alt={post.account.name} />
-                        <span>{post.account.name || "Unknown"}</span>   
+                        <span>{post.account.name || "Unknown"}</span>
                         {showSmallProfile && post.account && <SmallProfile account={post.account as IAccount} />}
                     </PostProfileContainer>
                     <PostOptions onClick={() => handleOptions(post.id)}>

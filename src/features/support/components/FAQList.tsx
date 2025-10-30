@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import Section from "../../../shared/styles/SectionStyle";
 import { useState } from "react";
 

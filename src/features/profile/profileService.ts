@@ -26,3 +26,12 @@ export async function fetchFeed() {
         throw error;
     }
 }
+
+export async function fetchInteractionByAccountId() {
+    try {
+        const response = await accountApi.getInteractionsPet();
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

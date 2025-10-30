@@ -60,8 +60,8 @@ export default function ProfileSection() {
 
     return (
         <ProfileContainer>
-            {/* <HeaderComponent account={account} /> */}
-            <SideBar account={account} />
+            <HeaderComponent account={account} />
+            {/* <SideBar account={account} /> */}
             <SectionContent>
 
                 {currentProfile && accountStatus && <ProfileCard account={currentProfile} accountStatus={accountStatus} />}

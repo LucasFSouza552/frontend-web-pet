@@ -26,6 +26,16 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
     const [petFeed, setPetFeed] = useState<Pet[]>([]);
     const [loadingFeed, setLoadingFeed] = useState(false);
     const [hasMorePets, setHasMorePets] = useState(true);
+    const [likedPets, setLikedPets] = useState([]);
+
+    const loadInteractionsPet = async (accountId: string) => {
+        try {
+            const fetchInteractionsPet = await fetchInteractionByAccountId();
+             
+        } catch (error) {
+            throw error;
+        }
+    }
 
     const loadProfile = async (accountId: string) => {
         try {
@@ -85,4 +95,8 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
             {children}
         </ProfileContext.Provider>
     )
+}
+
+function fetchInteractionByAccountId() {
+    throw new Error("Function not implemented.");
 }
