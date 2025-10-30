@@ -14,6 +14,7 @@ import CommunityPage from './features/community/views/CommunityPage';
 import CommunityPag from './features/home/components/CommunityPage';
 import InstitutePage from './features/addPets/views/InstitutePage';
 import ForgotPasswordPage from './features/forgotPassword/views/ForgotPasswordPage';
+import DesiredPetsPage from './features/pet/views/DesiredPetsPage';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/support" element={<FAQSection />} />
         <Route path="/institution/:id" element={<InstitutePage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/pets/desejados" element={<DesiredPetsPage />} />
       </NavigationRouter>
     </ThemeProvider>
   )

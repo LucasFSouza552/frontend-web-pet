@@ -28,7 +28,7 @@ export default function AuthForm() {
 
           <InputComponent
             placeholder="Senha"
-            label="senha"
+            label="password"
             onChange={handleChange}
             value={credentials.password}
             type="password"
