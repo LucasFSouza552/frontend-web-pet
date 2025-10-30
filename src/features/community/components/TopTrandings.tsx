@@ -1,52 +1,102 @@
 import { styled } from "styled-components"
-
 import { FaPaw } from 'react-icons/fa';
 
 export default function TopTrandings() {
-    return (<RightSideContainer>
-        <div className="active-communities">
-            <h3>Comunidades ativas</h3>
-            <ul>
-                <li>
-                    <div className="community-icon">
-                        <FaPaw />
-                    </div>
-                    <span>Amicao</span>
-                </li>
-                <li>
-                    <div className="community-icon">
-                        <FaPaw />
-                    </div>
-                    <span>Amicao</span>
-                </li>
-                <li>
-                    <div className="community-icon">
-                        <FaPaw />
-                    </div>
-                    <span>Amicao</span>
-                </li>
-            </ul>
-        </div>
-    </RightSideContainer>)
+    return (
+        <RightSideContainer>
+            <div className="active-communities">
+                <h3>Comunidades Ativas</h3>
+                <ul>
+                    <li>
+                        <div className="community-icon">
+                            <FaPaw />
+                        </div>
+                        <span>Amicão</span>
+                    </li>
+                    <li>
+                        <div className="community-icon">
+                            <FaPaw />
+                        </div>
+                        <span>Gatolândia</span>
+                    </li>
+                    <li>
+                        <div className="community-icon">
+                            <FaPaw />
+                        </div>
+                        <span>Refúgio Animal</span>
+                    </li>
+                </ul>
+            </div>
+        </RightSideContainer>
+    )
 }
 
-
 const RightSideContainer = styled.aside`
-    border-radius: 10px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 30px;
+    gap: 25px;
     flex: 1;
     height: max-content;
     color: white;
-    border: solid 1px white;
+    border: 1px solid #B648A0;
     position: sticky;
     background-color: #363135;
     top: 0;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(182, 72, 160, 0.3);
 
-     @media (max-width: 900px) {
+    .active-communities {
+        width: 100%;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        text-align: center;
+        color: #B648A0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 15px;
+        border-radius: 8px;
+        background-color: #2c272b;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    li:hover {
+        background-color: #B648A0;
+        transform: scale(1.03);
+    }
+
+    .community-icon {
+        font-size: 1.2rem;
+        color: white;
+    }
+
+    span {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    @media (max-width: 900px) {
         display: none;
     }
 `

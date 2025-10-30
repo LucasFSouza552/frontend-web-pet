@@ -14,9 +14,6 @@ export default function FooterSection() {
             Entre em contato e teremos prazer em orientar você em cada passo.
           </Description>
           <PrimaryButton text="TIRAR DÚVIDAS" filled={false} width="200px" height="50px"  />
-          <Button>
-            TIRAR DÚVIDAS
-          </Button>
         </ContentQuestions>
         <FooterCurve>
           <FooterColumn>

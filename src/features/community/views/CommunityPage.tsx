@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { HeaderComponent } from "../../../shared/components/HeaderComponent";
 import { AuthContext } from "../../auth/AuthContext";
-
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import { useCallback, useContext, useEffect, useRef } from "react";
 import Section from "../../../shared/styles/SectionStyle";
@@ -11,9 +10,7 @@ import Explorer from "../components/Explorer";
 import TopTrandings from "../components/TopTrandings";
 
 export default function CommunityPage() {
-
     const { account } = useContext(AuthContext);
-
     const { posts, refreshPosts, loadMorePosts, hasMorePosts, loadingPosts } = useContext(PostsContext);
     const observer = useRef<IntersectionObserver>(null);
 
@@ -41,47 +38,79 @@ export default function CommunityPage() {
                 <SectionContent>
                     <Explorer />
                     <MiddleSideContainer>
-                        <PostsContainerList account={account} posts={posts} title={"Comunidade"} refCallback={lastPostRef} />
+                        <PostsContainerList 
+                            account={account} 
+                            posts={posts} 
+                            title={"Comunidade"} 
+                            refCallback={lastPostRef} 
+                        />
                     </MiddleSideContainer>
-                    <TopTrandings/>
+                    <TopTrandings />
                 </SectionContent>
             </MainFlex>
         </Container>
     );
 }
 
-const SectionContent = styled(Section)`
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    height: 100%;
-    min-height: calc(100dvh - var(--header-height));
-    background-image: url(${backgroundPage});
-    background-size: cover;
-    background-position: center;
-    background-repeat: repeat;
-    background-attachment: fixed;
-    padding: 5px;
-`;
-
-
-
-const MainFlex = styled.main`
-  flex: 1;
-  
-`;
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: #1f1b1e;
+`;
+
+const MainFlex = styled.main`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const SectionContent = styled(Section)`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: calc(100dvh - var(--header-height));
+  background-image: url(${backgroundPage});
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat;
+  background-attachment: fixed;
+  padding: 20px;
+  gap: 20px;
+  box-sizing: border-box;
+  backdrop-filter: blur(3px);
+  background-color: rgba(54, 49, 53, 0.9);
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
 `;
 
 const MiddleSideContainer = styled.div`
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex:2;
-    color: white;
-`
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  flex: 2;
+  padding: 20px;
+  background-color: rgba(44, 39, 43, 0.85);
+  border: 1px solid #B648A0;
+  box-shadow: 0 0 12px rgba(182, 72, 160, 0.3);
+  color: white;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.01);
+    box-shadow: 0 0 20px rgba(182, 72, 160, 0.4);
+  }
+
+  @media (max-width: 900px) {
+    width: 100%;
+    padding: 10px;
+  }
+`;
