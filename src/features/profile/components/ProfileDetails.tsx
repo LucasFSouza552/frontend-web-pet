@@ -57,7 +57,7 @@ export default function ProfileDetails({ account, accountStatus }: { account: IA
 
       {<ProfileStats>
         <ProfileStatBadge>
-          {accountStatus?.postCount || 0} Publicações
+          {account?.postCount || 0} Publicações
         </ProfileStatBadge>
       </ProfileStats >}
     </ProfileDetailsContainer>

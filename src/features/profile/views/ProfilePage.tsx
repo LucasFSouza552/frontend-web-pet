@@ -14,6 +14,7 @@ import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProfileContext } from "../profileContext";
 import PostsContainerList from "../../post/components/PostsContainerList";
+import SideBar from "../../../shared/components/Sidebar";
 
 export default function ProfileSection() {
     const navigate = useNavigate();
@@ -59,8 +60,8 @@ export default function ProfileSection() {
 
     return (
         <ProfileContainer>
-            <HeaderComponent account={account} />
-
+            {/* <HeaderComponent account={account} /> */}
+            <SideBar account={account} />
             <SectionContent>
 
                 {currentProfile && accountStatus && <ProfileCard account={currentProfile} accountStatus={accountStatus} />}

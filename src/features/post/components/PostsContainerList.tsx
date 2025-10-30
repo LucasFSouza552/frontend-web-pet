@@ -52,5 +52,4 @@ const PostContainer = styled.div`
     display: flex;
     padding: 1rem;
     color: white;
-
 `;

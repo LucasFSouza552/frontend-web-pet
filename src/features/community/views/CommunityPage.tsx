@@ -61,9 +61,6 @@ const Container = styled.div`
 
 const MainFlex = styled.main`
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 `;
 
 const SectionContent = styled(Section)`
@@ -78,8 +75,8 @@ const SectionContent = styled(Section)`
   background-attachment: fixed;
   padding: 20px;
   gap: 20px;
+  height: 100%;
   box-sizing: border-box;
-  backdrop-filter: blur(3px);
   background-color: rgba(54, 49, 53, 0.9);
 
   @media (max-width: 900px) {
@@ -101,11 +98,12 @@ const MiddleSideContainer = styled.div`
   border: 1px solid #B648A0;
   box-shadow: 0 0 12px rgba(182, 72, 160, 0.3);
   color: white;
-  overflow: hidden;
+  min-height: 100dvh;
+  height: fit-content;
   transition: all 0.3s ease;
 
   &:hover {
-    transform: scale(1.01);
+    transform: scale(1.001);
     box-shadow: 0 0 20px rgba(182, 72, 160, 0.4);
   }
 

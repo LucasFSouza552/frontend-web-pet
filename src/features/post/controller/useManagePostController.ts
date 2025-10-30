@@ -1,13 +1,15 @@
 
-import { useState } from "react";
-import { deletePost } from "../postService";
+import { useContext, useState } from "react";
+
+import { PostsContext } from "../postContext";
 export default function useManagePostController() {
     const [error, setError] = useState("");
+    const { deletePostUpdate } = useContext(PostsContext);
 
     const handleDeletePost = async (postId: string) => {
-        console.log("deletando post", postId);
         try {
-            await deletePost(postId);
+            await deletePostUpdate(postId);
+
         } catch (error) {
             if (error instanceof Error) {
                 setError(error.message);

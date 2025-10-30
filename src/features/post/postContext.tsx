@@ -1,5 +1,5 @@
 import { createContext, useState, type ReactNode } from "react";
-import { fetchPostById, fetchPosts, ToggleLike, addCommentService, fetchComments, addReplyCommentService } from "./postService";
+import { fetchPostById, fetchPosts, ToggleLike, addCommentService, fetchComments, addReplyCommentService, deletePost } from "./postService";
 import type IComment from "../../shared/models/Comments";
 import type { IPost } from "../../shared/models/Post";
 
@@ -132,7 +132,6 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
 
     const addComment = async (postId: string, content: string) => {
         try {
-            console.log("Adicionando comentário...");
             const comment = await addCommentService(postId, content);
             setPosts(prev => prev.map(p => {
                 const comments = p.comments ? [...p.comments, comment] : [comment];
@@ -151,13 +150,22 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     const addReplyComment = async (commentId: string, content: string) => {
         try {
             const comment = await addReplyCommentService(commentId, content);
-            if(!comment) return;
+            if (!comment) return;
             setPosts(prev => prev.map(p => {
-                if(p.id !== comment?.id) return p;
+                if (p.id !== comment?.id) return p;
                 const comments = p.comments ? [...p.comments, comment] : [comment];
 
                 return { ...p, comments };
             }));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const deletePostUpdate = async (postId: string) => {
+        try {
+            await deletePost(postId);
+            setPosts((prevPost) => prevPost.filter((post) => post.id !== postId))
         } catch (error) {
             throw error;
         }
@@ -172,7 +180,8 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
                 loadPostDetails,
                 loadPostComments, addComment,
                 getPostById,
-                addReplyComment
+                addReplyComment,
+                deletePostUpdate
             }}>
             {children}
         </PostsContext.Provider>
@@ -208,4 +217,5 @@ interface PostsContextType {
     getPostById: (id: string) => Promise<IPost>;
 
     addReplyComment: (commentId: string, content: string) => Promise<void>;
+    deletePostUpdate: (postId: string) => Promise<void>
 }
