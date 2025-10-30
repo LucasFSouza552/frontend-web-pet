@@ -1,5 +1,5 @@
 import { createContext, useState, type ReactNode } from "react";
-import { fetchPostById, fetchPosts, ToggleLike, addCommentService, fetchComments } from "./postService";
+import { fetchPostById, fetchPosts, ToggleLike, addCommentService, fetchComments, addReplyCommentService } from "./postService";
 import type IComment from "../../shared/models/Comments";
 import type { IPost } from "../../shared/models/Post";
 
@@ -13,7 +13,6 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     const [page, setPage] = useState(1);
     const [hasMorePosts, setHasMorePosts] = useState(true);
     const [loadingPosts, setLoadingPosts] = useState(false);
-
 
     // Feed do usuário
     const [userPosts, setUserPosts] = useState<IPost[]>([]);
@@ -133,32 +132,51 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
 
     const addComment = async (postId: string, content: string) => {
         try {
+            console.log("Adicionando comentário...");
             const comment = await addCommentService(postId, content);
             setPosts(prev => prev.map(p => {
                 const comments = p.comments ? [...p.comments, comment] : [comment];
-                
+
                 return { ...p, comments };
             }));
 
             return comment;
-    } catch (error) {
-        throw error;
-    }
-};
+        } catch (error) {
+            throw error;
+        }
 
-return (
-    <PostsContext.Provider
-        value={{
-            posts, setPosts, refreshPosts, loadMorePosts, loadingPosts,
-            userPosts, setUserPosts, refreshUserPosts, loadMoreUserPosts, loadingUserPosts,
-            hasMorePosts, hasMoreUserPosts, likePost,
-            loadPostDetails,
-            loadPostComments, addComment,
-            getPostById
-        }}>
-        {children}
-    </PostsContext.Provider>
-);
+
+    };
+
+    const addReplyComment = async (commentId: string, content: string) => {
+        try {
+            const comment = await addReplyCommentService(commentId, content);
+            if(!comment) return;
+            setPosts(prev => prev.map(p => {
+                if(p.id !== comment?.id) return p;
+                const comments = p.comments ? [...p.comments, comment] : [comment];
+
+                return { ...p, comments };
+            }));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    return (
+        <PostsContext.Provider
+            value={{
+                posts, setPosts, refreshPosts, loadMorePosts, loadingPosts,
+                userPosts, setUserPosts, refreshUserPosts, loadMoreUserPosts, loadingUserPosts,
+                hasMorePosts, hasMoreUserPosts, likePost,
+                loadPostDetails,
+                loadPostComments, addComment,
+                getPostById,
+                addReplyComment
+            }}>
+            {children}
+        </PostsContext.Provider>
+    );
 };
 
 
@@ -188,4 +206,6 @@ interface PostsContextType {
     addComment: (postId: string, content: string) => Promise<IComment>;
 
     getPostById: (id: string) => Promise<IPost>;
+
+    addReplyComment: (commentId: string, content: string) => Promise<void>;
 }

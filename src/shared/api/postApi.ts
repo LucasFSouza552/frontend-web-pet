@@ -57,3 +57,20 @@ export async function getComments(postId: string, query: PostQuery = {}): Promis
     }
 }
 
+
+export async function addReplyComment(commentId: string, content: string): Promise<IComment> {
+    try {
+        const response = await api.post(`/comment/${commentId}/reply`, { content });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+export async function softDeletePost(postId: string) {
+    try {
+        await api.post(`/post/${postId}/delete`);
+    } catch (error) {
+        throw error;
+    }
+}
+

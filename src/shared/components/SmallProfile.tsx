@@ -4,12 +4,15 @@ import ProfileDetails from "../../features/profile/components/ProfileDetails";
 import type { IAccountStatus } from "../models/accountStatus";
 const apiUrl = import.meta.env.VITE_API_URL;
 
+
+import avatarDefault from "@/shared/assets/images/avatar-default.png";
+
 export default function SmallProfile({ account }: { account: IAccount }) {
 
     if (!account) return null;
     return (
         <ProfileContainer>
-            <Avatar src={account.avatar ? `${apiUrl}/api/picture/${account.avatar}` : '/default-avatar.png'} alt={account.name} />
+            <Avatar src={account.avatar ? `${apiUrl}/api/picture/${account.avatar}` : avatarDefault} alt={account.name} />
             <ProfileDetails account={account} accountStatus={{ achievements: account.achievements, postCount: account.postCount } as unknown as IAccountStatus} />
         </ProfileContainer>
     )
@@ -40,5 +43,5 @@ const Avatar = styled.img`
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  background-color: #ccc;
+  background-color: white;
 `;

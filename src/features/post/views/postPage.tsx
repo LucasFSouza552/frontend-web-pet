@@ -86,7 +86,6 @@ export default function PostPage() {
             <SectionContent>
                 <PostArea>
                     <PostsContainerList account={account} posts={[post]} title="" refCallback={() => { }} />
-                    {/* <PostComponent key={post.id} post={post} accountId={account?.id} handleOptions={() => { }} /> */}
                     <AddCommentContainer>
                         <CommentInputArea>
                             <CommentInput

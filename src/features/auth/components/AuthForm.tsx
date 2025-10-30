@@ -19,7 +19,7 @@ export default function AuthForm() {
           <p>Digite seu email e senha para continuar</p>
 
           <InputComponent
-            placeholder="Email ou nome de usuário"
+            placeholder="Email"
             label="email"
             onChange={handleChange}
             value={credentials.email}
@@ -28,7 +28,7 @@ export default function AuthForm() {
 
           <InputComponent
             placeholder="Senha"
-            label="senha"
+            label="password"
             onChange={handleChange}
             value={credentials.password}
             type="password"

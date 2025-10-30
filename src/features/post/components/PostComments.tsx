@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import type IComment from "../../../shared/models/Comments";
 import defaultAvatar from "../../../shared/assets/images/avatar-default.png";
+import { PostsContext } from "../postContext";
+import { useContext } from "react";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 
@@ -10,6 +12,8 @@ interface PostCommentsProps {
 }
 
 export default function PostComments({ comments, lastCommentRef }: PostCommentsProps) {
+
+    const { addReplyComment } = useContext(PostsContext);
 
     return (
         <CommentsContainer>
@@ -29,7 +33,7 @@ export default function PostComments({ comments, lastCommentRef }: PostCommentsP
                                 </AvatarContainer>
                                 <CommentContent>{comment.content}</CommentContent>
 
-                                <CommentOptions>
+                                <CommentOptions onClick={()=> addReplyComment(comment.id, "teste")}>
                                     <p className="no-select">Responder</p>
                                 </CommentOptions>
                             </div>

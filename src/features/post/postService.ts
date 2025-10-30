@@ -38,10 +38,27 @@ export async function addCommentService(postId: string, content: string): Promis
     }
 }
 
+export async function addReplyCommentService(commentId: string, content: string): Promise<IComment> {
+    try {
+        const post = await postApi.addReplyComment(commentId, content);
+        return post;
+    } catch (error: any) {
+        throw Error(error?.message);
+    }
+}
+
 export async function fetchComments({ postId, page, limit }: { postId: string, page?: number, limit?: number }): Promise<IComment[] | null> {
     try {
         const Comments = await postApi.getComments(postId, { limit, page, orderBy: "createdAt" });
         return Comments;
+    } catch (error: any) {
+        throw Error(error?.message);
+    }
+}
+
+export async function deletePost(postId: string): Promise<void> {
+    try {
+        await postApi.softDeletePost(postId);
     } catch (error: any) {
         throw Error(error?.message);
     }

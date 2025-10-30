@@ -23,8 +23,6 @@ export default function PostsContainerList({ account, posts, title, refCallback 
     return (
         <PostContainer>
             <h2>{title}</h2>
-
-           
             {posts?.length > 0 && posts?.map((post: IPost, index: number) => {
                 const isLast = index === posts.length - 1;
                 return (
