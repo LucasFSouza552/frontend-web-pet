@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import Section from "../../../shared/styles/SectionStyle";
 
@@ -15,8 +15,8 @@ export default function AuthForm() {
       <OndaBackground />
       <Wrapper>
         <FormContainer onSubmit={handleLogin}>
-          <h2>Entrar</h2>
-          <p>Digite seu email e senha para continuar</p>
+          <h2>Bem-vindo de volta</h2>
+          <p>Entre para continuar sua jornada</p>
 
           <InputComponent
             placeholder="Email"
@@ -39,11 +39,12 @@ export default function AuthForm() {
             type="submit"
             filled
             width="100%"
-            height="45px"
+            height="48px"
           />
 
           <SmallText>
-            Não tem conta? <Link to="/register">Clique aqui</Link></SmallText>
+            Não tem conta? <Link to="/register">Crie a sua</Link>
+          </SmallText>
         </FormContainer>
 
         <ErrorContainer message={error} />
@@ -52,25 +53,38 @@ export default function AuthForm() {
   );
 }
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
 const Wrapper = styled.div`
   width: 100%;
   height: calc(100dvh - 80px);
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 `;
 
 const OndaBackground = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 45vh;
+  height: 50vh;
   background-color: #b84ba0;
   border-top-left-radius: 60% 25%;
   border-top-right-radius: 60% 25%;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
 `;
 
 const FormContainer = styled.form`
@@ -78,37 +92,40 @@ const FormContainer = styled.form`
   z-index: 2;
   background-color: #2d282e;
   color: #fff;
-  border-radius: 6px;
-  padding: 40px 60px;
+  border-radius: 10px;
+  padding: 50px 70px;
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+  gap: 20px;
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.3);
+  animation: ${fadeIn} 0.8s ease;
 
   h2 {
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 700;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    color: #ffffff;
   }
 
   p {
-    font-size: 14px;
-    color: #e5e5e5;
-    margin-bottom: 10px;
+    font-size: 15px;
+    color: #e2d6e0;
+    margin-bottom: 20px;
   }
 `;
 
 const SmallText = styled.p`
-  font-size: 13px;
+  font-size: 14px;
   color: #ccc;
-  margin-top: 5px;
+  margin-top: 8px;
 
   a {
     color: #ffffff;
     text-decoration: underline;
     cursor: pointer;
+    transition: color 0.3s;
 
     &:hover {
       color: #eaa7e2;
