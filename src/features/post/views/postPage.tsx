@@ -104,6 +104,11 @@ export default function PostPage() {
                     <PostComments
                         comments={post.comments || []}
                         lastCommentRef={observeLastComment}
+                        postId={post.id}
+                        onReply={async (parentId: string, content: string) => {
+                            const newC = await addComment(post.id, content, parentId);
+                            setPost(prev => prev ? { ...prev, comments: [...(prev.comments || []), newC] } : prev);
+                        }}
                     />
                     {loadingPost && <LoadingText>Carregando mais comentários...</LoadingText>}
                 </PostArea>

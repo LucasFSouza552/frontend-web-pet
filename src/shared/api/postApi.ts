@@ -39,9 +39,9 @@ export async function getPostById(id: string) {
     }
 }
 
-export async function addComment(postId: string, content: string) {
+export async function addComment(postId: string, content: string, parent?: string) {
     try {
-        const response = await api.post(`/comment/${postId}`, { content });
+        const response = await api.post(`/comment/${postId}`, { content, parent });
         return response.data;
     } catch (error) {
         throw error;

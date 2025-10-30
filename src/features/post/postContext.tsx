@@ -130,9 +130,9 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const addComment = async (postId: string, content: string) => {
+    const addComment = async (postId: string, content: string, parent?: string) => {
         try {
-            const comment = await addCommentService(postId, content);
+            const comment = await addCommentService(postId, content, parent);
             setPosts(prev => prev.map(p => {
                 const comments = p.comments ? [...p.comments, comment] : [comment];
 
@@ -212,7 +212,7 @@ interface PostsContextType {
     likePost: (post: string) => Promise<IPost>;
 
     loadPostComments: (id: string, page: number) => Promise<IComment[] | null>;
-    addComment: (postId: string, content: string) => Promise<IComment>;
+    addComment: (postId: string, content: string, parent?: string) => Promise<IComment>;
 
     getPostById: (id: string) => Promise<IPost>;
 

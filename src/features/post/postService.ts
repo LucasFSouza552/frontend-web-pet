@@ -29,9 +29,9 @@ export async function ToggleLike(postId: string): Promise<IPost> {
     }
 }
 
-export async function addCommentService(postId: string, content: string): Promise<IComment> {
+export async function addCommentService(postId: string, content: string, parent?: string): Promise<IComment> {
     try {
-        const post = await postApi.addComment(postId, content);
+        const post = await postApi.addComment(postId, content, parent);
         return post;
     } catch (error: any) {
         throw Error(error?.message);

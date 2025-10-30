@@ -33,5 +33,17 @@ export function usePetInteractionController() {
         }
     }
 
-    return { handleRequestAdoption, handleRejectAdoption, loading, error };
+    async function handleSponsor(petId: string) {
+        try {
+            setLoading(true);
+            await petService.sponsor(petId);
+            setError(null);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return { handleRequestAdoption, handleRejectAdoption, handleSponsor, loading, error };
 }
