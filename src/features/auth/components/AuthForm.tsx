@@ -2,7 +2,7 @@ import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import Section from "../../../shared/styles/SectionStyle";
 
-import useLoginController from "../controllers/useLoginController";
+import useLoginController from "../controllers/UseLoginController";
 import { InputComponent } from "../../../shared/components/InputComponent";
 import ErrorContainer from "../../../shared/components/ErrorContainer";
 import { PrimaryButton } from "../../../shared/components/PrimaryButton";

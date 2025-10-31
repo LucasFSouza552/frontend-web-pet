@@ -4,7 +4,7 @@ import type { IPost } from "../../../shared/models/Post";
 
 import { FaHeart, FaShareAlt } from "react-icons/fa";
 import { BsChatFill } from "react-icons/bs";
-import { PostsContext } from "../postContext";
+import { PostsContext } from "../PostContext";
 import { useContext, useState } from "react";
 
 import AvatarDefault from "../../../shared/assets/images/avatar-default.png";

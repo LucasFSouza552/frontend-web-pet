@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getStorage } from "../../shared/utils/storageUtils";
+import { getStorage } from "../utils/StorageUtils";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const api = axios.create({

@@ -3,7 +3,7 @@ import { HeaderComponent } from "../../../shared/components/HeaderComponent";
 import Section from "../../../shared/styles/SectionStyle";
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import { useContext } from "react";
-import { ProfileContext } from "../../profile/profileContext";
+import { ProfileContext } from "../../profile/ProfileContext";
 import { AuthContext } from "../../auth/AuthContext";
 import MatchCard from "../../match/components/MatchCard";
 

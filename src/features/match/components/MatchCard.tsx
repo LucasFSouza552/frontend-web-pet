@@ -7,7 +7,7 @@ import { FaWeightHanging, FaShieldDog, FaShareFromSquare } from "react-icons/fa6
 import { IoMdMale, IoMdFemale, IoMdStar } from "react-icons/io";
 import { FaHeart, FaHeartBroken, FaInfo } from "react-icons/fa";
 import { useState } from "react";
-import { usePetInteractionController } from "../../pet/controllers/usePetInteractionController";
+import { usePetInteractionController } from "../../pet/controllers/UsePetInteractionController";
 import MatchCardSkeleton from "./MatchCardSkeleton";
 
 export default function MatchCard({ Pet }: { Pet: IPet }) {

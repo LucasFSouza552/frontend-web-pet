@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import type { IPost } from "../../../shared/models/Post";
-import { PostsContext } from "../postContext";
+import { PostsContext } from "../PostContext";
 
 import { AuthContext } from "../../auth/AuthContext";
 import PostComments from "../components/PostComments";

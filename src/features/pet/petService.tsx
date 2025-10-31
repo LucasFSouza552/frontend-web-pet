@@ -1,4 +1,4 @@
-import { rejectPetAdoption, requestPetAdoption, sponsor as sponsorPet } from "../../shared/api/petApi";
+import { rejectPetAdoption, requestPetAdoption, sponsor as sponsorPet } from "../../shared/api/PetApi";
 
 export const petService = {
     async requestAdoption(petId: string) {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { recoveryAccount } from "../authService";
+import { recoveryAccount } from "../AuthService";
 
 export const useForgotPasswordController = () => {
     const [email, setEmail] = useState("");

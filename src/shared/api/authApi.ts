@@ -1,7 +1,7 @@
 
 import { ThrowError } from "../Error/ThrowError";
 import type { IAccount } from "../models/Account";
-import api from "./http";
+import api from "./Http";
 
 export interface LoginResponse {
     token: string;

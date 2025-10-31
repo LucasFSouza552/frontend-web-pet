@@ -1,5 +1,5 @@
 import { createContext, useState, type ReactNode } from "react";
-import { fetchPostById, fetchPosts, ToggleLike, addCommentService, fetchComments, addReplyCommentService, deletePost } from "./postService";
+import { fetchPostById, fetchPosts, ToggleLike, addCommentService, fetchComments, addReplyCommentService, deletePost } from "./PostService";
 import type IComment from "../../shared/models/Comments";
 import type { IPost } from "../../shared/models/Post";
 

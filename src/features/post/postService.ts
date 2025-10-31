@@ -1,4 +1,4 @@
-import * as postApi from "../../shared/api/postApi";
+import * as postApi from "../../shared/api/PostApi";
 import type IComment from "../../shared/models/Comments";
 import type { IPost } from "../../shared/models/Post";
 

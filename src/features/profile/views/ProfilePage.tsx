@@ -8,11 +8,11 @@ import { HeaderComponent } from "../../../shared/components/HeaderComponent";
 
 import { AuthContext } from "../../auth/AuthContext";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { PostsContext } from "../../post/postContext";
+import { PostsContext } from "../../post/PostContext";
 
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import { useNavigate, useParams } from "react-router-dom";
-import { ProfileContext } from "../profileContext";
+import { ProfileContext } from "../ProfileContext";
 import PostsContainerList from "../../post/components/PostsContainerList";
 import SideBar from "../../../shared/components/Sidebar";
 

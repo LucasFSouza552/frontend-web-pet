@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Section from "../../../shared/styles/SectionStyle";
-import Step1 from "./step1";
-import Step2 from "./step2";
-import Step3 from "./step3";
-import Step4 from "./step4";
-import useRegisterController from "../controllers/useRegisterController";
+import Step1 from "./Step1";
+import Step2 from "./Step2";
+import Step3 from "./Step3";
+import Step4 from "./Step4";
+import useRegisterController from "../controllers/UseRegisterController";
 import styled from "styled-components";
 import { PrimaryButton } from "../../../shared/components/PrimaryButton";
 

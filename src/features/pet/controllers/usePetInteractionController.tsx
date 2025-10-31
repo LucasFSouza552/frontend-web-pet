@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
-import { petService } from "../petService";
-import { ProfileContext } from "../../profile/profileContext";
+import { petService } from "../PetService";
+import { ProfileContext } from "../../profile/ProfileContext";
 
 export function usePetInteractionController() {
     const { loadFeed } = useContext(ProfileContext)

@@ -2,7 +2,7 @@ import type IComment from "../models/Comments";
 import type { IPost } from "../models/Post";
 import buildQuery from "../utils/BuilderQuery";
 
-import api from "./http";
+import api from "./Http";
 
 interface PostQuery {
     account?: string;

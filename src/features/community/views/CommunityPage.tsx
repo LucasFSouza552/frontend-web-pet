@@ -4,7 +4,7 @@ import { AuthContext } from "../../auth/AuthContext";
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import { useCallback, useContext, useEffect, useRef } from "react";
 import Section from "../../../shared/styles/SectionStyle";
-import { PostsContext } from "../../post/postContext";
+import { PostsContext } from "../../post/PostContext";
 import PostsContainerList from "../../post/components/PostsContainerList";
 import Explorer from "../components/Explorer";
 import TopTrandings from "../components/TopTrandings";

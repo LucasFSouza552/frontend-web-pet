@@ -1,5 +1,5 @@
 import Section from "../../../shared/styles/SectionStyle";
-import FormularySection from "../components/formComponent";
+import FormularySection from "../components/FormComponent";
 
 export default function InstitutePage() {
     return (

@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
-import { useRegisterController } from "../controllers/useRegisterController";
+import { useRegisterController } from "../controllers/UseRegisterController";
 import { useState } from "react";
 
 export default function RegisterForm() {

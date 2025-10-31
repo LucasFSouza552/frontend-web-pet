@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import type { IAccount } from "../../../shared/models/Account";
 import { BsPatchCheckFill } from "react-icons/bs";
-import type { IAccountStatus } from "../../../shared/models/accountStatus";
+import type { IAccountStatus } from "../../../shared/models/AccountStatus";
 
 import { FaShieldDog } from "react-icons/fa6";
 import { FaHandsHelping } from "react-icons/fa";

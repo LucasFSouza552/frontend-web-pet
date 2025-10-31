@@ -1,4 +1,4 @@
-import api from "./http";
+import api from "./Http";
 
 export async function getPetById(id: string) {
     try {

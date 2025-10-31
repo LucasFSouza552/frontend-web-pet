@@ -1,7 +1,7 @@
 
 import { useContext, useState } from "react";
 
-import { PostsContext } from "../postContext";
+import { PostsContext } from "../PostContext";
 export default function useManagePostController() {
     const [error, setError] = useState("");
     const { deletePostUpdate } = useContext(PostsContext);

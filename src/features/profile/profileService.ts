@@ -1,4 +1,4 @@
-import * as accountApi from "../../shared/api/accountApi";
+import * as accountApi from "../../shared/api/AccountApi";
 
 export async function fetchAccountById(accountId: string) {
     try {

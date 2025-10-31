@@ -5,7 +5,7 @@ import { Route } from 'react-router-dom';
 
 import LoginSection from './features/auth/views/LoginPage';
 import ProfileSection from './features/profile/views/ProfilePage';
-import MatchSection from './features/match/views/matchPage';
+import MatchSection from './features/match/views/MatchPage';
 import { ThemeProvider } from './app/contexts/ThemeContext';
 import FAQSection from './features/support/views/FAQPage';
 import RegisterSection from './features/auth/views/RegisterPage';
@@ -15,8 +15,13 @@ import CommunityPag from './features/home/components/CommunityPage';
 import InstitutePage from './features/addPets/views/InstitutePage';
 import ForgotPasswordPage from './features/forgotPassword/views/ForgotPasswordPage';
 import DesiredPetsPage from './features/pet/views/DesiredPetsPage';
+import { AuthContext } from './features/auth/AuthContext';
+import { useContext } from 'react';
 
 function App() {
+
+  const {account} = useContext(AuthContext);
+
   return (
     <ThemeProvider>
       <NavigationRouter>

@@ -1,8 +1,8 @@
 import { createContext, useCallback, useState } from "react";
 import type { IAccount } from "../../shared/models/Account";
 
-import { fetchAccountById, fetchStatusProfile, fetchFeed } from "./profileService";
-import type { IAccountStatus } from "../../shared/models/accountStatus";
+import { fetchAccountById, fetchStatusProfile, fetchFeed } from "./ProfileService";
+import type { IAccountStatus } from "../../shared/models/AccountStatus";
 import type Pet from "../../shared/models/Pet";
 
 interface ProfileContextType {

@@ -1,7 +1,7 @@
 import ErrorContainer from "../../../shared/components/ErrorContainer";
 import { HeaderComponent } from "../../../shared/components/HeaderComponent";
 import Section from "../../../shared/styles/SectionStyle";
-import { useForgotPasswordController } from "../../auth/controllers/useForgotPasswordController";
+import { useForgotPasswordController } from "../../auth/controllers/UseForgotPasswordController";
 import ReceivedScreen from "../components/Received";
 import RecoveryPasswordForm from "../components/SendForm";
 import styled from "styled-components";

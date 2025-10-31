@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import { LabelDiv } from "./labelStyles";
+import { LabelDiv } from "./LabelStyles";
 
 export default function Step2({ type, gender, handleChange }: { type: string, gender: string, handleChange: (key: string, value: string) => void }) {
     return (

@@ -1,5 +1,33 @@
-import api from "./http";
+import { IAccount } from "../models/Account";
+import api from "./Http";
 
+
+export async function getFeed() {
+    try {
+        const response = await api.get(`/account/feed`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function searchAccount() {
+    try {
+        const response = await api.get(`/account/search`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function updateProfile(IAccount: IAccount) {
+    try {
+        const response = await api.patch("/", IAccount);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
 
 export async function getAccountById(accountId: string) {
     try {
@@ -17,17 +45,8 @@ export async function getStatusProfile(accountId: string) {
     } catch (error) {
         throw error;
     }
-
 }
 
-export async function getFeed() {
-    try {
-        const response = await api.get(`/account/feed`);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-}
 
 export async function getInteractionsPet() {
     try {

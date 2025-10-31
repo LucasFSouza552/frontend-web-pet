@@ -4,7 +4,7 @@ import MatchCard from "../components/MatchCard";
 import Section from "../../../shared/styles/SectionStyle";
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import { useContext, useEffect } from "react";
-import { ProfileContext } from "../../profile/profileContext";
+import { ProfileContext } from "../../profile/ProfileContext";
 import { AuthContext } from "../../auth/AuthContext";
 import MatchCardSkeleton from "../components/MatchCardSkeleton";
 import NoMorePetsCard from "../components/NoMorePetsCard";
