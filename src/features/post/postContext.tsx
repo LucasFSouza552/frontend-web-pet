@@ -1,6 +1,6 @@
 import { createContext, useState, type ReactNode } from "react";
-import { fetchPostById, fetchPosts, ToggleLike, addCommentService, fetchComments, addReplyCommentService, deletePost } from "./PostService";
-import type IComment from "../../shared/models/comments";
+import { postService } from "./PostService";
+import type IComment from "../../shared/models/Comments";
 import type { IPost } from "../../shared/models/Post";
 
 export const PostsContext = createContext<PostsContextType>({} as PostsContextType);
@@ -20,19 +20,6 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     const [hasMoreUserPosts, setHasMoreUserPosts] = useState(true);
     const [loadingUserPosts, setLoadingUserPosts] = useState(false);
 
-    const getPostById = async (id: string) => {
-        try {
-            const post = posts.find(p => p.id === id);
-            if (!post) {
-                const fPost = await fetchPostById(id);
-                setPosts(prev => [...prev, fPost]);
-                return fPost;
-            }
-            return post;
-        } catch (error) {
-            throw error;
-        }
-    }
 
     const loadPostDetails = async (id: string) => {
         try {
@@ -41,7 +28,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
                 return existingPost;
             }
 
-            const fetchedPost = await fetchPostById(id);
+            const fetchedPost = await postService.fetchPostById(id);
 
             setPosts(prev => [...prev, fetchedPost]);
 
@@ -120,10 +107,9 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
 
     const likePost = async (postId: string) => {
         try {
-            const post = await ToggleLike(postId);
+            const post = await postService.toggleLikePostById(postId);
             setPosts(prev => prev.map(p => (p.id === post.id ? post : p)));
             setUserPosts(prev => prev.map(p => (p.id === post.id ? post : p)));
-            console.log("Atualizando post:", post);
             return post;
         } catch (error) {
             throw error;
@@ -162,9 +148,9 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
-    const deletePostUpdate = async (postId: string) => {
+    const archivePost = async (postId: string) => {
         try {
-            await deletePost(postId);
+            await postService.softDeletePostById(postId);
             setPosts((prevPost) => prevPost.filter((post) => post.id !== postId))
         } catch (error) {
             throw error;
@@ -179,9 +165,8 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
                 hasMorePosts, hasMoreUserPosts, likePost,
                 loadPostDetails,
                 loadPostComments, addComment,
-                getPostById,
                 addReplyComment,
-                deletePostUpdate
+                archivePost
             }}>
             {children}
         </PostsContext.Provider>
@@ -213,9 +198,6 @@ interface PostsContextType {
 
     loadPostComments: (id: string, page: number) => Promise<IComment[] | null>;
     addComment: (postId: string, content: string, parent?: string) => Promise<IComment>;
-
-    getPostById: (id: string) => Promise<IPost>;
-
     addReplyComment: (commentId: string, content: string) => Promise<void>;
-    deletePostUpdate: (postId: string) => Promise<void>
+    archivePost: (postId: string) => Promise<void>
 }
