@@ -1,5 +1,5 @@
 import api from "../../shared/api/Http";
-import { rejectPetAdoption, requestPetAdoption, sponsor } from "../../shared/api/PetApi";
+import { rejectPetAdoption, requestPetAdoption, sponsor } from "../../shared/api/PetActions";
 import type IPet from "../../shared/models/Pet";
 
 const petService = {
@@ -39,7 +39,7 @@ const petService = {
         const response = await sponsor(petId, amount);
         return response.data;
     },
-    async donate(amount: number) {
+    async donate (amount: number) {
         const response = await api.post("/pets/donate", { amount });
         return response.data;
     },
