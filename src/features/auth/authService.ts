@@ -1,62 +1,77 @@
+import api from "../../shared/api/Http";
 import type { IAccount } from "../../shared/models/Account";
-import * as authApi from "../../shared/api/AuthApi";
 import { removeStorage, saveStorage } from "../../shared/utils/StorageUtils";
 
-export async function tokenValidate() {
-    try {
-        const account = await authApi.getProfile();
-        if (!account) {
-            throw Error("Falha ao validar token");
+export const authService = {
+    async login(email: string, password: string) {
+        try {
+            const response = await api.post("/auth/login", { email, password });
+            const token = response.data?.token;
+            if (!token) {
+                throw Error("Falha ao realizar login");
+            }
+            saveStorage("auth_token", token);
+        } catch (error) {
+            throw error;
         }
-        saveStorage("account_data", JSON.stringify(account));
+    },
 
-        return account;
-    } catch (error: any) {
-        throw Error(error?.message);
-    }
-}
-
-export async function authenticateUser(email: string, password: string): Promise<string> {
-    try {
-        const { token } = await authApi.login(email, password);
-        if (!token) {
-            throw Error("Falha ao realizar login");
+    async register(data: IAccount) {
+        try {
+            const response = await api.post("/auth/register", data);
+            return response.data;
+        } catch (error) {
+            throw error;
         }
-        saveStorage("auth_token", token);
-        return token;
-    } catch (error: any) {
-        throw Error(error.message)
-    }
-}
+    },
 
-export async function fetchLogout() {
-    removeStorage("auth_token");
-    removeStorage("account_data");
-}
-
-export async function getLoggedUser(): Promise<IAccount | null> {
-    try {
-        return await authApi.getProfile();
-    } catch (error) {
-        return null;
-    }
-}
-
-export async function recoveryAccount(email: string): Promise<Object> {
-    try {
-        if(!email.trim()) {
-            throw new Error("O e-mail deve ser preenchido.");
+    async forgotPassword(email: string) {
+        try {
+            const response = await api.post("/auth/forgot-password", { email });
+            return response.data;
+        } catch (error) {
+            throw error;
         }
-        return await authApi.forgotPassword(email);
-    } catch (error) {
-        throw error;
-    }
-}
+    },
 
-export async function AccountStatus() {
-    try {
-        return await authApi.getStatusProfile();
-    } catch (error) {
-        return null;
+    async resetPassword(token: string) {
+        try {
+            const response = await api.post("/auth/reset-password", { token });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async changePassword(accountId: string, currentPassword: string) {
+        try {
+            const response = await api.put("/auth/change-password", { accountId, currentPassword });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async verifyEmail(token: string) {
+        try {
+            const response = await api.post(`/auth/verify-email?token=${token}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async resendVerification() {
+        try {
+            const response = await api.post("/auth/resend-verify-email");
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async fetchLogout() {
+        removeStorage("auth_token");
+        removeStorage("account_data");
     }
 }
