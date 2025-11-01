@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import type IComment from "../../../shared/models/Comments";
+import type IComment from "../../../shared/models/comments";
 import defaultAvatar from "../../../shared/assets/images/avatar-default.png";
 
 const apiUrl = import.meta.env.VITE_API_URL;

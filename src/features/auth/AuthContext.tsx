@@ -2,7 +2,7 @@ import { createContext, useEffect, useState, type ReactNode } from "react";
 import type { IAccount } from "../../shared/models/Account";
 import { getStorage } from "../../shared/utils/StorageUtils";
 import { authenticateUser, fetchLogout, tokenValidate, AccountStatus } from "./AuthService";
-import { ThrowError } from "../../shared/Error/ThrowError";
+import { ThrowError } from "../../shared/Error/throwError";
 import type { IAccountStatus } from "../../shared/models/AccountStatus";
 
 interface AuthContextType {

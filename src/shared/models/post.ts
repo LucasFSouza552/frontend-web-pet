@@ -1,4 +1,4 @@
-import type IComment from "./Comments";
+import type IComment from "./comments";
 
 export interface ITypeAccounts {
   id: string;

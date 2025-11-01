@@ -1,5 +1,5 @@
 
-import { ThrowError } from "../Error/ThrowError";
+import { ThrowError } from "../Error/throwError";
 import type { IAccount } from "../models/Account";
 import api from "./Http";
 
