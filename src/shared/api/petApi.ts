@@ -24,7 +24,7 @@ export async function donation() {
     return response.data;
 }
 
-export async function sponsor(petId: string) {
-    const response = await api.post(`/pet/${petId}/sponsor`);
+export async function sponsor(petId: string, amount: number) {
+    const response = await api.post(`/pet/${petId}/sponsor`, { amount });
     return response.data;
 }

@@ -75,9 +75,9 @@ export const postService = {
             throw error;
         }
     },
-    async toggleLikePost() {
+    async toggleLikePostById(id: string) {
         try {
-            const response = await api.post("/post/like");
+            const response = await api.post(`/post/${id}/like`);
             return response.data;
         } catch (error) {
             throw error;
