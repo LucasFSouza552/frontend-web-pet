@@ -1,20 +1,20 @@
 import NavigationRouter from './shared/utils/NavigationRouter'
-import HomeSection from './features/home/views/HomePage'
+import HomeSection from './features/home/views/homePage'
 
 import { Route } from 'react-router-dom';
 
 import LoginSection from './features/auth/views/LoginPage';
-import ProfileSection from './features/profile/views/ProfilePage';
+import ProfileSection from './features/profile/views/profilePage';
 import MatchSection from './features/match/views/MatchPage';
 import { ThemeProvider } from './app/contexts/ThemeContext';
-import FAQSection from './features/support/views/FAQPage';
+import FAQSection from './features/support/views/faqPage';
 import RegisterSection from './features/auth/views/RegisterPage';
 import PostPage from './features/post/views/postPage';
-import CommunityPage from './features/community/views/CommunityPage';
+import CommunityPage from './features/community/views/communityPage';
 import CommunityPag from './features/home/components/CommunityPage';
-import InstitutePage from './features/addPets/views/InstitutePage';
-import ForgotPasswordPage from './features/forgotPassword/views/ForgotPasswordPage';
-import DesiredPetsPage from './features/pet/views/DesiredPetsPage';
+import InstitutePage from './features/addPets/views/institutePage';
+import ForgotPasswordPage from './features/forgotPassword/views/forgotPasswordPage';
+import DesiredPetsPage from './features/pet/views/desiredPetsPage';
 import { AuthContext } from './features/auth/AuthContext';
 import { useContext } from 'react';
 
