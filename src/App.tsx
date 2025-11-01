@@ -1,42 +1,36 @@
-import NavigationRouter from './shared/utils/NavigationRouter'
-import HomeSection from './features/home/views/homePage'
+import { Route } from "react-router-dom"
+import NavigationRouter from "@utils/NavigationRouter"
+import { ThemeProvider } from "@contexts/ThemeContext"
 
-import { Route } from 'react-router-dom';
-
-import LoginSection from './features/auth/views/LoginPage';
-import ProfileSection from './features/profile/views/profilePage';
-import MatchSection from './features/match/views/MatchPage';
-import { ThemeProvider } from './app/contexts/ThemeContext';
-import FAQSection from './features/support/views/faqPage';
-import RegisterSection from './features/auth/views/RegisterPage';
-import PostPage from './features/post/views/postPage';
-import CommunityPage from './features/community/views/communityPage';
-import CommunityPag from './features/home/components/CommunityPage';
-import InstitutePage from './features/addPets/views/institutePage';
-import ForgotPasswordPage from './features/forgotPassword/views/forgotPasswordPage';
-import DesiredPetsPage from './features/pet/views/desiredPetsPage';
-import { AuthContext } from './features/auth/AuthContext';
-import { useContext } from 'react';
+// Pages
+import HomePage from "@features/home/views/HomePage"
+import LoginPage from "@features/account/auth/views/LoginPage"
+// import ProfilePage from "@features/account/profile/views/ProfilePage"
+import RegisterPage from "@features/account/auth/views/RegisterPage"
+// import MatchPage from "./features/match/views/matchPage"
+// import CommunityPage from "./features/community/views/CommunityPage"
+import FAQPage from "@features/support/views/FAQPage"
+// import InstitutePage from "./features/institution/views/InstitutePage"
+// import ForgotPasswordPage from "./features/account/forgotPassword/views/forgotPasswordPage"
+// import DesiredPetsPage from "./features/pet/views/DesiredPetsPage"
+// import PostPage from "./features/post/views/postPage"
 
 function App() {
-
-  const {account} = useContext(AuthContext);
 
   return (
     <ThemeProvider>
       <NavigationRouter>
-        <Route path="/" element={<HomeSection />} />
-        <Route path="/login" element={<LoginSection />} />
-        <Route path="/profile/:username" element={<ProfileSection />} />
-        <Route path="/post/:id" element={<PostPage />} />
-        <Route path="/match" element={<MatchSection />} />
-        <Route path="/register" element={<RegisterSection />} />
-        <Route path="/community" element={<CommunityPage />} />
-        <Route path="/community2" element={<CommunityPag />} />
-        <Route path="/support" element={<FAQSection />} />
-        <Route path="/institution/:id" element={<InstitutePage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/pets" element={<DesiredPetsPage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        {/* <Route path="/profile/:username" element={<ProfilePage />} /> */}
+        <Route path="/register" element={<RegisterPage />} />
+        {/* <Route path="/post/:id" element={<PostPage />} /> */}
+        {/* <Route path="/match" element={<MatchPage />} /> */}
+        {/* <Route path="/community" element={<CommunityPage />} /> */}
+        <Route path="/support" element={<FAQPage />} />
+        {/* <Route path="/institution/:id" element={<InstitutePage />} /> */}
+        {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} /> */}
+        {/* <Route path="/pets" element={<DesiredPetsPage />} /> */}
       </NavigationRouter>
     </ThemeProvider>
   )

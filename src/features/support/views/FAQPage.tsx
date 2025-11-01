@@ -2,11 +2,11 @@ import styled from "styled-components";
 import { HeaderComponent } from "../../../shared/components/HeaderComponent";
 import FAQ from "../components/FAQ";
 import FooterSection from "../../home/components/FooterSection";
-import { AuthContext } from "../../auth/AuthContext";
 import { useContext } from "react";
+import { ProfileContext } from "@/shared/contexts/ProfileContext";
 
 export default function FAQSection() {
-    const { account } = useContext(AuthContext);
+    const { account } = useContext(ProfileContext);
     return (
         <Container>
             <HeaderComponent account={account} />

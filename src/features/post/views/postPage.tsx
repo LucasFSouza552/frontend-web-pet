@@ -1,15 +1,15 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import type { IPost } from "../../../shared/models/Post";
-import { PostsContext } from "../PostContext";
 
-import { AuthContext } from "../../auth/AuthContext";
 import PostComments from "../components/PostComments";
 import { styled } from "styled-components";
-import { HeaderComponent } from "../../../shared/components/HeaderComponent";
 import Section from "../../../shared/styles/SectionStyle";
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import PostsContainerList from "../components/PostsContainerList";
+import { AuthContext } from "@/features/account/auth/AuthContext";
+import { PostsContext } from "../../../app/contexts/PostContext";
+import type { IPost } from "@/shared/models/Post";
+import { HeaderComponent } from "@/shared/components/HeaderComponent";
 
 export default function PostPage() {
     const { account } = useContext(AuthContext);

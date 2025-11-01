@@ -1,4 +1,4 @@
-import type { IAchievement } from "./achievements";
+import type { IAchievement } from "./Achievements";
 
 export interface IAccountStatus {
     postCount: number;

@@ -1,17 +1,17 @@
 import styled, { css, keyframes } from "styled-components"
-import ProfileAvatar from "../../../shared/components/ProfileAvatar"
+import ProfileAvatar from "@components/ProfileAvatar"
 import type { IPost } from "../../../shared/models/Post";
 
 import { FaHeart, FaShareAlt } from "react-icons/fa";
 import { BsChatFill } from "react-icons/bs";
-import { PostsContext } from "../PostContext";
+import { PostsContext } from "@contexts/PostContext";
 import { useContext, useState } from "react";
 
-import AvatarDefault from "../../../shared/assets/images/avatar-default.png";
+import AvatarDefault from "@assets/images/avatar-default.png";
 import { useNavigate } from "react-router-dom";
 import { HiDotsVertical } from "react-icons/hi";
-import SmallProfile from "../../../shared/components/SmallProfile";
-import type { IAccount } from "../../../shared/models/Account";
+import SmallProfile from "@components/SmallProfile";
+import type { IAccount } from "@models/Account";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
