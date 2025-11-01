@@ -1,9 +1,9 @@
 import axios from "axios";
 import { getStorage } from "../utils/StorageUtils";
-const apiUrl = import.meta.env.VITE_API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
-    baseURL: `${apiUrl}/api`,
+    baseURL,
 });
 
 api.interceptors.request.use(config => {
