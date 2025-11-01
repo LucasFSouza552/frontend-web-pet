@@ -4,13 +4,14 @@ import { HeaderComponent } from "../../../shared/components/HeaderComponent";
 import styled from "styled-components";
 import FooterSection from "../components/FooterSection";
 import Assessment from "../components/Assessment";
-import { useContext } from "react";
-import { AuthContext } from "../../auth/AuthContext";
 import GallerySection from "../components/GallerySection";
+import { ProfileContext } from "@/shared/contexts/ProfileContext";
+import { useContext } from "react";
 
 export default function HomeSection() {
 
-  const { account } = useContext(AuthContext);
+  const { account } = useContext(ProfileContext);
+  
   return (
     <Container>
       <HeaderComponent account={account} />

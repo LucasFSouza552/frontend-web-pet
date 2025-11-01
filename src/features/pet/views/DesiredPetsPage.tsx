@@ -3,9 +3,9 @@ import { HeaderComponent } from "../../../shared/components/HeaderComponent";
 import Section from "../../../shared/styles/SectionStyle";
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import { useContext } from "react";
-import { ProfileContext } from "../../profile/ProfileContext";
-import { AuthContext } from "../../auth/AuthContext";
 import MatchCard from "../../match/components/MatchCard";
+import { AuthContext } from "@/features/account/auth/AuthContext";
+import { ProfileContext } from "@/app/contexts/ProfileContext";
 
 export default function DesiredPetsPage() {
     const { account } = useContext(AuthContext);

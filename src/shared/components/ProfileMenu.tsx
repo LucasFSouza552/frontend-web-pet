@@ -3,8 +3,9 @@ import styled from "styled-components";
 import { PrimaryButton } from "./PrimaryButton";
 import ProfileAvatar from "./ProfileAvatar";
 
-import { AuthContext } from "../../features/auth/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
+import { ProfileContext } from "../contexts/ProfileContext";
 
 const ProfileMenuContainer = styled.div`
   display: flex;
@@ -37,7 +38,8 @@ const ProfileMenuContainer = styled.div`
 // Gera um menu de perfil com avatar, nome do usuário e botão de sair
 // Normalmente usado no lado superior direito da tela no header
 export default function ProfileMenu() {
-  const { account, logout } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
+  const { account } = useContext(ProfileContext);
   const navigate = useNavigate();
 
   const profileClick = (accountId: string) => {

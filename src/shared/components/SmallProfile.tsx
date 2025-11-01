@@ -1,11 +1,11 @@
 import { styled } from "styled-components";
 import type { IAccount } from "../models/Account";
-import ProfileDetails from "../../features/profile/components/ProfileDetails";
 import type { IAccountStatus } from "../models/AccountStatus";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 
 import avatarDefault from "@/shared/assets/images/avatar-default.png";
+import ProfileDetails from "@/features/account/profile/components/ProfileDetails";
 
 export default function SmallProfile({ account }: { account: IAccount }) {
 
