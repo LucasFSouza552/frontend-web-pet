@@ -1,65 +1,86 @@
-import * as postApi from "../../shared/api/PostApi";
-import type IComment from "../../shared/models/Comments";
+import api from "../../shared/api/Http";
 import type { IPost } from "../../shared/models/Post";
 
-export async function fetchPosts({ account, page, limit }: { account?: string, page?: number, limit?: number }): Promise<IPost[]> {
-    try {
-        const post = await postApi.getPosts({ account, limit, page, orderBy: "createdAt" });
-        return post;
-    } catch (error: any) {
-        throw Error(error?.message);
-    }
-}
 
-export async function fetchPostById(id: string) {
-    try {
-        const post = await postApi.getPostById(id);
-        return post;
-    } catch (error: any) {
-        throw Error(error?.message);
+export const postService = {
+    async adminRemovePostById(id: string) {
+        try {
+            const response = await api.delete(`/post/${id}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    async searchPosts() {
+        try {
+            const response = await api.get("/post/search");
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    async fetchAllPosts() {
+        try {
+            const response = await api.get("/post");
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    async fetchPostById(id: string) {
+        try {
+            const response = await api.get(`/post/${id}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    async createPost() {
+        try {
+            const response = await api.post("/post");
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    async softDeletePostById(id: string) {
+        try {
+            const response = await api.post(`/post/${id}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    async updatePost(id: string, data: IPost) {
+        try {
+            const response = await api.patch(`/post/${id}`, data);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    async fetchPostWithAuthor(postId: string) {
+        try {
+            const response = await api.get(`/post/${postId}/with-author`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    async fetchPostsWithAuthor() {
+        try {
+            const response = await api.get("/post/with-author");
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    async toggleLikePost() {
+        try {
+            const response = await api.post("/post/like");
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
     }
-}
-
-export async function ToggleLike(postId: string): Promise<IPost> {
-    try {
-        const post = await postApi.toggleLike(postId);
-        return post;
-    } catch (error: any) {
-        throw Error(error?.message);
-    }
-}
-
-export async function addCommentService(postId: string, content: string, parent?: string): Promise<IComment> {
-    try {
-        const post = await postApi.addComment(postId, content, parent);
-        return post;
-    } catch (error: any) {
-        throw Error(error?.message);
-    }
-}
-
-export async function addReplyCommentService(commentId: string, content: string): Promise<IComment> {
-    try {
-        const post = await postApi.addReplyComment(commentId, content);
-        return post;
-    } catch (error: any) {
-        throw Error(error?.message);
-    }
-}
-
-export async function fetchComments({ postId, page, limit }: { postId: string, page?: number, limit?: number }): Promise<IComment[] | null> {
-    try {
-        const Comments = await postApi.getComments(postId, { limit, page, orderBy: "createdAt" });
-        return Comments;
-    } catch (error: any) {
-        throw Error(error?.message);
-    }
-}
-
-export async function deletePost(postId: string): Promise<void> {
-    try {
-        await postApi.softDeletePost(postId);
-    } catch (error: any) {
-        throw Error(error?.message);
-    }
-}
+};
