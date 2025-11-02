@@ -1,11 +1,7 @@
+import type { IAccount } from "./Account";
 import type IComment from "./Comments";
 
-export interface ITypeAccounts {
-  id: string;
-  name: string;
-  avatar?: string;
-  role: "user" | "admin" | "institution";
-}
+
 export interface IPost {
   id: string;
   title: string;
@@ -14,7 +10,7 @@ export interface IPost {
   image?: string[];
   date: string;
   likes: string[];
-  account: ITypeAccounts;
+  account: IAccount;
   createdAt: string;
   updatedAt: string;
 }

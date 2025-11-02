@@ -26,7 +26,7 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
             if (!comments || comments.length === 0) return null;
 
             comments.forEach((comment: IComment) => {
-                comment.account.avatar = pictureService.fetchPicture(comment.account.avatar);
+                return comment.account.avatar = pictureService.fetchPicture(comment.account.avatar);
             });
 
             return addComment(postId, comments);
@@ -40,13 +40,14 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
 
     const createComment = async (postId: string, comment: string) => {
         const newComment = await commentService.createComment(postId, comment);
-        addComment(postId, newComment);
+        newComment.account.avatar = pictureService.fetchPicture(newComment?.account?.avatar);
+        addComment(postId, [newComment]);
     }
 
     const replyComment = async (postId: string, comment: string) => {
         try {
             const newComment = await commentService.replyToComment(postId, comment);
-            addComment(postId, newComment);
+            addComment(postId, [newComment]);
         } catch (error) {
             throw error;
         }

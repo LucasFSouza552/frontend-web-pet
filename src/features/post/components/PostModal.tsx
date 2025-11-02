@@ -2,20 +2,28 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import useManagePostController from "../controller/useManagePostController";
 
-export default function PostModal({ postId, moreOptions = false, closeModal }: { postId: string, moreOptions?: boolean, closeModal?: () => void }) {
+interface PostModalProps {
+    postId: string;
+    moreOptions?: boolean;
+    closeModal: (postId: string) => void;
+    handleAbout: (postId: string) => void;
+}
+
+export default function PostModal({ postId, moreOptions = false, closeModal, handleAbout }: PostModalProps) {
     const navigate = useNavigate();
+
     const { handleDeletePost } = useManagePostController();
 
     const goToPost = () => {
         navigate(`/post/${postId}`);
     }
-
+    
     return (<PostModalContainer >
         <button onClick={goToPost}>Ir para o post</button>
         <button>Compartilhar</button>
-        <button>Sobre a conta</button>
-        {moreOptions && <button onClick={()=> handleDeletePost(postId)}>Excluir</button>}
-        <button onClick={closeModal}>Cancelar</button>
+        <button onClick={() => handleAbout(postId)}>Sobre a conta</button>
+        {moreOptions && <button onClick={() => handleDeletePost(postId)}>Excluir</button>}
+        <button onClick={() => closeModal("")}>Cancelar</button>
     </PostModalContainer>);
 }
 

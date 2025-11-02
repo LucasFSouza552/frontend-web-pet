@@ -23,13 +23,13 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
 
     const loadAvatarPostsImage = async (posts: IPost[] | IPost) => {
         if (!posts) return;
-        if (!Array.isArray(posts)) {
+        if (posts && !Array.isArray(posts)) {
             posts.account.avatar = pictureService.fetchPicture(posts?.account?.avatar);
             return;
         }
 
         posts.forEach((post: any) => {
-            if (post.account.avatar)
+            if (post && post.account.avatar)
                 post.account.avatar = pictureService.fetchPicture(post.account.avatar);
         });
     }
@@ -131,8 +131,9 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const addComment = async (postId: string, comment: IComment[]) => {
+    const addComment = async (postId: string, comment: IComment[]): Promise<IPost> => {
         try {
+
             let updatedPost: IPost | undefined = posts.find(p => p.id === postId);
             if (!updatedPost) {
                 const fetchedPost = await postService.fetchPostWithAuthor(postId);
@@ -140,12 +141,21 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
                 setPosts(prev => [...prev, fetchedPost]);
                 updatedPost = fetchedPost;
             }
+            const post = { ...updatedPost, account: { ...updatedPost.account } }
 
-            const comments = updatedPost.comments ? [...updatedPost.comments, ...comment] : [...comment];
+            if (updatedPost && updatedPost?.account?.avatar) {
+                post.account.avatar = pictureService.fetchPicture(updatedPost.account.avatar);
+            }
+
+            if (!comment) {
+                return post;
+            }
+
+            const comments = updatedPost.comments ? [...comment, ...updatedPost.comments] : [...comment];
 
             setPosts(prev => prev.map(p => p.id === postId ? { ...p, comments } : p));
 
-            return { ...updatedPost, account: { ...updatedPost.account, avatar: pictureService.fetchPicture(updatedPost.account.avatar) }, comments };
+            return { ...post, comments };
 
         } catch (error) {
             throw error;
@@ -157,7 +167,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
             let currentPost = [...posts, ...userPosts].find(p => p.id === postId);
             if (!currentPost) {
                 const fetchedPost = await postService.fetchPostWithAuthor(postId);
-                if(!fetchedPost) throw new Error("Post nao encontrado");
+                if (!fetchedPost) throw new Error("Post nao encontrado");
                 setPosts(prev => [...prev, fetchedPost]);
                 currentPost = fetchedPost;
             }
@@ -166,47 +176,6 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
             throw error;
         }
     }
-
-    // const addComment = async (postId: string, content: string, parent?: string) => {
-    //     try {
-    //         const comment = await addCommentService(postId, content, parent);
-    //         setPosts(prev => prev.map(p => {
-    //             const comments = p.comments ? [...p.comments, comment] : [comment];
-
-    //             return { ...p, comments };
-    //         }));
-
-    //         return comment;
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // };
-
-    // const loadPostComments = async (postId: string, page: number = 1) => {
-    //     try {
-    //         const comments = await postService.fetchComments({ postId, page, limit: LIMIT });
-    //         if (!comments) return [];
-    //         return comments;
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
-
-
-    // const addReplyComment = async (commentId: string, content: string) => {
-    //     try {
-    //         const comment = await addReplyCommentService(commentId, content);
-    //         if (!comment) return;
-    //         setPosts(prev => prev.map(p => {
-    //             if (p.id !== comment?.id) return p;
-    //             const comments = p.comments ? [...p.comments, comment] : [comment];
-
-    //             return { ...p, comments };
-    //         }));
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
 
     const archivePost = async (postId: string) => {
         try {
@@ -225,8 +194,6 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
                 hasMorePosts, hasMoreUserPosts, likePost,
                 loadPostDetails,
                 addComment,
-                // loadPostComments
-                // addReplyComment,
                 archivePost,
                 currentPostDetails
             }}>

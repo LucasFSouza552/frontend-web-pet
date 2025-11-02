@@ -59,7 +59,7 @@ export const postService = {
     },
     async softDeletePostById(id: string) {
         try {
-            const response = await api.post(`/post/${id}`);
+            const response = await api.post(`/post/${id}/delete`);
             return response.data;
         } catch (error) {
             throw error;

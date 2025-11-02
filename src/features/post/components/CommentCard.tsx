@@ -11,7 +11,7 @@ interface PostCommentProps {
     onReply: (parentId: string, content: string) => Promise<void> | void;
 }
 
-export default function PostComment({ comment, onReply }: PostCommentProps) {
+export default function CommentCard({ comment, onReply }: PostCommentProps) {
     const navigate = useNavigate();
     const [replyingTo, setReplyingTo] = useState<string | null>(null);
     const [replyText, setReplyText] = useState<string>("");
@@ -30,7 +30,7 @@ export default function PostComment({ comment, onReply }: PostCommentProps) {
     const handleProfile = (accountId: string) => {
         navigate(`/profile/${accountId}`);
     }
-
+    
     return (
         <CommentArea>
             <CommentHeader className="no-select">
