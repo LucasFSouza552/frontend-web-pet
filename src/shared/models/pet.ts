@@ -1,4 +1,3 @@
-import type { ITypeAccounts } from "../types/ITypeAccounts";
 import type { IAccount } from "./Account";
 
 export default interface IPet {

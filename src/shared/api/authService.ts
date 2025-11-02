@@ -1,6 +1,6 @@
-import api from "@/shared/api/Http";
-import type { IAccount } from "@/shared/models/Account";
-import { removeStorage, saveStorage } from "@/shared/utils/StorageUtils";
+import api from "@api/http";
+import type { IAccount } from "@models/Account";
+import { removeStorage, saveStorage } from "@utils/StorageUtils";
 
 export const authService = {
     async login(email: string, password: string) {

@@ -1,4 +1,4 @@
-import api from "./Http";
+import api from "./http";
 import type { IAccount } from "../models/Account";
 
 export const accountService = {

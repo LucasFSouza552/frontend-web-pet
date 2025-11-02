@@ -1,4 +1,4 @@
-import avatarDefault from "@/shared/assets/images/avatar-default.png";
+import avatarDefault from "@assets/images/avatar-default.png";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export const pictureService = {

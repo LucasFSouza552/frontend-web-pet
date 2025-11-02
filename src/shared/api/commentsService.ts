@@ -1,4 +1,4 @@
-import api from "../../shared/api/Http";
+import api from "@api/http";
 import type IComment from "../models/Comments";
 import buildQuery from "../utils/BuilderQuery";
 
@@ -52,6 +52,7 @@ export const commentService = {
 
     async replyToComment(commentId: string, content: string) {
         try {
+            console.log(content);
             const response = await api.post(`/comment/${commentId}/reply`, { content });
             return response.data;
         } catch (error) {

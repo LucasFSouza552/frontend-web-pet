@@ -1,5 +1,5 @@
 import api from "@api/Http";
-import type { IPost } from "@models/Post";
+import type { IPost } from "@/shared/models/Post";
 import buildQuery from "@utils/BuilderQuery";
 
 interface PostQuery {

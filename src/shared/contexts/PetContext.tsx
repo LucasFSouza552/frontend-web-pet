@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
-import type IPet from "../../shared/models/Pet";
-import type Pet from "../../shared/models/Pet";
+import type IPet from "../models/Pet";
+import type Pet from "../models/Pet";
 
 interface PetContextProps {
     pets: IPet[];

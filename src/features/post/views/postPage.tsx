@@ -14,12 +14,10 @@ import { CommentsContext } from "@/shared/contexts/CommentContext";
 import SideBar from "@/shared/components/Sidebar";
 
 export default function PostPage() {
-    const navigate = useNavigate();
-
     const { id } = useParams<{ id: string }>();
     const { account } = useContext(ProfileContext);
-    const { loadPostDetails, currentPostDetails, posts, userPosts, loadingPosts } = useContext(PostsContext);
-    const { createComment, loadCommentsByPostId } = useContext(CommentsContext);
+    const { currentPostDetails, posts, userPosts } = useContext(PostsContext);
+    const { createComment, loadCommentsByPostId, replyComment } = useContext(CommentsContext);
 
     const [loadingComments, setLoadingComments] = useState(false);
     const [loadingPost, setLoadingPost] = useState(false);
@@ -120,9 +118,7 @@ export default function PostPage() {
                         <PostComments
                             comments={post.comments || []}
                             lastCommentRef={observeLastComment}
-                            onReply={(content: string) => {
-                                createComment(post.id, content);
-                            }}
+                            onReply={replyComment}
                         />
                         {loadingComments && <LoadingText>Carregando mais comentários...</LoadingText>}
                     </PostArea>

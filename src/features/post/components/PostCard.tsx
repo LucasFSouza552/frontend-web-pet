@@ -11,7 +11,7 @@ import AvatarDefault from "@assets/images/avatar-default.png";
 import { useNavigate } from "react-router-dom";
 import { HiDotsVertical } from "react-icons/hi";
 import SmallProfile from "@components/SmallProfile";
-import type { IAccount } from "@models/Account";
+import type { IAccount } from "@/shared/models/Account";
 import { ErrorBoundary } from "@/shared/Error/ErrorBoundary";
 
 const apiUrl = import.meta.env.VITE_API_URL;

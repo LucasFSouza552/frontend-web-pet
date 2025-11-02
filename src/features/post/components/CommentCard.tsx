@@ -18,10 +18,16 @@ export default function CommentCard({ comment, onReply }: PostCommentProps) {
     const [showSmallProfile, setShowSmallProfile] = useState<boolean>(false);
 
     const handleSendReply = async (parentId: string) => {
+        console.log(parentId);
         if (!replyText.trim()) return;
         await onReply(parentId, replyText.trim());
         setReplyText("");
         setReplyingTo(null);
+    }
+
+    const handleToReply = (commentId: string) => {
+        setReplyingTo(prev => prev === commentId ? null : commentId)
+        console.log("Aqui: ", commentId);
     }
 
     const handleSmallProfile = () => {
@@ -30,7 +36,7 @@ export default function CommentCard({ comment, onReply }: PostCommentProps) {
     const handleProfile = (accountId: string) => {
         navigate(`/profile/${accountId}`);
     }
-    
+    console.log("Comment: ", comment);
     return (
         <CommentArea>
             <CommentHeader className="no-select">
@@ -44,7 +50,7 @@ export default function CommentCard({ comment, onReply }: PostCommentProps) {
             <CommentContent>{comment.content}</CommentContent>
 
             <CommentOptions>
-                <p className="no-select" onClick={() => setReplyingTo(prev => prev === comment.id ? null : comment.id)}>Responder</p>
+                <p className="no-select" onClick={() => handleToReply(comment.id)}>Responder</p>
             </CommentOptions>
             {replyingTo === comment.id && (
                 <ReplyBox>
@@ -61,7 +67,7 @@ export default function CommentCard({ comment, onReply }: PostCommentProps) {
                     <div>
                         {replyingTo}
                     </div>
-                    <ReplyButton onClick={() => handleSendReply(comment.id)}>Responder</ReplyButton>
+                    <ReplyButton onClick={() => handleSendReply(replyingTo)}>Responder</ReplyButton>
                     <CancelButton onClick={() => setReplyingTo(null)}>Cancelar</CancelButton>
                 </ReplyBox>
             )}
