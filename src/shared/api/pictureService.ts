@@ -6,7 +6,7 @@ export const pictureService = {
         try {
 
             if (!pictureId) return avatarDefault;
-            const urlRegex = /^https?:\/\S+$/;
+            const urlRegex = /^https?:\/\S*$/;
             if (urlRegex.test(pictureId)) {
                 return pictureId
             }

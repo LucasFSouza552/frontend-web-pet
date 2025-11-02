@@ -1,4 +1,5 @@
 import api from "../../shared/api/Http";
+import type IComment from "../models/Comments";
 import buildQuery from "../utils/BuilderQuery";
 
 export const commentService = {
@@ -39,7 +40,7 @@ export const commentService = {
             throw error;
         }
     },
-    async createComment(postId: string, content: string) {
+    async createComment(postId: string, content: string): Promise<IComment> {
         try {
             const response = await api.post(`/comment/${postId}`, { content });
             return response.data;

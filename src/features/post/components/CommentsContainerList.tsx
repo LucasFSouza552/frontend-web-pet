@@ -1,23 +1,19 @@
 import styled from "styled-components";
-import type IComment from "@models/comments";
+import type IComment from "@models/Comments";
 import defaultAvatar from "@assets/images/avatar-default.png";
-import { useState } from "react";
-import PostComment from "./PostComment";
+import CommentCard from "./CommentCard";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 interface PostCommentsProps {
     comments: IComment[];
     lastCommentRef?: (node: HTMLDivElement | null) => void;
-    postId: string;
     onReply: (parentId: string, content: string) => Promise<void> | void;
 }
 
-export default function PostComments({ comments, lastCommentRef, postId, onReply }: PostCommentsProps) {
+export default function PostComments({ comments, lastCommentRef, onReply }: PostCommentsProps) {
 
     const topLevel = comments?.filter(c => !c.parent);
-
-   
 
     return (
         <CommentsContainer>
@@ -25,10 +21,9 @@ export default function PostComments({ comments, lastCommentRef, postId, onReply
             {topLevel?.map((comment, index) => {
                 const isLast = index === topLevel.length - 1;
                 const replies = comments?.filter(c => c.parent === comment.id) || [];
-
                 return (
                     <CommentContainer key={comment.id} ref={isLast ? lastCommentRef : null}>
-                        <PostComment comment={comment} onReply={onReply} />
+                        <CommentCard comment={comment} onReply={onReply} />
                         {replies.length > 0 && (
                             <RepliesContainer>
                                 {replies.map(reply => (

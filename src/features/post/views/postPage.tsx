@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-import PostComments from "../components/PostComments";
+import PostComments from "../components/CommentsContainerList";
 import { styled } from "styled-components";
 import PostsContainerList from "../components/PostsContainerList";
 
@@ -14,9 +14,11 @@ import { CommentsContext } from "@/shared/contexts/CommentContext";
 import SideBar from "@/shared/components/Sidebar";
 
 export default function PostPage() {
+    const navigate = useNavigate();
+
     const { id } = useParams<{ id: string }>();
     const { account } = useContext(ProfileContext);
-    const { loadPostDetails, currentPostDetails, posts, userPosts } = useContext(PostsContext);
+    const { loadPostDetails, currentPostDetails, posts, userPosts, loadingPosts } = useContext(PostsContext);
     const { createComment, loadCommentsByPostId } = useContext(CommentsContext);
 
     const [loadingComments, setLoadingComments] = useState(false);
@@ -49,12 +51,21 @@ export default function PostPage() {
 
 
     useEffect(() => {
+
         if (!id) return;
+        setLoadingPost(true);
         currentPostDetails(id).then((postDetailed: IPost) => {
-            if (!postDetailed) return;
+            if (!postDetailed) {
+                navigate("/");
+                setLoadingPost(false);
+                return;
+            }
             setPost(postDetailed);
+        }).finally(() => {
+            setLoadingPost(false);
         })
     }, [posts, id, userPosts]);
+
 
     const handleSubmit = () => {
         if (newComment.trim() === "") return;
@@ -68,15 +79,15 @@ export default function PostPage() {
         setLoadingComments(true);
         loadCommentsByPostId(id, commentsPages).then((postDetailed: IPost | null) => {
             if (!postDetailed) return;
+            if (!postDetailed.comments) return console.log("Sem comentários");
             if (postDetailed.comments?.length === 0) setHasMoreComments(false);
-            if (!postDetailed.comments) return;
-            console.log(postDetailed.comments);
             setPost(postDetailed);
         }).finally(() => {
             setLoadingComments(false);
         })
 
     }, [id, commentsPages]);
+
 
     if (!post) {
         return (
@@ -94,7 +105,6 @@ export default function PostPage() {
                     <PostArea>
                         <PostsContainerList account={account} posts={[post]} title="" refCallback={() => { }} />
                         <AddCommentContainer>
-
                             <CommentInputArea>
                                 <CommentInput
                                     value={newComment}
@@ -112,9 +122,8 @@ export default function PostPage() {
                         <PostComments
                             comments={post.comments || []}
                             lastCommentRef={observeLastComment}
-                            postId={post.id}
-                            onReply={async (content: string) => {
-                                await createComment(post.id, content);
+                            onReply={(content: string) => {
+                                createComment(post.id, content);
                             }}
                         />
                         {loadingComments && <LoadingText>Carregando mais comentários...</LoadingText>}

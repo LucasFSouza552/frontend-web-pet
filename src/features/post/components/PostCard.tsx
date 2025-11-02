@@ -5,13 +5,14 @@ import type { IPost } from "../../../shared/models/Post";
 import { FaHeart, FaShareAlt } from "react-icons/fa";
 import { BsChatFill } from "react-icons/bs";
 import { PostsContext } from "@contexts/PostContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import AvatarDefault from "@assets/images/avatar-default.png";
 import { useNavigate } from "react-router-dom";
 import { HiDotsVertical } from "react-icons/hi";
 import SmallProfile from "@components/SmallProfile";
 import type { IAccount } from "@models/Account";
+import { ErrorBoundary } from "@/shared/Error/ErrorBoundary";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -43,9 +44,10 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions }) =
     const { likePost } = useContext(PostsContext);
     const [animateLike, setAnimateLike] = useState(false);
     const [showSmallProfile, setShowSmallProfile] = useState(false);
+
     const handleLike = () => {
         setAnimateLike(true);
-        if(!post.id) return console.error("Post id not found");
+        if (!post.id) return console.error("Post id not found");
         if (!accountId) return;
         likePost(post.id);
 
@@ -55,7 +57,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions }) =
     const handleComments = (postId: string) => {
         if (!accountId) return;
         navigate(`/post/${postId}`);
-    }   
+    }
 
     const handleProfile = (accountId: string) => {
         navigate(`/profile/${accountId}`);
@@ -64,8 +66,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions }) =
     const handleSmallProfile = () => {
         setShowSmallProfile(!showSmallProfile);
     }
-    
-    return (    
+
+    return (
+        <ErrorBoundary>
         <PostContainer>
             <PostContent>
                 <PostHeader className="no-select">
@@ -77,7 +80,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions }) =
                     <PostOptions onClick={() => handleOptions(post.id)}>
                         <HiDotsVertical size={25} />
                     </PostOptions>
-                    
+
                 </PostHeader>
                 <div>{post.title}</div>
                 <PostPictureContainer images={post.image || []} />
@@ -85,9 +88,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions }) =
             <RowContainer>
                 <RowContainer className="no-select">
                     <CircleIcon onClick={handleLike}>
-                        <HeartIcon $animate={animateLike} color={accountId && post.likes.includes(accountId) ? "red" : "white"} />
+                        <HeartIcon $animate={animateLike} color={accountId && post?.likes?.includes(accountId) ? "red" : "white"} />
                     </CircleIcon>
-                    <p>{post.likes.length || 0} Curtidas</p>
+                    <p>{post?.likes?.length || 0} Curtidas</p>
                 </RowContainer>
                 <RowContainer className="no-select" onClick={() => handleComments(post.id)}>
                     <CircleIcon><BsChatFill /></CircleIcon>
@@ -99,6 +102,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions }) =
                 </RowContainer>
             </RowContainer>
         </PostContainer>
+        </ErrorBoundary>
     )
 }
 
