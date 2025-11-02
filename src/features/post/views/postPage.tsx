@@ -56,8 +56,6 @@ export default function PostPage() {
         setLoadingPost(true);
         currentPostDetails(id).then((postDetailed: IPost) => {
             if (!postDetailed) {
-                navigate("/");
-                setLoadingPost(false);
                 return;
             }
             setPost(postDetailed);

@@ -1,13 +1,16 @@
 import { useContext, useState } from "react";
 import { PostsContext } from "@contexts/PostContext";
+import { useNavigate } from "react-router-dom";
 
 export default function useManagePostController() {
     const [error, setError] = useState("");
+    const navigate = useNavigate();
     const { archivePost } = useContext(PostsContext);
 
     const handleDeletePost = async (postId: string) => {
         try {
             await archivePost(postId);
+            navigate('/');
             setError("");
         } catch (error) {
             if (error instanceof Error) {

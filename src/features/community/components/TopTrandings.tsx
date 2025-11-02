@@ -1,34 +1,33 @@
+import { PostsContext } from "@/shared/contexts/PostContext";
+import type { IPost } from "@/shared/models/Post";
+import { useContext, useEffect, useState } from "react";
 import { styled } from "styled-components"
-import { FaPaw } from 'react-icons/fa';
 
 export default function TopTrandings() {
-    return (
-        <RightSideContainer>
-            <div className="active-communities">
-                <h3>Comunidades Ativas</h3>
-                <ul>
-                    <li>
-                        <div className="community-icon">
-                            <FaPaw />
-                        </div>
-                        <span>Amicão</span>
+
+    const { topPosts } = useContext(PostsContext);
+    const [posts, setPosts] = useState<IPost[]>([]);
+
+    useEffect(() => {
+
+        topPosts().then((posts) => setPosts(posts));
+
+    }, [topPosts]);
+
+return (
+    <RightSideContainer>
+        <div className="active-communities">
+            <h3>Mais populares</h3>
+            <ul>
+                {posts.map((post) => (
+                    <li key={post.id}>
+                        <span>{post.title}</span>
                     </li>
-                    <li>
-                        <div className="community-icon">
-                            <FaPaw />
-                        </div>
-                        <span>Gatolândia</span>
-                    </li>
-                    <li>
-                        <div className="community-icon">
-                            <FaPaw />
-                        </div>
-                        <span>Refúgio Animal</span>
-                    </li>
-                </ul>
-            </div>
-        </RightSideContainer>
-    )
+                ))}
+            </ul>
+        </div>
+    </RightSideContainer>
+)
 }
 
 const RightSideContainer = styled.aside`

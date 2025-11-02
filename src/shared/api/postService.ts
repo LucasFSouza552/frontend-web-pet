@@ -97,5 +97,13 @@ export const postService = {
         } catch (error) {
             throw error;
         }
+    },
+    async fetchTopPosts() {
+        try {
+            const response = await api.get("/post/top-posts");
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
     }
 };

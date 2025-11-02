@@ -6,7 +6,7 @@ export default function NoMorePetsCard() {
   const navigate = useNavigate();
 
   const goToCommunity = () => {
-    navigate("/community");
+    navigate("/");
   };
 
   return (

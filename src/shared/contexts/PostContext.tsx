@@ -171,7 +171,11 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
                 setPosts(prev => [...prev, fetchedPost]);
                 currentPost = fetchedPost;
             }
-            return { ...currentPost, account: { ...currentPost.account, avatar: pictureService.fetchPicture(currentPost.account.avatar) } };
+            const post = { ...currentPost };
+            if (post?.account?.avatar) {
+                post.account = { ...post.account, avatar: pictureService.fetchPicture(post.account.avatar) };
+            }
+            return post;
         } catch (error) {
             throw error;
         }
@@ -181,6 +185,16 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         try {
             await postService.softDeletePostById(postId);
             setPosts((prevPost) => prevPost.filter((post) => post.id !== postId))
+
+            setUserPosts((prevPost) => prevPost.filter((post) => post.id !== postId))
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const topPosts = async () => {
+        try {
+            return await postService.fetchTopPosts();
         } catch (error) {
             throw error;
         }
@@ -195,7 +209,8 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
                 loadPostDetails,
                 addComment,
                 archivePost,
-                currentPostDetails
+                currentPostDetails,
+                topPosts
             }}>
             {children}
         </PostsContext.Provider>
@@ -231,4 +246,6 @@ interface PostsContextType {
     archivePost: (postId: string) => Promise<void>
 
     currentPostDetails: (postId: string) => Promise<IPost>
+
+    topPosts: () => Promise<IPost[]>
 }
