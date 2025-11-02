@@ -1,19 +1,23 @@
 import styled from "styled-components";
 import type IPet from "../../../shared/models/Pet";
-const apiUrl = import.meta.env.VITE_API_URL;
 
 import { IoLocationSharp } from "react-icons/io5";
 import { FaWeightHanging, FaShieldDog, FaShareFromSquare } from "react-icons/fa6";
 import { IoMdMale, IoMdFemale, IoMdStar } from "react-icons/io";
-import { FaHeart, FaHeartBroken, FaInfo } from "react-icons/fa";
 import { useState } from "react";
-import { usePetInteractionController } from "../../pet/controllers/UsePetInteractionController";
+import { usePetInteractionController } from "../../pet/controllers/usePetInteractionController";
 import MatchCardSkeleton from "./MatchCardSkeleton";
+import { pictureService } from "@/shared/api/pictureService";
+import PetIconsMenu from "./PetIconsMenu";
+import { PiBird, PiCat, PiDog } from "react-icons/pi";
+import SponsorModal from "./PetModalSponsor";
+
 
 export default function MatchCard({ Pet }: { Pet: IPet }) {
     const [imagePage, setImagePage] = useState(0);
     const [showInfo, setShowInfo] = useState(false);
-    const { handleRequestAdoption, handleRejectAdoption, handleSponsor, loading, error } = usePetInteractionController();
+    const [modalSponsor, setModalSponsor] = useState(false);
+    const { loading, error, handleRequestAdoption, handleRejectAdoption, handleSponsor } = usePetInteractionController();
 
     const handleClick = async () => {
         const imageIndex = imagePage < Pet.images.length - 1 ? imagePage + 1 : 0;
@@ -21,8 +25,18 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
     }
 
     if (loading || !Pet) {
-        return (<MatchCardSkeleton/>);
+        return (<MatchCardSkeleton />);
     }
+
+    const pictures = Pet.images.map(async (image) => {
+        return await pictureService.fetchPicture(image);
+    });
+
+    const handleModalSponsor = () => {
+        setModalSponsor(!modalSponsor);
+    }
+    // Mostra isso quando o pet não ter foto
+    // import { SiDatadog } from "react-icons/si";
 
     return (
         <CardContainer>
@@ -32,7 +46,7 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
                     <PetImageSection>{Pet.images.map((_, index) => {
                         return <span className={imagePage === index ? "active" : ""}></span>
                     })}</PetImageSection>
-                    {Pet?.images.length > 0 && <img src={`${apiUrl}/api/picture/${Pet.images[imagePage]}`} alt="" />}
+                    {Pet?.images.length > 0 && <img src={`${pictures[imagePage]}`} alt="" />}
                 </PetPictureContainer>
                 <PetInfo>
                     <PetLabel>
@@ -61,23 +75,7 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
                     </Info>
                 </PetInfo>
             </CardDetails>
-            <CardOptions>
-                <OptionIcons title="Gostei" onClick={() => handleRequestAdoption(Pet.id)}>
-                    <FaHeart size={25} />
-                </OptionIcons>
-                <OptionIcons title="Não gostei" onClick={() => handleRejectAdoption(Pet.id)}>
-                    <FaHeartBroken size={25} />
-                </OptionIcons>
-                <OptionIcons title="Apadrinhar" onClick={() => handleSponsor(Pet.id)}>
-                    <IoMdStar size={30} />
-                </OptionIcons>
-                <OptionIcons title="Informações" onClick={() => setShowInfo(true)}>
-                    <FaInfo size={25} />
-                </OptionIcons>
-                <OptionIcons title="Compartilhar">
-                    <FaShareFromSquare size={25} />
-                </OptionIcons>
-            </CardOptions>
+            <PetIconsMenu pet={Pet} setShowInfo={setShowInfo} handleRequestAdoption={handleRequestAdoption} handleRejectAdoption={handleRejectAdoption} handleModalSponsor={handleModalSponsor} />
             {showInfo && (
                 <ModalOverlay onClick={() => setShowInfo(false)}>
                     <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -103,7 +101,7 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
                             </Info>
                         </ModalBody>
                         <ModalFooter>
-                            <ActionButton disabled={loading} onClick={() => handleSponsor(Pet.id)}>
+                            <ActionButton disabled={loading} onClick={() => { }}>
                                 {loading ? "Processando..." : "Apadrinhar"}
                             </ActionButton>
                         </ModalFooter>
@@ -111,6 +109,8 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
                     </ModalContent>
                 </ModalOverlay>
             )}
+
+            <SponsorModal visible={modalSponsor} onClose={handleModalSponsor} onDonate={handleSponsor} petId={Pet.id} />
         </CardContainer>
     );
 }
@@ -165,7 +165,7 @@ const CardContainer = styled.div`
     overflow: hidden;
     color: white;
     max-height: 80%;
-    min-height: 80%;
+    min-height: 100%;
 `;
 
 const PetInfo = styled.div`
@@ -186,20 +186,7 @@ const CardDetails = styled.div`
     flex-direction: column;
 `;
 
-const CardOptions = styled.div`
-    height: fit-content;
-    padding: 10px 0px;
-    flex: 1;
-    background-color: ${({ theme }) => theme.colors.quarternary};
-    border-radius: 0px 20px 20px 0px;
-    gap: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: auto;
-    margin-bottom: auto;
-`;
+
 
 
 const PetPictureContainer = styled.div`
@@ -235,16 +222,6 @@ const PetDescription = styled.p`
     color: white;
 `;
 
-const OptionIcons = styled.div`
-    background-color: ${({ theme }) => theme.colors.secondary};
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    justify-content: center;
-`;
 
 const ModalOverlay = styled.div`
     position: fixed;

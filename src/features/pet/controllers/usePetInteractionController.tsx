@@ -1,6 +1,6 @@
+import { ProfileContext } from "@/shared/contexts/ProfileContext";
 import { useContext, useState } from "react";
-import { petService } from "../PetService";
-import { ProfileContext } from "../../profile/ProfileContext";
+import { petService } from "../petService";
 
 export function usePetInteractionController() {
     const { loadFeed } = useContext(ProfileContext)
@@ -10,7 +10,7 @@ export function usePetInteractionController() {
     async function handleRequestAdoption(petId: string) {
         try {
             setLoading(true);
-            await petService.requestAdoption(petId);
+            await petService.requestPetAdoption(petId);
             setError(null);
             await loadFeed();
         } catch (err: any) {
@@ -23,7 +23,7 @@ export function usePetInteractionController() {
     async function handleRejectAdoption(petId: string) {
         try {
             setLoading(true);
-            await petService.rejectAdoption(petId);
+            await petService.rejectPetAdoption(petId);
             setError(null);
             await loadFeed();
         } catch (err: any) {
@@ -33,11 +33,22 @@ export function usePetInteractionController() {
         }
     }
 
-    async function handleSponsor(petId: string) {
+    async function handleSponsor(petId: string, amount: number) {
         try {
             setLoading(true);
-            await petService.sponsor(petId);
+            const response = await petService.sponsorPet(petId, amount);
             setError(null);
+            const width = 1000;
+            const height = 1100;
+            const left = (window.innerWidth - width) / 2;
+            const top = (window.innerHeight - height) / 2;
+
+            window.open(
+                response.url,
+                "MercadoPago",
+                `width=${width},height=${height},top=${top},left=${left}`
+            );
+
         } catch (err: any) {
             setError(err.message);
         } finally {

@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import type { IAccount } from "../../../shared/models/Account";
+import type { IAccount } from "@models/Account";
 import { BsPatchCheckFill } from "react-icons/bs";
-import type { IAccountStatus } from "../../../shared/models/AccountStatus";
+import type { IAccountStatus } from "@models/AccountStatus";
 
 import { FaShieldDog } from "react-icons/fa6";
 import { FaHandsHelping } from "react-icons/fa";
@@ -10,14 +10,21 @@ import { FaHandsHelping } from "react-icons/fa";
 
 import { IoPaw } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import ProfileDetailsSkeleton from "./ProfileDetailsSkeleton";
 
 export default function ProfileDetails({ account, accountStatus }: { account: IAccount | null, accountStatus?: IAccountStatus | null }) {
   const navigate = useNavigate();
+
+  if (!account) { return null; }
+
   const goToProfile = () => {
     navigate(`/profile/${account?.id}`);
   }
 
-  if (!account) { return null; }
+  if (!account || !accountStatus) {
+    return <ProfileDetailsSkeleton />
+  }
+
   return (
     <ProfileDetailsContainer>
       <ProfileConteinter>
@@ -28,7 +35,7 @@ export default function ProfileDetails({ account, accountStatus }: { account: IA
 
         <BadgesContainer>
           {account?.verified && <VerifiedBadge color={"#00D9FF"} size={20} />}
-          {accountStatus?.achievements.map((achievement, index) => {
+          {(accountStatus || [])?.achievements?.map((achievement, index) => {
             switch (achievement.type) {
               case "adoption":
                 return (

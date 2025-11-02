@@ -3,33 +3,31 @@ import { useParams } from "react-router-dom";
 
 import PostComments from "../components/PostComments";
 import { styled } from "styled-components";
-import Section from "../../../shared/styles/SectionStyle";
-import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import PostsContainerList from "../components/PostsContainerList";
-import { AuthContext } from "@/features/account/auth/AuthContext";
-import { PostsContext } from "../../../app/contexts/PostContext";
+
+import Section from "@styles/SectionStyle";
+import backgroundPage from "@assets/images/background-page.jpg";
+import { PostsContext } from "@contexts/PostContext";
 import type { IPost } from "@/shared/models/Post";
-import { HeaderComponent } from "@/shared/components/HeaderComponent";
+import { ProfileContext } from "@/shared/contexts/ProfileContext";
+import { CommentsContext } from "@/shared/contexts/CommentContext";
+import SideBar from "@/shared/components/Sidebar";
 
 export default function PostPage() {
-    const { account } = useContext(AuthContext);
-    const { loadPostDetails, loadPostComments, posts, addComment } = useContext(PostsContext);
-
-    const [post, setPost] = useState<IPost | null>(null);
-
     const { id } = useParams<{ id: string }>();
+    const { account } = useContext(ProfileContext);
+    const { loadPostDetails, currentPostDetails, posts, userPosts } = useContext(PostsContext);
+    const { createComment, loadCommentsByPostId } = useContext(CommentsContext);
 
+    const [loadingComments, setLoadingComments] = useState(false);
     const [loadingPost, setLoadingPost] = useState(false);
+    const [post, setPost] = useState<IPost>();
+
+
     const [commentsPages, setCommentsPages] = useState(1);
     const [hasMoreComments, setHasMoreComments] = useState(true);
     const [newComment, setNewComment] = useState("");
 
-    const handleSubmit = () => {
-        if (newComment.trim() === "") return;
-        const updatedPost = addComment(post?.id || "", newComment);
-        setNewComment("");
-        setPost((prevPost) => prevPost ? { ...prevPost, ...updatedPost } : prevPost);
-    };
 
     const observer = useRef<IntersectionObserver | null>(null);
 
@@ -49,74 +47,88 @@ export default function PostPage() {
         [loadingPost]
     );
 
+
     useEffect(() => {
         if (!id) return;
-        setLoadingPost(true);
-        loadPostDetails(id).then((p: IPost) => {
-            if (!p) return;
-            setPost((prevPost) => prevPost ? { ...p, comments: [...(p.comments || []), ...(prevPost.comments || [])] } : p);
+        currentPostDetails(id).then((postDetailed: IPost) => {
+            if (!postDetailed) return;
+            setPost(postDetailed);
         })
-            .finally(() => setLoadingPost(false));
+    }, [posts, id, userPosts]);
 
-    }, [id, posts]);
+    const handleSubmit = () => {
+        if (newComment.trim() === "") return;
+        const updatedPost = createComment(post?.id || "", newComment);
+        setNewComment("");
+    };
+
 
     useEffect(() => {
         if (!id || !hasMoreComments) return;
-        setLoadingPost(true);
-        loadPostComments(id, commentsPages)
-            .then((comments) => {
-                if ((comments || [])?.length < 10) setHasMoreComments(false);
-                if (!comments) return;
-                setPost(prev => prev ? { ...prev, comments: [...(prev.comments || []), ...comments] } : prev);
-            })
-            .finally(() => setLoadingPost(false));
+        setLoadingComments(true);
+        loadCommentsByPostId(id, commentsPages).then((postDetailed: IPost | null) => {
+            if (!postDetailed) return;
+            if (postDetailed.comments?.length === 0) setHasMoreComments(false);
+            if (!postDetailed.comments) return;
+            console.log(postDetailed.comments);
+            setPost(postDetailed);
+        }).finally(() => {
+            setLoadingComments(false);
+        })
+
     }, [id, commentsPages]);
 
     if (!post) {
         return (
-            <LoadingContainer>
-                <div className="spinner"></div>
-            </LoadingContainer>
+            <div>
+
+            </div>
         );
     }
 
     return (
         <PostContainer>
-            <HeaderComponent account={account} />
             <SectionContent>
-                <PostArea>
-                    <PostsContainerList account={account} posts={[post]} title="" refCallback={() => { }} />
-                    <AddCommentContainer>
-                        <CommentInputArea>
-                            <CommentInput
-                                value={newComment}
-                                onChange={(e) => setNewComment(e.target.value)}
-                                placeholder="Adicione um comentário..."
-                                onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
-                                    const target = e.currentTarget;
-                                    target.style.height = "auto";
-                                    target.style.height = target.scrollHeight + "px";
-                                }}
-                            />
-                            <SubmitButton onClick={handleSubmit}>Enviar</SubmitButton>
-                        </CommentInputArea>
-                    </AddCommentContainer>
-                    <PostComments
-                        comments={post.comments || []}
-                        lastCommentRef={observeLastComment}
-                        postId={post.id}
-                        onReply={async (parentId: string, content: string) => {
-                            const newC = await addComment(post.id, content, parentId);
-                            setPost(prev => prev ? { ...prev, comments: [...(prev.comments || []), newC] } : prev);
-                        }}
-                    />
-                    {loadingPost && <LoadingText>Carregando mais comentários...</LoadingText>}
-                </PostArea>
+                <SideBar account={account} />
+                <PostWrapper>
+                    <PostArea>
+                        <PostsContainerList account={account} posts={[post]} title="" refCallback={() => { }} />
+                        <AddCommentContainer>
+
+                            <CommentInputArea>
+                                <CommentInput
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    placeholder="Adicione um comentário..."
+                                    onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
+                                        const target = e.currentTarget;
+                                        target.style.height = "auto";
+                                        target.style.height = target.scrollHeight + "px";
+                                    }}
+                                />
+                                <SubmitButton onClick={handleSubmit}>Enviar</SubmitButton>
+                            </CommentInputArea>
+                        </AddCommentContainer>
+                        <PostComments
+                            comments={post.comments || []}
+                            lastCommentRef={observeLastComment}
+                            postId={post.id}
+                            onReply={async (content: string) => {
+                                await createComment(post.id, content);
+                            }}
+                        />
+                        {loadingComments && <LoadingText>Carregando mais comentários...</LoadingText>}
+                    </PostArea>
+                </PostWrapper>
             </SectionContent>
         </PostContainer>
     );
 }
 
+const PostWrapper = styled.div`
+    width: 100%;
+    height: max-content;
+`;
 const AddCommentContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -163,27 +175,6 @@ const SubmitButton = styled.button`
     }
 `;
 
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100dvh;
-  width: 100%;
-
-  .spinner {
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    border-left-color: white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-`;
-
 const LoadingText = styled.p`
   color: #aaa;
   margin-top: 10px;
@@ -215,10 +206,11 @@ const PostContainer = styled.div`
 
 const SectionContent = styled(Section)`
     display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
-    flex-direction: column; width: 100%;
+    align-items: flex-start;
+    justify-content: space-around;
+    flex-direction: row; 
+    width: 100%;
     height: 100%;
     min-height: calc(100dvh - var(--header-height));
     background-image: url(${backgroundPage});

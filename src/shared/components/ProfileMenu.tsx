@@ -48,6 +48,7 @@ export default function ProfileMenu() {
 
   if (!account) return null;
 
+
   return (
     <ProfileMenuContainer onClick={() => profileClick(account?.id)}>
       <ProfileAvatar avatar={account?.avatar} alt="avatar" />

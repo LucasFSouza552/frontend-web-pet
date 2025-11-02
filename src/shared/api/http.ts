@@ -3,7 +3,7 @@ import { getStorage } from "../utils/StorageUtils";
 const baseURL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
-    baseURL,
+    baseURL
 });
 
 api.interceptors.request.use(config => {

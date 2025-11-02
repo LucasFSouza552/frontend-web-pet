@@ -3,7 +3,7 @@ import type { IPost } from "../../../shared/models/Post";
 import React from "react";
 import type { IAccount } from "../../../shared/models/Account";
 import PostModal from "./PostModal";
-import PostComponent from "./PostComponent";
+import PostCard from "./PostCard";
 
 interface PostsContainerProps {
     account?: IAccount | null;
@@ -27,7 +27,7 @@ export default function PostsContainerList({ account, posts, title, refCallback 
                 const isLast = index === posts.length - 1;
                 return (
                     <PostWrapper ref={isLast ? refCallback : null} key={post.id}>
-                        <PostComponent key={post.id} post={post} accountId={account?.id || ""} handleOptions={handleOptions} />
+                        <PostCard key={post.id} post={post} accountId={account?.id || ""} handleOptions={handleOptions} />
                         {postOptions === post.id && <PostModal postId={post.id} moreOptions={post.account.id === account?.id} closeModal={handleOptions} />}
                     </PostWrapper>
                 );

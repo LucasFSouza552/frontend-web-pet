@@ -27,7 +27,7 @@ const PostPictureContainer = ({ images }: { images: string[] }) => {
     return (
         <PictureContainer>
             {images.map((image) => <PostPicture>
-                <img src={`${apiUrl}/api/picture/${image}`} alt={image || ""}
+                <img src={`${apiUrl}/picture/${image}`} alt={image || ""}
                     onError={(e) => {
                         (e.currentTarget as HTMLImageElement).src = AvatarDefault;
                     }} />
@@ -43,10 +43,10 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions }) =
     const { likePost } = useContext(PostsContext);
     const [animateLike, setAnimateLike] = useState(false);
     const [showSmallProfile, setShowSmallProfile] = useState(false);
-
     const handleLike = () => {
-        if (!accountId) return;
         setAnimateLike(true);
+        if(!post.id) return console.error("Post id not found");
+        if (!accountId) return;
         likePost(post.id);
 
         setTimeout(() => setAnimateLike(false), 400);
@@ -123,7 +123,7 @@ const PostOptions = styled.div`
 `;
 
 const PostProfileContainer = styled.div`
-     display: flex;
+    display: flex;
     align-items: center;
     flex-direction: row;
     gap: 10px;
@@ -244,7 +244,7 @@ const PostHeader = styled.div`
     flex-direction: row;
     justify-content: space-between;
     background-color: ${({ theme }) => theme.colors.quinary};
-    padding: 8px;
+    
     
     position: relative;
     border-radius: 50px;

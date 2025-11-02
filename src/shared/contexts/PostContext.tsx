@@ -1,7 +1,8 @@
-
 import { createContext, useState, type ReactNode } from "react";
 import type { IPost } from "@models/Post";
 import { postService } from "@api/postService";
+import type IComment from "../models/Comments";
+import { pictureService } from "../api/pictureService";
 
 export const PostsContext = createContext<PostsContextType>({} as PostsContextType);
 
@@ -20,28 +21,45 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     const [hasMoreUserPosts, setHasMoreUserPosts] = useState(true);
     const [loadingUserPosts, setLoadingUserPosts] = useState(false);
 
+    const loadAvatarPostsImage = async (posts: IPost[] | IPost) => {
+        if (!posts) return;
+        if (!Array.isArray(posts)) {
+            posts.account.avatar = pictureService.fetchPicture(posts?.account?.avatar);
+            return;
+        }
+
+        posts.forEach((post: any) => {
+            if (post.account.avatar)
+                post.account.avatar = pictureService.fetchPicture(post.account.avatar);
+        });
+    }
+
 
     const loadPostDetails = async (id: string) => {
+
+        setLoadingPosts(true);
         try {
             const existingPost = posts.find(p => p.id === id);
             if (existingPost) {
                 return existingPost;
             }
 
-            const fetchedPost = await postService.fetchPostById(id);
-
+            const fetchedPost = await postService.fetchPostWithAuthor(id);
+            loadAvatarPostsImage(fetchedPost);
             setPosts(prev => [...prev, fetchedPost]);
 
             return fetchedPost;
         } catch (error) {
             throw error;
+        } finally {
+            setLoadingPosts(true);
         }
     }
 
     const loadMoreUserPosts = async (account?: string) => {
         try {
-            const newPosts = await fetchPosts({ account, page: userPage, limit: LIMIT });
-            
+            const newPosts = await postService.fetchPostsWithAuthor({ account, page: userPage, limit: LIMIT });
+            loadAvatarPostsImage(newPosts);
             setUserPosts(prevPosts => [...prevPosts, ...newPosts]);
             setUserPage(prevPage => prevPage + 1);
             setHasMoreUserPosts(newPosts.length === LIMIT);
@@ -56,6 +74,9 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         setLoadingUserPosts(true);
         try {
             const posts = await postService.fetchPostsWithAuthor({ account, page: 1, limit: LIMIT });
+
+            loadAvatarPostsImage(posts);
+
             setUserPage(2);
             setUserPosts(posts);
             setHasMoreUserPosts(posts.length === LIMIT);
@@ -71,6 +92,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         try {
             const newPosts = await postService.fetchPostsWithAuthor({ page, limit: LIMIT });
 
+            loadAvatarPostsImage(newPosts);
             setPosts(prevPosts => [...prevPosts, ...newPosts]);
             setPage(prevPage => prevPage + 1);
             setHasMorePosts(newPosts.length === LIMIT);
@@ -84,7 +106,9 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     const refreshPosts = async () => {
         setLoadingPosts(true);
         try {
-            const posts = await  postService.fetchPostsWithAuthor({ page: 1, limit: LIMIT });
+            const posts = await postService.fetchPostsWithAuthor({ page: 1, limit: LIMIT });
+
+            loadAvatarPostsImage(posts);
             setPage(2);
             setPosts(posts);
             setHasMorePosts(posts.length === LIMIT);
@@ -97,55 +121,92 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
 
     const likePost = async (postId: string) => {
         try {
+            if (!postId) throw new Error("Post não encontrado");
             const post = await postService.toggleLikePostById(postId);
-            setPosts(prev => prev.map(p => (p.id === post.id ? post : p)));
-            setUserPosts(prev => prev.map(p => (p.id === post.id ? post : p)));
+            setPosts(prev => prev.map(p => (p.id === post.id ? { ...p, likes: post.likes } : p)));
+            setUserPosts(prev => prev.map(p => (p.id === post.id ? { ...p, likes: post.likes } : p)));
             return post;
         } catch (error) {
             throw error;
         }
     };
 
-    const addComment = async (postId: string, content: string, parent?: string) => {
+    const addComment = async (postId: string, comment: IComment[]) => {
         try {
-            const comment = await addCommentService(postId, content, parent);
-            setPosts(prev => prev.map(p => {
-                const comments = p.comments ? [...p.comments, comment] : [comment];
+            let updatedPost: IPost | undefined = posts.find(p => p.id === postId);
+            if (!updatedPost) {
+                const fetchedPost = await postService.fetchPostWithAuthor(postId);
+                if (!fetchedPost) throw new Error("Post não encontrado");
+                setPosts(prev => [...prev, fetchedPost]);
+                updatedPost = fetchedPost;
+            }
 
-                return { ...p, comments };
-            }));
+            const comments = updatedPost.comments ? [...updatedPost.comments, ...comment] : [...comment];
 
-            return comment;
-        } catch (error) {
-            throw error;
-        }
-    };
+            setPosts(prev => prev.map(p => p.id === postId ? { ...p, comments } : p));
 
-    const loadPostComments = async (postId: string, page: number = 1) => {
-        try {
-            const comments = await postService.fetchComments({ postId, page, limit: LIMIT });
-            if (!comments) return [];
-            return comments;
+            return { ...updatedPost, account: { ...updatedPost.account, avatar: pictureService.fetchPicture(updatedPost.account.avatar) }, comments };
+
         } catch (error) {
             throw error;
         }
     }
 
-
-    const addReplyComment = async (commentId: string, content: string) => {
+    const currentPostDetails = async (postId: string) => {
         try {
-            const comment = await addReplyCommentService(commentId, content);
-            if (!comment) return;
-            setPosts(prev => prev.map(p => {
-                if (p.id !== comment?.id) return p;
-                const comments = p.comments ? [...p.comments, comment] : [comment];
-
-                return { ...p, comments };
-            }));
+            let currentPost = [...posts, ...userPosts].find(p => p.id === postId);
+            if (!currentPost) {
+                const fetchedPost = await postService.fetchPostWithAuthor(postId);
+                if(!fetchedPost) throw new Error("Post nao encontrado");
+                setPosts(prev => [...prev, fetchedPost]);
+                currentPost = fetchedPost;
+            }
+            return { ...currentPost, account: { ...currentPost.account, avatar: pictureService.fetchPicture(currentPost.account.avatar) } };
         } catch (error) {
             throw error;
         }
     }
+
+    // const addComment = async (postId: string, content: string, parent?: string) => {
+    //     try {
+    //         const comment = await addCommentService(postId, content, parent);
+    //         setPosts(prev => prev.map(p => {
+    //             const comments = p.comments ? [...p.comments, comment] : [comment];
+
+    //             return { ...p, comments };
+    //         }));
+
+    //         return comment;
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // };
+
+    // const loadPostComments = async (postId: string, page: number = 1) => {
+    //     try {
+    //         const comments = await postService.fetchComments({ postId, page, limit: LIMIT });
+    //         if (!comments) return [];
+    //         return comments;
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
+
+
+    // const addReplyComment = async (commentId: string, content: string) => {
+    //     try {
+    //         const comment = await addReplyCommentService(commentId, content);
+    //         if (!comment) return;
+    //         setPosts(prev => prev.map(p => {
+    //             if (p.id !== comment?.id) return p;
+    //             const comments = p.comments ? [...p.comments, comment] : [comment];
+
+    //             return { ...p, comments };
+    //         }));
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
 
     const archivePost = async (postId: string) => {
         try {
@@ -163,9 +224,11 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
                 userPosts, setUserPosts, refreshUserPosts, loadMoreUserPosts, loadingUserPosts,
                 hasMorePosts, hasMoreUserPosts, likePost,
                 loadPostDetails,
-                loadPostComments, addComment,
-                addReplyComment,
-                archivePost
+                addComment,
+                // loadPostComments
+                // addReplyComment,
+                archivePost,
+                currentPostDetails
             }}>
             {children}
         </PostsContext.Provider>
@@ -195,8 +258,10 @@ interface PostsContextType {
 
     likePost: (post: string) => Promise<IPost>;
 
-    loadPostComments: (id: string, page: number) => Promise<IComment[] | null>;
-    addComment: (postId: string, content: string, parent?: string) => Promise<IComment>;
-    addReplyComment: (commentId: string, content: string) => Promise<void>;
+    // loadPostComments: (id: string, page: number) => Promise<IComment[] | null>;
+    addComment: (postId: string, comment: IComment[]) => Promise<IPost>;
+    // addReplyComment: (commentId: string, content: string) => Promise<void>;
     archivePost: (postId: string) => Promise<void>
+
+    currentPostDetails: (postId: string) => Promise<IPost>
 }

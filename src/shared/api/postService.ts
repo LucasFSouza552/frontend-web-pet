@@ -43,8 +43,14 @@ export const postService = {
             throw error;
         }
     },
-    async createPost() {
+    async createPost(data: IPost) {
         try {
+            const formData = new FormData();
+            formData.append("title", data.title);
+            formData.append("content", data.content);
+            if (data.image) {
+                data.image.forEach(img => formData.append("images", img));
+            }
             const response = await api.post("/post");
             return response.data;
         } catch (error) {
@@ -67,7 +73,7 @@ export const postService = {
             throw error;
         }
     },
-    async fetchPostWithAuthor(postId: string) {
+    async fetchPostWithAuthor(postId: string): Promise<IPost> {
         try {
             const response = await api.get(`/post/${postId}/with-author`);
             return response.data;

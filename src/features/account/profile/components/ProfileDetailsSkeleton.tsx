@@ -5,12 +5,14 @@ export default function ProfileDetailsSkeleton() {
     <ProfileDetailsContainer>
       <ProfileConteinter>
         <SkeletonName />
+
         <BadgesContainer>
           <SkeletonBadge />
           <SkeletonBadge />
           <SkeletonBadge />
         </BadgesContainer>
       </ProfileConteinter>
+
       <ProfileStats>
         <SkeletonStatBadge />
       </ProfileStats>
@@ -41,11 +43,6 @@ const ProfileDetailsContainer = styled.div`
   justify-content: center;
   margin-left: 20px;
   height: 80%;
-  background-color: #333;
-  padding: 10px;
-  border-radius: 12px;
-  width: fit-content;
-  color: white;
 `;
 
 const ProfileConteinter = styled.div`
@@ -53,7 +50,7 @@ const ProfileConteinter = styled.div`
   flex-direction: row;
   align-items: center;
   width: 100%;
-  gap: 10px;
+  border-radius: 10px;
 `;
 
 const BadgesContainer = styled.div`
@@ -64,17 +61,11 @@ const BadgesContainer = styled.div`
   margin: 0px 10px;
 `;
 
-const ProfileStats = styled.div`
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-`;
-
+const ProfileStats = styled.div``;
 
 const SkeletonName = styled(SkeletonBase)`
   width: 150px;
-  height: 25px;
-  border-radius: 10px;
+  height: 24px;
 `;
 
 const SkeletonBadge = styled(SkeletonBase)`
@@ -85,6 +76,7 @@ const SkeletonBadge = styled(SkeletonBase)`
 
 const SkeletonStatBadge = styled(SkeletonBase)`
   width: 130px;
-  height: 25px;
+  height: 22px;
   border-radius: 25px;
+  margin-top: 8px;
 `;

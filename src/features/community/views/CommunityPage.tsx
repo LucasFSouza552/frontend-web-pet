@@ -1,55 +1,53 @@
 import styled from "styled-components";
-import { HeaderComponent } from "../../../shared/components/HeaderComponent";
-import { AuthContext } from "../../auth/AuthContext";
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import { useCallback, useContext, useEffect, useRef } from "react";
 import Section from "../../../shared/styles/SectionStyle";
-import { PostsContext } from "../../../app/contexts/PostContext";
 import PostsContainerList from "../../post/components/PostsContainerList";
-import Explorer from "../components/Explorer";
 import TopTrandings from "../components/TopTrandings";
+import { ProfileContext } from "@/shared/contexts/ProfileContext";
+import { PostsContext } from "@/shared/contexts/PostContext";
+import SideBar from "@/shared/components/Sidebar";
 
 export default function CommunityPage() {
-    const { account } = useContext(AuthContext);
-    const { posts, refreshPosts, loadMorePosts, hasMorePosts, loadingPosts } = useContext(PostsContext);
-    const observer = useRef<IntersectionObserver>(null);
+  const { account } = useContext(ProfileContext);
+  const { posts, refreshPosts, loadMorePosts, hasMorePosts, loadingPosts } = useContext(PostsContext);
+  const observer = useRef<IntersectionObserver>(null);
 
-    useEffect(() => {
-        refreshPosts();
-    }, []);
+  useEffect(() => {
+    refreshPosts();
+  }, []);
 
-    const lastPostRef = useCallback(
-        (node: HTMLDivElement | null) => {
-            if (observer.current) observer.current.disconnect();
-            observer.current = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting && hasMorePosts) {
-                    loadMorePosts();
-                }
-            });
-            if (node) observer.current.observe(node);
-        },
-        [hasMorePosts, loadMorePosts, loadingPosts]
-    );
+  const lastPostRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMorePosts) {
+          loadMorePosts();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [hasMorePosts, loadMorePosts, loadingPosts]
+  );
 
-    return (
-        <Container>
-            <HeaderComponent account={account} />
-            <MainFlex>
-                <SectionContent>
-                    <Explorer />
-                    <MiddleSideContainer>
-                        <PostsContainerList 
-                            account={account} 
-                            posts={posts} 
-                            title={"Comunidade"} 
-                            refCallback={lastPostRef} 
-                        />
-                    </MiddleSideContainer>
-                    <TopTrandings />
-                </SectionContent>
-            </MainFlex>
-        </Container>
-    );
+  return (
+    <Container>
+      <MainFlex>
+        <SectionContent>
+          <SideBar account={account}/>
+          <MiddleSideContainer>
+            <PostsContainerList
+              account={account}
+              posts={posts}
+              title={"Comunidade"}
+              refCallback={lastPostRef}
+            />
+          </MiddleSideContainer>
+          <TopTrandings />
+        </SectionContent>
+      </MainFlex>
+    </Container>
+  );
 }
 
 const Container = styled.div`

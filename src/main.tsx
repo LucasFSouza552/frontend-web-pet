@@ -4,6 +4,7 @@ import App from './App.tsx'
 import { AuthProvider } from '@contexts/AuthContext.tsx'
 import { ProfileProvider } from './shared/contexts/ProfileContext.tsx'
 import { PostsProvider } from './shared/contexts/PostContext.tsx'
+import { CommentsProvider } from './shared/contexts/CommentContext.tsx'
 
 
 createRoot(document.getElementById('root')!).render(
@@ -11,7 +12,9 @@ createRoot(document.getElementById('root')!).render(
     <AuthProvider>
       <ProfileProvider>
         <PostsProvider>
-          <App />
+          <CommentsProvider>
+            <App />
+          </CommentsProvider>
         </PostsProvider>
       </ProfileProvider>
     </AuthProvider>

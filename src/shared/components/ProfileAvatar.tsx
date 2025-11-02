@@ -1,14 +1,10 @@
 import styled from "styled-components";
 
-import avatarDefault from "@/shared/assets/images/avatar-default.png";
-
-const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function ProfileAvatar({ avatar, alt, width = 40, border = false }: { avatar?: string, alt: string, width?: number, border?: boolean }) {
-
   return (
     <AvatarContainer width={width} border={border}>
-      <img src={avatar ? `${apiUrl}/api/picture/${avatar}` : avatarDefault} alt={alt} />
+      <img src={avatar} alt={alt} />
     </AvatarContainer>
   );
 }

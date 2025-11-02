@@ -29,8 +29,6 @@ export const useRegisterController = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        console.log("Enviando dados para registro:", data);
-
         alert("Conta criada com sucesso!");
         navigate('/login');
     };

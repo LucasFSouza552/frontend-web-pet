@@ -6,12 +6,12 @@ import backgroundPage from "../../../shared/assets/images/background-page.jpg";
 import { useContext, useEffect } from "react";
 import MatchCardSkeleton from "../components/MatchCardSkeleton";
 import NoMorePetsCard from "../components/NoMorePetsCard";
-import { AuthContext } from "@/features/account/auth/AuthContext";
-import { ProfileContext } from "@/app/contexts/ProfileContext";
+import { ProfileContext } from "@/shared/contexts/ProfileContext";
+import SideBar from "@/shared/components/Sidebar";
 
 export default function MatchSection() {
 
-    const { account } = useContext(AuthContext);
+    const { account } = useContext(ProfileContext);
     const { loadFeed, petFeed, loadingFeed, hasMorePets } = useContext(ProfileContext);
 
     useEffect(() => {
@@ -21,19 +21,31 @@ export default function MatchSection() {
 
     return (
         <Container>
-            <HeaderComponent account={account} />
             <SectionContent>
-                {loadingFeed ? (
-                    <MatchCardSkeleton />
-                ) : !hasMorePets ? (
-                    <NoMorePetsCard />
-                ) : (
-                    <MatchCard Pet={petFeed[petFeed.length - 1]} />
-                )}
+                <SideBar account={account} />
+                <MatchContentWrapper>
+
+                    {loadingFeed ? (
+                        <MatchCardSkeleton />
+                    ) : !hasMorePets ? (
+                        <NoMorePetsCard />
+                    ) : (
+                        <MatchCard Pet={petFeed[petFeed.length - 1]} />
+                    )}
+                </MatchContentWrapper>
             </SectionContent>
         </Container>
     );
 }
+
+const MatchContentWrapper = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+`;
 
 const Container = styled.div`
   display: flex;
@@ -43,15 +55,14 @@ const Container = styled.div`
 
 const SectionContent = styled(Section)`
     display: flex;
-    align-items: center;
     width: 100%;
-    flex-direction: column;
+    flex-direction: row;
     min-height: 100%;
-    max-height: calc(100dvh - var(--header-height));
+    max-height: calc(100dvh);
     background-image: url(${backgroundPage});
     background-size: cover;
     background-position: center;
     background-repeat: repeat;
+
     background-attachment: fixed;
-    justify-content: center;
 `;

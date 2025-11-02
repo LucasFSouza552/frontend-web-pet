@@ -1,18 +1,14 @@
 import { styled } from "styled-components";
 import type { IAccount } from "../models/Account";
 import type { IAccountStatus } from "../models/AccountStatus";
-const apiUrl = import.meta.env.VITE_API_URL;
-
-
-import avatarDefault from "@/shared/assets/images/avatar-default.png";
 import ProfileDetails from "@/features/account/profile/components/ProfileDetails";
 
-export default function SmallProfile({ account }: { account: IAccount }) {
+export default function SmallProfile({ account, top, left }: { account: IAccount, top?: number, left?: number }) {
 
     if (!account) return null;
     return (
-        <ProfileContainer>
-            <Avatar src={account.avatar ? `${apiUrl}/api/picture/${account.avatar}` : avatarDefault} alt={account.name} />
+        <ProfileContainer style={{ top: `${top}px`, left: `${left}px` }}>
+            <Avatar src={account.avatar} alt={account.name} />
             <ProfileDetails account={account} accountStatus={{ achievements: account.achievements, postCount: account.postCount } as unknown as IAccountStatus} />
         </ProfileContainer>
     )
@@ -21,7 +17,8 @@ export default function SmallProfile({ account }: { account: IAccount }) {
 const ProfileContainer = styled.div`
     position: absolute;
     display: flex;
-    width: fit-content;
+    z-index: 9999;
+    width: max-content;
     align-items: center;
     background-color: ${({ theme }) => theme?.colors.tertiary};
 
@@ -30,8 +27,8 @@ const ProfileContainer = styled.div`
     filter: drop-shadow(0px 15px 10px rgba(0, 0, 0, 0.5));
     cursor: pointer;
     transition: transform 0.15s ease-in-out;
-    top: 50px;
-    left: 60px;
+    top: 80%;
+    left: 10%;
     
     &:hover {
     transform: scale(1.02);

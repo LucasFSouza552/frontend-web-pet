@@ -14,23 +14,27 @@ import { AuthContext } from "@/shared/contexts/AuthContext";
 import { ProfileContext } from "@/shared/contexts/ProfileContext";
 import { PostsContext } from "@/shared/contexts/PostContext";
 import PostsContainerList from "@/features/post/components/PostsContainerList";
+import SideBar from "@/shared/components/Sidebar";
 
 export default function ProfileSection() {
     const navigate = useNavigate();
 
     const { loading } = useContext(AuthContext);
-    const { account, accountStatus, loadProfile } = useContext(ProfileContext);
+    const { account, viewedAccount, loadViewedProfile, viewedAccountStatus, loadingViewedAccount } = useContext(ProfileContext);
 
-    if (!account && !loading) {
-        navigate("/");
-    }
+    useEffect(() => {
+        if (!loading && !account) {
+            navigate("/");
+        }
+    }, [loading, account, navigate]);
+
 
     const profileAccountId = useParams().username;
 
     useEffect(() => {
         if (!profileAccountId) return
-        loadProfile(profileAccountId);
-    }, []);
+        loadViewedProfile(profileAccountId);
+    }, [profileAccountId]);
 
 
     const { userPosts, refreshUserPosts, loadMoreUserPosts, hasMoreUserPosts, loadingUserPosts } = useContext(PostsContext);
@@ -53,18 +57,22 @@ export default function ProfileSection() {
         [hasMoreUserPosts, loadMoreUserPosts, profileAccountId, loadingUserPosts]
     );
 
-    if (loading) {
-        return <DotLottieReact src={animationFile} autoplay loop style={{ width: "500px" }} />;
-    }
+    // if (loading) {
+    //     return <div><DotLottieReact src={animationFile} autoplay loop style={{ width: "1000px" }} /></div>
+    // }
 
     return (
         <ProfileContainer>
-            <HeaderComponent account={account} />
-            {/* <SideBar account={account} /> */}
-            <SectionContent>
 
-                {account && accountStatus && <ProfileCard account={account} accountStatus={accountStatus} />}
-                <PostsContainerList account={account} posts={userPosts} title={"Suas publicações"} refCallback={lastPostRef} />
+            <SectionContent>
+                <SideBar account={account} />
+                <div style={{ width: "100%", flexDirection: "column", display: "flex" }}>
+                    {loadingViewedAccount && <DotLottieReact src={animationFile} autoplay loop style={{ width: "500" }} />}
+                    {!loadingViewedAccount && viewedAccount && viewedAccountStatus && <ProfileCard account={viewedAccount} accountStatus={viewedAccountStatus} />}
+
+                    {/* <HeaderComponent account={account} /> */}
+                    <PostsContainerList account={viewedAccount} posts={userPosts} title={"Suas publicações"} refCallback={lastPostRef} />
+                </div>
 
             </SectionContent >
         </ProfileContainer>
@@ -85,11 +93,12 @@ const ProfileContainer = styled.div`
 
 const SectionContent = styled(Section)`
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    width: 100%;    
+    flex-direction: row;
     width: 100%;
-    flex-direction: column; width: 100%;
     height: 100%;
-    min-height: calc(100dvh - var(--header-height));
+    min-height: calc(100dvh);
     background-image: url(${backgroundPage});
     background-size: cover;
     background-position: center;
