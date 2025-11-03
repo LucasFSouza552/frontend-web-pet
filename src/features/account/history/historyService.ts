@@ -1,4 +1,4 @@
-import api from "../../shared/api/Http";
+import api from "@api/http";
 
 export const historyService = {
     async fetchAllHistories() {
@@ -46,9 +46,9 @@ export const historyService = {
         }
     },
 
-    async listHistoriesByAccount(accountId: string) {
+    async listHistoriesByAccount() {
         try {
-            const response = await api.get(`/history/account/${accountId}`);
+            const response = await api.get(`/history/profile/me`);
             return response.data;
         } catch (error) {
             throw error;

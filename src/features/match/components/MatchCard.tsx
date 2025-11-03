@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import type IPet from "../../../shared/models/Pet";
+import type IPet from "@/shared/models/Pet";
 
 import { IoLocationSharp } from "react-icons/io5";
 import { FaWeightHanging, FaShieldDog, FaShareFromSquare } from "react-icons/fa6";
@@ -54,8 +54,8 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
                             {Pet.name}
                         </p>
                         <div>
-                            {Pet.gender === "M" && <IoMdMale size={30} color="#008CFF" />}
-                            {Pet.gender === "F" && <IoMdFemale size={30} color="#a502b4" />}
+                            {Pet.gender === "male" && <IoMdMale size={30} color="#008CFF" />}
+                            {Pet.gender === "female" && <IoMdFemale size={30} color="#a502b4" />}
                         </div>
                     </PetLabel>
                     <PetDescription title="Descrição">

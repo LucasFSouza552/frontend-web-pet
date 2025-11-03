@@ -5,7 +5,7 @@ export default interface IPet {
     name: string;
     type: "Cachorro" | "Gato" | "Pássaro" | "Outro";
     age?: number;
-    gender: "M" | "F";
+    gender: "male" | "female";
     weight: number;
     images: string[];
     description?: string;

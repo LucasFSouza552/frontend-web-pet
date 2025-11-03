@@ -1,4 +1,4 @@
-import api from "@/shared/api/Http";
+import api from "@api/http";
 
 export const petInteractionService = {
     async adminFetchPetInteraction(petId: string) {

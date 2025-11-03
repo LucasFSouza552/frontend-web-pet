@@ -35,8 +35,6 @@ const ProfileMenuContainer = styled.div`
   }
 `;
 
-// Gera um menu de perfil com avatar, nome do usuário e botão de sair
-// Normalmente usado no lado superior direito da tela no header
 export default function ProfileMenu() {
   const { logout } = useContext(AuthContext);
   const { account } = useContext(ProfileContext);

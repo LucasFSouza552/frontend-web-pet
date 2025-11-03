@@ -1,9 +1,9 @@
 import { createContext, useCallback, useEffect, useState } from "react";
 import type { IAccount } from "../models/Account";
 
-import type Pet from "@/shared/models/Pet";
+import type Pet from "@models/Pet";
 import { accountService } from "../api/accountService";
-import type { IAccountStatus } from "@/shared/models/AccountStatus";
+import type { IAccountStatus } from "@models/accountStatus";
 import { pictureService } from "../api/pictureService";
 
 interface ProfileContextType {
@@ -39,14 +39,6 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
     const [loadingViewedAccount, setLoadingViewedAccount] = useState(false);
 
 
-    const loadInteractionsPet = async (accountId: string) => {
-        try {
-            const fetchInteractionsPet = await fetchInteractionByAccountId();
-
-        } catch (error) {
-            throw error;
-        }
-    }
 
     const loadProfile = async () => {
         setLoading(true);

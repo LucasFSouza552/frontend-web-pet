@@ -1,10 +1,13 @@
-import { useCallback, useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import animationFile from "@/shared/assets/lottie/loading.lottie?url";
 import Section from "@styles/SectionStyle";
 import ProfileCard from "../components/ProfileCard";
-import { HeaderComponent } from "@components/HeaderComponent";
+import ProfileTabs, { type TabType } from "../components/ProfileTabs";
+import PostsTab from "../components/PostsTab";
+import PetsTab from "../components/PetsTab";
+import HistoryTab from "../components/HistoryTab";
 
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
@@ -12,12 +15,11 @@ import backgroundPage from "@assets/images/background-page.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "@/shared/contexts/AuthContext";
 import { ProfileContext } from "@/shared/contexts/ProfileContext";
-import { PostsContext } from "@/shared/contexts/PostContext";
-import PostsContainerList from "@/features/post/components/PostsContainerList";
 import SideBar from "@/shared/components/Sidebar";
 
 export default function ProfileSection() {
     const navigate = useNavigate();
+    const [activeTab, setActiveTab] = useState<TabType>("posts");
 
     const { loading } = useContext(AuthContext);
     const { account, viewedAccount, loadViewedProfile, viewedAccountStatus, loadingViewedAccount } = useContext(ProfileContext);
@@ -28,53 +30,46 @@ export default function ProfileSection() {
         }
     }, [loading, account, navigate]);
 
-
     const profileAccountId = useParams().username;
 
     useEffect(() => {
-        if (!profileAccountId) return
+        if (!profileAccountId) return;
         loadViewedProfile(profileAccountId);
     }, [profileAccountId]);
 
+    const renderTabContent = () => {
+        if (loadingViewedAccount) {
+            return (
+                <LoadingContainer>
+                    <DotLottieReact src={animationFile} autoplay loop style={{ width: "500px" }} />
+                </LoadingContainer>
+            );
+        }
 
-    const { userPosts, refreshUserPosts, loadMoreUserPosts, hasMoreUserPosts, loadingUserPosts } = useContext(PostsContext);
-    const observer = useRef<IntersectionObserver>(null);
-
-    useEffect(() => {
-        refreshUserPosts(profileAccountId);
-    }, [profileAccountId]);
-
-    const lastPostRef = useCallback(
-        (node: HTMLDivElement | null) => {
-            if (observer.current) observer.current.disconnect();
-            observer.current = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting && hasMoreUserPosts) {
-                    loadMoreUserPosts(profileAccountId);
-                }
-            });
-            if (node) observer.current.observe(node);
-        },
-        [hasMoreUserPosts, loadMoreUserPosts, profileAccountId, loadingUserPosts]
-    );
-
-    // if (loading) {
-    //     return <div><DotLottieReact src={animationFile} autoplay loop style={{ width: "1000px" }} /></div>
-    // }
+        switch (activeTab) {
+            case "posts":
+                return <PostsTab account={viewedAccount} profileAccountId={profileAccountId} />;
+            case "pets":
+                return <PetsTab accountId={viewedAccount?.id} />;
+            case "history":
+                return <HistoryTab accountId={viewedAccount?.id} />;
+            default:
+                return null;
+        }
+    };
 
     return (
         <ProfileContainer>
-
             <SectionContent>
                 <SideBar account={account} />
-                <div style={{ width: "100%", flexDirection: "column", display: "flex" }}>
-                    {loadingViewedAccount && <DotLottieReact src={animationFile} autoplay loop style={{ width: "500" }} />}
-                    {!loadingViewedAccount && viewedAccount && viewedAccountStatus && <ProfileCard account={viewedAccount} accountStatus={viewedAccountStatus} />}
-
-                    {/* <HeaderComponent account={account} /> */}
-                    <PostsContainerList account={viewedAccount} posts={userPosts} title={"Suas publicações"} refCallback={lastPostRef} />
-                </div>
-
-            </SectionContent >
+                <MainContent>
+                    {!loadingViewedAccount && viewedAccount && viewedAccountStatus && (
+                        <ProfileCard account={viewedAccount} accountStatus={viewedAccountStatus} />
+                    )}
+                    <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
+                    {renderTabContent()}
+                </MainContent>
+            </SectionContent>
         </ProfileContainer>
     );
 }
@@ -96,7 +91,6 @@ const SectionContent = styled(Section)`
     align-items: flex-start;
     width: 100%;    
     flex-direction: row;
-    width: 100%;
     height: 100%;
     min-height: calc(100dvh);
     background-image: url(${backgroundPage});
@@ -104,4 +98,21 @@ const SectionContent = styled(Section)`
     background-position: center;
     background-repeat: repeat;
     background-attachment: fixed;
+`;
+
+const MainContent = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+    overflow-y: auto;
+`;
+
+const LoadingContainer = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
 `;
