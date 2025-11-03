@@ -38,8 +38,6 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
     const [viewedAccountStatus, setViewedAccountStatus] = useState<IAccountStatus | null>(null);
     const [loadingViewedAccount, setLoadingViewedAccount] = useState(false);
 
-
-
     const loadProfile = async () => {
         setLoading(true);
         try {

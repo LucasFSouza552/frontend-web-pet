@@ -57,6 +57,8 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const loadMoreUserPosts = async (account?: string) => {
+        if (loadingUserPosts) return;
+        setLoadingUserPosts(true);
         try {
             const newPosts = await postService.fetchPostsWithAuthor({ account, page: userPage, limit: LIMIT });
             loadAvatarPostsImage(newPosts);

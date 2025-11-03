@@ -72,8 +72,9 @@ const LogoWrapper = styled.div`
 `;
 const SidebarContainer = styled.aside`
   width: 260px;
-  height: 100dvh;
-  max-height: 100dvh;
+  height: 100%;
+  min-height: calc(100dvh - 30px);
+  max-height: calc(100dvh - var(--header-height, 80px) - 2rem);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -85,6 +86,7 @@ const SidebarContainer = styled.aside`
   box-shadow: 0 0 12px rgba(182, 72, 160, 0.3);
   color: #fff;
   transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 
   &:hover {
     box-shadow: 0 0 20px rgba(182, 72, 160, 0.4);
@@ -96,6 +98,7 @@ const SidebarContainer = styled.aside`
     justify-content: space-around;
     padding: 10px;
     height: auto;
+    max-height: none;
   }
 `;
 

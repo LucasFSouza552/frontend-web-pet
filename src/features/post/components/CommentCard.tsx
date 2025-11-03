@@ -18,7 +18,6 @@ export default function CommentCard({ comment, onReply }: PostCommentProps) {
     const [showSmallProfile, setShowSmallProfile] = useState<boolean>(false);
 
     const handleSendReply = async (parentId: string) => {
-        console.log(parentId);
         if (!replyText.trim()) return;
         await onReply(parentId, replyText.trim());
         setReplyText("");
@@ -27,16 +26,15 @@ export default function CommentCard({ comment, onReply }: PostCommentProps) {
 
     const handleToReply = (commentId: string) => {
         setReplyingTo(prev => prev === commentId ? null : commentId)
-        console.log("Aqui: ", commentId);
     }
 
     const handleSmallProfile = () => {
         setShowSmallProfile(!showSmallProfile);
     }
+
     const handleProfile = (accountId: string) => {
         navigate(`/profile/${accountId}`);
     }
-    console.log("Comment: ", comment);
     return (
         <CommentArea>
             <CommentHeader className="no-select">
@@ -64,11 +62,10 @@ export default function CommentCard({ comment, onReply }: PostCommentProps) {
                             target.style.height = target.scrollHeight + "px";
                         }}
                     />
-                    <div>
-                        {replyingTo}
-                    </div>
-                    <ReplyButton onClick={() => handleSendReply(replyingTo)}>Responder</ReplyButton>
-                    <CancelButton onClick={() => setReplyingTo(null)}>Cancelar</CancelButton>
+                    <ReplyActions>
+                        <ReplyButton onClick={() => handleSendReply(replyingTo)}>Responder</ReplyButton>
+                        <CancelButton onClick={() => setReplyingTo(null)}>Cancelar</CancelButton>
+                    </ReplyActions>
                 </ReplyBox>
             )}
         </CommentArea>
@@ -136,9 +133,9 @@ p {
 
 const ReplyBox = styled.div`
     display: flex;
+    flex-direction: column;
     gap: 8px;
     margin-top: 8px;
-    align-items: flex-start;
 `;
 
 const ReplyInput = styled.textarea`
@@ -146,26 +143,42 @@ const ReplyInput = styled.textarea`
     padding: 8px;
     border-radius: 6px;
     border: none;
-    background-color: ${({ theme }) => theme.colors.quinary};
+    background-color: ${({ theme }) => theme.colors.quarternary};
     color: white;
     min-height: 36px;
-    max-width: 80%;
+    resize: none;
+`;
+
+const ReplyActions = styled.div`
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
 `;
 
 const ReplyButton = styled.button`
-    padding: 8px 12px;
+    padding: 8px 16px;
     background-color: ${({ theme }) => theme.colors.primary};
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.9;
+    }
 `;
 
 const CancelButton = styled.button`
-    padding: 8px 12px;
+    padding: 8px 16px;
     background-color: ${({ theme }) => theme.colors.secondary};
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.9;
+    }
 `;

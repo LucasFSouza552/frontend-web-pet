@@ -1,9 +1,8 @@
 import styled from "styled-components";
+import { useState } from "react";
 import type IComment from "@models/Comments";
-import defaultAvatar from "@assets/images/avatar-default.png";
 import CommentCard from "./CommentCard";
-
-const apiUrl = import.meta.env.VITE_API_URL;
+import ReplyCard from "./ReplyCard";
 
 interface PostCommentsProps {
     comments: IComment[];
@@ -12,6 +11,19 @@ interface PostCommentsProps {
 }
 
 export default function PostComments({ comments, lastCommentRef, onReply }: PostCommentsProps) {
+    const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set());
+
+    const toggleReplies = (commentId: string) => {
+        setExpandedReplies(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(commentId)) {
+                newSet.delete(commentId);
+            } else {
+                newSet.add(commentId);
+            }
+            return newSet;
+        });
+    };
 
     const topLevel = comments?.filter(c => !c.parent);
 
@@ -21,28 +33,30 @@ export default function PostComments({ comments, lastCommentRef, onReply }: Post
             {topLevel?.map((comment, index) => {
                 const isLast = index === topLevel.length - 1;
                 const replies = comments?.filter(c => c.parent === comment.id) || [];
+                const isExpanded = expandedReplies.has(comment.id);
+                
                 return (
                     <CommentContainer key={comment.id} ref={isLast ? lastCommentRef : null}>
                         <CommentCard comment={comment} onReply={onReply} />
                         {replies.length > 0 && (
-                            <RepliesContainer>
-                                {replies.map(reply => (
-                                    <ReplyItem key={reply.id}>
-                                        <CommentAvatar src={
-                                            reply?.account?.avatar ? `${apiUrl}/picture/${reply.account.avatar}` : defaultAvatar} alt="" />
-                                        <div>
-                                            <AvatarContainer>
-                                                <p>{reply.account?.name}</p>
-                                            </AvatarContainer>
-                                            <CommentContent>{reply.content}</CommentContent>
-                                        </div>
-                                    </ReplyItem>
-                                ))}
-                            </RepliesContainer>
+                            <RepliesSection>
+                                <RepliesToggle onClick={() => toggleReplies(comment.id)}>
+                                    {isExpanded ? 'Ocultar' : 'Ver'} {replies.length} {replies.length === 1 ? 'resposta' : 'respostas'}
+                                </RepliesToggle>
+                                {isExpanded && (
+                                    <RepliesContainer>
+                                        {replies.map(reply => (
+                                            <ReplyCard key={reply.id} reply={reply} />
+                                        ))}
+                                    </RepliesContainer>
+                                )}
+                            </RepliesSection>
                         )}
-                    </CommentContainer>)
+                    </CommentContainer>
+                )
             })}
-        </CommentsContainer>)
+        </CommentsContainer>
+    )
 }
 
 
@@ -54,9 +68,6 @@ const CommentContainer = styled.div`
     border-radius: 20px;
     padding: 10px;
     gap: 10px;
-`;
-
-const CommentContent = styled.p`
 `;
 
 const CommentsContainer = styled.div`
@@ -72,31 +83,31 @@ const CommentsContainer = styled.div`
     flex: 1;
 `;
 
-const AvatarContainer = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    position: relative;
-`;
-
-const CommentAvatar = styled.img`
-    --size: 40px;
-    width: var(--size);
-    height: var(--size);
-    border-radius: 50%;
-`;
-
-const RepliesContainer = styled.div`
+const RepliesSection = styled.div`
     margin-left: 48px;
     display: flex;
     flex-direction: column;
     gap: 8px;
 `;
 
-const ReplyItem = styled.div`
+const RepliesToggle = styled.button`
+    background-color: ${({ theme }) => theme.colors.quarternary};
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    width: fit-content;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: ${({ theme }) => theme.colors.tertiary};
+    }
+`;
+
+const RepliesContainer = styled.div`
     display: flex;
-    gap: 10px;
-    background-color: ${({ theme }) => theme.colors.quinary};
-    border-radius: 12px;
-    padding: 8px;
+    flex-direction: column;
+    gap: 8px;
 `;

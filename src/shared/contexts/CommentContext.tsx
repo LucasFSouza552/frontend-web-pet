@@ -8,9 +8,9 @@ import { pictureService } from "../api/pictureService";
 
 interface CommentsContextType {
     loadCommentsByPostId: (id: string, page?: number, limit?: number) => Promise<IPost | null>
-    createComment: (postId: string, comment: string) => void
+    createComment: (postId: string, comment: string) => Promise<IComment>
     loadingComments: boolean
-    replyComment: (postId: string, comment: string) => void
+    replyComment: (commentId: string, content: string) => Promise<IComment>
 };
 
 export const CommentsContext = createContext<CommentsContextType>({} as CommentsContextType);
@@ -42,12 +42,16 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
         const newComment = await commentService.createComment(postId, comment);
         newComment.account.avatar = pictureService.fetchPicture(newComment?.account?.avatar);
         addComment(postId, [newComment]);
+        return newComment;
     }
 
-    const replyComment = async (postId: string, comment: string) => {
+    const replyComment = async (commentId: string, content: string) => {
         try {
-            const newComment = await commentService.replyToComment(postId, comment);
+            const newComment = await commentService.replyToComment(commentId, content);
+            newComment.account.avatar = pictureService.fetchPicture(newComment?.account?.avatar);
+            const postId = newComment.post;
             addComment(postId, [newComment]);
+            return newComment;
         } catch (error) {
             throw error;
         }
