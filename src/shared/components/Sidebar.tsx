@@ -4,58 +4,60 @@ import { Link } from "react-router-dom";
 import ProfileMenu from "./ProfileMenu";
 import { PrimaryButton } from "./PrimaryButton";
 
-import { FaHome, FaBullhorn, FaHandsHelping, FaHeart, FaUsers, FaSearch } from "react-icons/fa";
+import { FaHome, FaBullhorn, FaHandsHelping, FaHeart, FaUsers, FaSearch, FaDonate } from "react-icons/fa";
 import logo from "@assets/images/logo.png";
 import { useMemo, type JSX } from "react";
 
 interface NavItem {
-    label: string;
-    path: string;
-    icon: JSX.Element;
+  label: string;
+  path: string;
+  icon: JSX.Element;
 }
 
 
 
 export default function SideBar({ account }: { account: IAccount | null }) {
-    const theme = useTheme();
-    const iconsConfig = useMemo(() => ({ color: theme.colors.primary, size: "1.5em" }), [theme.colors.primary]);
-    const navItems: NavItem[] = [
-        { label: "Página Principal", path: "/", icon: <FaHome color={iconsConfig.color} size={iconsConfig.size} /> },
-        // { label: "Pesquisar", path: "/", icon: <FaSearch color={iconsConfig.color} size={iconsConfig.size} /> },
-        { label: "Divulgação", path: "/disclosure", icon: <FaBullhorn color={iconsConfig.color} size={iconsConfig.size} /> },
-        { label: "Suporte", path: "/support", icon: <FaHandsHelping color={iconsConfig.color} size={iconsConfig.size} /> },
-        { label: "Match", path: "/match", icon: <FaHeart color={iconsConfig.color} size={iconsConfig.size} /> },
-    ];
+  const theme = useTheme();
+  const iconsConfig = useMemo(() => ({ color: theme.colors.primary, size: "1.5em" }), [theme.colors.primary]);
+  const navItems: NavItem[] = [
+    { label: "Página Principal", path: "/", icon: <FaHome color={iconsConfig.color} size={iconsConfig.size} /> },
+    { label: "Comunidade", path: "/", icon: <FaUsers color={iconsConfig.color} size={iconsConfig.size} /> },
+    // { label: "Pesquisar", path: "/", icon: <FaSearch color={iconsConfig.color} size={iconsConfig.size} /> },
+    { label: "Divulgação", path: "/disclosure", icon: <FaBullhorn color={iconsConfig.color} size={iconsConfig.size} /> },
+    { label: "Suporte", path: "/support", icon: <FaHandsHelping color={iconsConfig.color} size={iconsConfig.size} /> },
+    { label: "Match", path: "/match", icon: <FaHeart color={iconsConfig.color} size={iconsConfig.size} /> },
+    { label: "Doar", path: "/donate", icon: <FaDonate color={iconsConfig.color} size={iconsConfig.size} /> },
+  ];
 
-    return (
-        <SidebarContainer>
-            <LogoWrapper >
-                <Link to="/">
-                    <img src={logo} alt="Logo" />
-                </Link>
-            </LogoWrapper>
+  return (
+    <SidebarContainer>
+      <LogoWrapper >
+        <Link to="/">
+          <img src={logo} alt="Logo" />
+        </Link>
+      </LogoWrapper>
 
-            <NavLinks>
-                {navItems.map((item) => (
-                    <NavLink key={item.path} to={item.path}>
-                        <span className="icon">{item.icon}</span>
-                        {item.label}
-                    </NavLink>
-                ))}
-            </NavLinks>
+      <NavLinks>
+        {navItems.map((item) => (
+          <NavLink key={item.path} to={item.path}>
+            <span className="icon">{item.icon}</span>
+            {item.label}
+          </NavLink>
+        ))}
+      </NavLinks>
 
-            <ProfileSection>
-                {!account ? (
-                    <>
-                        <PrimaryButton text="Anunciar" type="button" filled to="/" />
-                        <PrimaryButton text="Entrar" type="button" filled={false} to="/login" />
-                    </>
-                ) : (
-                    <ProfileMenu />
-                )}
-            </ProfileSection>
-        </SidebarContainer>
-    );
+      <ProfileSection>
+        {!account ? (
+          <>
+            <PrimaryButton text="Anunciar" type="button" filled to="/" />
+            <PrimaryButton text="Entrar" type="button" filled={false} to="/login" />
+          </>
+        ) : (
+          <ProfileMenu />
+        )}
+      </ProfileSection>
+    </SidebarContainer>
+  );
 }
 
 const LogoWrapper = styled.div`
@@ -65,8 +67,8 @@ const LogoWrapper = styled.div`
   margin-bottom: 30px;
 
   img {
-    max-width: 50px;
-    height: auto;
+    width: 100px;
+    height: 100px;
     object-fit: contain;
   }
 `;
@@ -80,10 +82,11 @@ const SidebarContainer = styled.aside`
   justify-content: space-between;
   align-items: center;
   padding: 25px 15px;
-  background-color: rgba(44, 39, 43, 0.85);
-  border: 1px solid #B648A0;
+  
+  background-color: ${({ theme }) => theme.colors.quarternary};
+  border: 1px solid ${({ theme }) => theme.colors.primary};
   border-radius: 12px;
-  box-shadow: 0 0 12px rgba(182, 72, 160, 0.3);
+  box-shadow: 0 0 12px ${({ theme }) => theme.colors.primary};
   color: #fff;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);

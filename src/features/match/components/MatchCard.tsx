@@ -28,8 +28,8 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
         return (<MatchCardSkeleton />);
     }
 
-    const pictures = Pet.images.map(async (image) => {
-        return await pictureService.fetchPicture(image);
+    const pictures = Pet.images.map((image) => {
+        return pictureService.fetchPicture(image);
     });
 
     const handleModalSponsor = () => {

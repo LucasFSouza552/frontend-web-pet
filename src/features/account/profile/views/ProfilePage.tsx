@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 
-import animationFile from "@/shared/assets/lottie/loading.lottie?url";
+import animationFile from "@assets/lottie/loading.lottie?url";
 import Section from "@styles/SectionStyle";
 import ProfileCard from "../components/ProfileCard";
 import ProfileTabs, { type TabType } from "../components/ProfileTabs";
@@ -13,9 +13,9 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 import backgroundPage from "@assets/images/background-page.jpg";
 import { useNavigate, useParams } from "react-router-dom";
-import { AuthContext } from "@/shared/contexts/AuthContext";
-import { ProfileContext } from "@/shared/contexts/ProfileContext";
-import SideBar from "@/shared/components/Sidebar";
+import { AuthContext } from "@contexts/AuthContext";
+import { ProfileContext } from "@contexts/ProfileContext";
+import SideBar from "@components/Sidebar";
 
 export default function ProfileSection() {
     const navigate = useNavigate();

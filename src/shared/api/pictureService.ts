@@ -4,7 +4,6 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export const pictureService = {
     fetchPicture(pictureId: string | undefined) {
         try {
-
             if (!pictureId) return avatarDefault;
             const urlRegex = /^https?:\/\S*$/;
             if (urlRegex.test(pictureId)) {

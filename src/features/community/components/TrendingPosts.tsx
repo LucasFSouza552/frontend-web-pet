@@ -35,16 +35,16 @@ export default function TrendingPosts() {
 
     if (loading) {
         return (
-            <RightSideContainer>
+            <TrendingPostsContainer>
                 <LoadingWrapper>
                     <DotLottieReact src={animationFile} autoplay loop style={{ width: "100px" }} />
                 </LoadingWrapper>
-            </RightSideContainer>
+            </TrendingPostsContainer>
         );
     }
 
     return (
-        <RightSideContainer>
+        <TrendingPostsContainer>
             <SectionHeader>
                 <h3>Mais Populares</h3>
                 <p>Posts em alta na comunidade</p>
@@ -68,11 +68,11 @@ export default function TrendingPosts() {
                     ))}
                 </PostsList>
             )}
-        </RightSideContainer>
+        </TrendingPostsContainer>
     );
 }
 
-const RightSideContainer = styled.aside`
+const TrendingPostsContainer = styled.aside`
     border-radius: 12px;
     display: flex;
     flex-direction: column;
@@ -81,13 +81,9 @@ const RightSideContainer = styled.aside`
     flex-shrink: 0;
     max-width: 320px;
     height: fit-content;
-    max-height: calc(100dvh - var(--header-height, 80px) - 2.5rem);
     color: white;
     border: 1px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
-    position: sticky;
     background-color: ${({ theme }) => theme.colors.quarternary || "rgba(54, 49, 53, 0.95)"};
-    backdrop-filter: blur(10px);
-    top: calc(var(--header-height, 80px) + 1.25rem);
     padding: 1.25rem;
     box-shadow: 0 4px 12px rgba(182, 72, 160, 0.2);
     overflow-y: auto;
@@ -114,7 +110,7 @@ const RightSideContainer = styled.aside`
 
 const SectionHeader = styled.div`
     padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(182, 72, 160, 0.3);
+    border-bottom: 1px solid ${({ theme }) => theme.colors.primary};
     margin-bottom: 1rem;
 
     h3 {

@@ -22,7 +22,9 @@ export default function CommunityPage() {
         <MiddleSideContainer>
           <PostsFeed posts={posts} refCallback={lastPostRef} />
         </MiddleSideContainer>
-        <TrendingPosts />
+        <StickySidebar>
+          <TrendingPosts />
+        </StickySidebar>
       </SectionContent>
     </Container>
   );
@@ -53,6 +55,7 @@ const BackgroundLayer = styled.div`
 const SectionContent = styled(Section)`
   position: relative;
   z-index: 1;
+  flex: 1;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -114,8 +117,8 @@ const MiddleSideContainer = styled.div`
   align-items: flex-start;
   flex: 2;
   padding: 1.5rem;
-  background-color: ${({ theme }) => theme.colors.quarternary || "rgba(44, 39, 43, 0.85)"};
-  border: 1px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
+  background-color: ${({ theme }) => theme.colors.quarternary};
+  border: 1px solid ${({ theme }) => theme.colors.primary};
   box-shadow: 0 4px 16px rgba(182, 72, 160, 0.25);
   color: white;
   min-height: fit-content;

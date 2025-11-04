@@ -29,8 +29,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         }
 
         posts.forEach((post: any) => {
-            if (post && post.account.avatar)
-                post.account.avatar = pictureService.fetchPicture(post.account.avatar);
+            post.account.avatar = pictureService.fetchPicture(post.account.avatar);
         });
     }
 
@@ -145,19 +144,16 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
             }
             const post = { ...updatedPost, account: { ...updatedPost.account } }
 
-            if (updatedPost && updatedPost?.account?.avatar) {
-                post.account.avatar = pictureService.fetchPicture(updatedPost.account.avatar);
-            }
 
             if (!comment) {
-                return post;
+                return { ...post, account: { ...post.account, avatar: pictureService.fetchPicture(post.account.avatar) } };
             }
 
             const comments = updatedPost.comments ? [...comment, ...updatedPost.comments] : [...comment];
 
             setPosts(prev => prev.map(p => p.id === postId ? { ...p, comments } : p));
 
-            return { ...post, comments };
+            return { ...post, comments, account: { ...post.account, avatar: pictureService.fetchPicture(post.account.avatar) } };
 
         } catch (error) {
             throw error;
@@ -173,10 +169,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
                 setPosts(prev => [...prev, fetchedPost]);
                 currentPost = fetchedPost;
             }
-            const post = { ...currentPost };
-            if (post?.account?.avatar) {
-                post.account = { ...post.account, avatar: pictureService.fetchPicture(post.account.avatar) };
-            }
+            const post = { ...currentPost, account: { ...currentPost.account } };
             return post;
         } catch (error) {
             throw error;

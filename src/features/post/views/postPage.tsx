@@ -30,7 +30,6 @@ export default function PostPage() {
 
   const observer = useRef<IntersectionObserver | null>(null);
 
-  // 🔹 Carrega o post e reinicia comentários
   useEffect(() => {
     if (!id) return;
     setLoadingPost(true);
@@ -39,11 +38,11 @@ export default function PostPage() {
     setHasMore(true);
 
     currentPostDetails(id)
-      .then(setPost)
+      .then((post) => {
+        setPost(post)})
       .finally(() => setLoadingPost(false));
   }, [id]);
 
-  // 🔹 Carrega comentários com paginação
   useEffect(() => {
     if (!id || !hasMore || loadingPost) return;
 
@@ -66,7 +65,6 @@ export default function PostPage() {
       .catch(() => setHasMore(false));
   }, [id, page, hasMore, loadingPost]);
 
-  // 🔹 Observa o último comentário
   const observeLastComment = useCallback(
     (node: HTMLDivElement | null) => {
       if (observer.current) observer.current.disconnect();
@@ -80,7 +78,6 @@ export default function PostPage() {
     [hasMore]
   );
 
-  // 🔹 Envia novo comentário
   const handleSubmit = async () => {
     if (!newComment.trim() || !post?.id) return;
     try {

@@ -12,7 +12,7 @@ import CommunityPage from "./features/community/views/CommunityPage"
 import FAQPage from "@features/support/views/FAQPage"
 import { useContext } from "react"
 import { ProfileContext } from "./shared/contexts/ProfileContext"
-// import InstitutePage from "./features/institution/views/InstitutePage"
+import InstitutePage from "./features/institution/views/InstitutePage"
 // import ForgotPasswordPage from "./features/account/forgotPassword/views/forgotPasswordPage"
 // import DesiredPetsPage from "./features/pet/views/DesiredPetsPage"
 import PostPage from "./features/post/views/postPage"
@@ -32,7 +32,7 @@ function App() {
         <Route path="/match" element={<MatchPage />} />
         {/* <Route path="/community" element={<CommunityPage />} /> */}
         <Route path="/support" element={<FAQPage />} />
-        {/* <Route path="/institution/:id" element={<InstitutePage />} /> */}
+        <Route path="/institution" element={<InstitutePage />} />
         {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} /> */}
         {/* <Route path="/pets" element={<DesiredPetsPage />} /> */}
       </NavigationRouter>

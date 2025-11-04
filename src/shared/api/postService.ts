@@ -1,4 +1,4 @@
-import api from "@api/Http";
+import api from "@api/http";
 import type { IPost } from "@/shared/models/Post";
 import buildQuery from "@utils/BuilderQuery";
 
