@@ -1,16 +1,41 @@
 import styled from "styled-components";
 import backgroundPage from "../../../shared/assets/images/background-page.jpg";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Section from "../../../shared/styles/SectionStyle";
 import { ProfileContext } from "@/shared/contexts/ProfileContext";
 import SideBar from "@/shared/components/Sidebar";
 import PostsFeed from "../components/PostsFeed";
 import TrendingPosts from "../components/TrendingPosts";
+import SearchBar from "../components/SearchBar";
+import CreatePostForm from "../components/CreatePostForm";
 import { useCommunityController } from "../controllers/useCommunityController";
+import { postService } from "@/shared/api/postService";
+import type { IPost } from "@/shared/models/Post";
 
 export default function CommunityPage() {
   const { account } = useContext(ProfileContext);
   const { posts, lastPostRef } = useCommunityController();
+  const [filteredPosts, setFilteredPosts] = useState<IPost[] | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const handleSearch = async (query: string) => {
+    if (!query.trim()) {
+      setFilteredPosts(null);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const searchResults = await postService.searchPosts(query);
+      setFilteredPosts(searchResults || []);
+    } catch (error) {
+      console.error("Erro ao pesquisar posts:", error);
+      setFilteredPosts([]);
+    }
+  };
+
+  const displayPosts = filteredPosts !== null ? filteredPosts : posts;
 
   return (
     <Container>
@@ -20,7 +45,16 @@ export default function CommunityPage() {
           <SideBar account={account} />
         </StickySidebar>
         <MiddleSideContainer>
-          <PostsFeed posts={posts} refCallback={lastPostRef} />
+          <SearchBar onSearch={handleSearch} />
+          <CreatePostForm />
+          {isSearching && filteredPosts !== null && (
+            <SearchResultsInfo>
+              {filteredPosts.length > 0 
+                ? `Encontrados ${filteredPosts.length} resultado(s)` 
+                : "Nenhum resultado encontrado"}
+            </SearchResultsInfo>
+          )}
+          <PostsFeed posts={displayPosts} refCallback={lastPostRef} />
         </MiddleSideContainer>
         <StickySidebar>
           <TrendingPosts />
@@ -111,34 +145,47 @@ const StickySidebar = styled.div`
 `;
 
 const MiddleSideContainer = styled.div`
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex: 2;
-  padding: 1.5rem;
-  background-color: ${({ theme }) => theme.colors.quarternary};
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  box-shadow: 0 4px 16px rgba(182, 72, 160, 0.25);
-  color: white;
-  min-height: fit-content;
-  height: fit-content;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  overflow: visible;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex: 2;
+    padding: 1.5rem;
+    background-color: ${({ theme }) => theme.colors.quarternary};
+    border: 1px solid ${({ theme }) => theme.colors.primary};
+    box-shadow: 0 4px 16px rgba(182, 72, 160, 0.25);
+    color: white;
+    min-height: fit-content;
+    height: fit-content;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    overflow: visible;
 
-  &:hover {
-    box-shadow: 0 6px 24px rgba(182, 72, 160, 0.35);
-  }
+    &:hover {
+        box-shadow: 0 6px 24px rgba(182, 72, 160, 0.35);
+    }
 
-  @media (max-width: 1024px) {
-    width: 100%;
-    flex: 1;
-    padding: 1rem;
-  }
+    @media (max-width: 1024px) {
+        width: 100%;
+        flex: 1;
+        padding: 1rem;
+    }
 
-  @media (max-width: 768px) {
-    padding: 0.75rem;
+    @media (max-width: 768px) {
+        padding: 0.75rem;
+        border-radius: 8px;
+    }
+`;
+
+const SearchResultsInfo = styled.div`
+    padding: 0.75rem 1rem;
+    background-color: rgba(182, 72, 160, 0.1);
     border-radius: 8px;
-  }
+    color: ${({ theme }) => theme.colors.primary || "#B648A0"};
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    text-align: center;
+    border: 1px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
 `;

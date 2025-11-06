@@ -1,33 +1,39 @@
-import api from "../../shared/api/Http";
-import type IPet from "../../shared/models/Pet";
+import api from "@api/http";
+import type IPet from "@models/Pet";
 
 export const petService = {
     async adminFetchAllPets() {
-        const response = await api.get("/pets");
+        const response = await api.get("/pet");
         return response.data;
     },
     async institutionCreatePet(data: IPet) {
-        const response = await api.post("/pets", data);
+        const response = await api.post("/pet", data);
         return response.data;
     },
     async fetchPetById(petId: string) {
-        const response = await api.get(`/pets/${petId}`);
+        const response = await api.get(`/pet/${petId}`);
         return response.data;
     },
     async updatePet(petId: string, data: Partial<IPet>) {
-        const response = await api.post(`/pets/${petId}`, data);
+        const response = await api.patch(`/pet/${petId}`, data);
         return response.data;
     },
     async deletePet(petId: string) {
-        const response = await api.delete(`/pets/${petId}`);
+        const response = await api.delete(`/pet/${petId}`);
         return response.data;
     },
     async availablePets() {
-        const response = await api.get("/pets/available");
+        const response = await api.get("/pet/avaliable");
         return response.data;
     },
     async requestPetAdoption(petId: string) {
-        const response = await api.post(`/pet/${petId}/adopt`);
+        const response = await api.post(`/pet/${petId}/request`);
+        return response.data;
+    },
+    async acceptPetAdoption(petId: string, accountId: string) {
+        const response = await api.post(`/pet/${petId}/accept`, {
+            account: accountId
+        });
         return response.data;
     },
     async rejectPetAdoption(petId: string) {
@@ -38,20 +44,40 @@ export const petService = {
         const response = await api.post(`/pet/${petId}/sponsor`, { amount });
         return response.data;
     },
-    async donate (amount: number) {
-        const response = await api.post("/pets/donate", { amount });
+    async donate (petId: string, amount: number) {
+        const response = await api.post(`/pet/${petId}/donate`, { amount });
         return response.data;
     },
-    async updateImages(petId: string, images: string[]) {
-        const response = await api.patch(`/pets/${petId}/images`, { images });
+    async updateImages(petId: string, formData: FormData) {
+        const response = await api.post(`/pet/${petId}/avatar`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
         return response.data;
     },
-    async deleteImage(petId: string, imageUrl: string) {
-        const response = await api.delete(`/pets/${petId}/images`, { data: { imageUrl } });
+    async deleteImage(petId: string, imageId: string) {
+        const response = await api.delete(`/pet/${petId}/avatar/${imageId}`);
         return response.data;
     },
-    async returnDonate(donationId: string) {
-        const response = await api.post(`/pets/donate/${donationId}/return`);
+    async paymentReturn(paymentId: string, status: "completed" | "cancelled" | "refunded", externalReference: string) {
+        const response = await api.post(`/pet/payment-return`, {
+            id: paymentId,
+            status,
+            externalReference
+        });
+        return response.data;
+    },
+    async getAdoptedPetsByAccount(accountId: string) {
+        const response = await api.get(`/pet/adopted/${accountId}`);
+        return response.data;
+    },
+    async getAllByInstitution(institutionId: string) {
+        const response = await api.get(`/pet/institutions/${institutionId}/pets`);
+        return response.data;
+    },
+    async getRequestedAdoptions(institutionId: string) {
+        const response = await api.get(`/pet/institutions/${institutionId}/pets/requested`);
         return response.data;
     }
 };

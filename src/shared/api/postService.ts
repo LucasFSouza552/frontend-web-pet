@@ -43,15 +43,38 @@ export const postService = {
             throw error;
         }
     },
-    async createPost(data: IPost) {
+    async createPost(data: IPost | FormData) {
         try {
-            const formData = new FormData();
-            formData.append("title", data.title);
-            formData.append("content", data.content);
-            if (data.image) {
-                data.image.forEach(img => formData.append("images", img));
+            let formData: FormData;
+
+            if (data instanceof FormData) {
+                formData = data;
+            } else {
+                formData = new FormData();
+                formData.append("title", data.title);
+                formData.append("content", data.content);
+                if (data.image) {
+                    data.image.forEach((img: any) => {
+                        if (img instanceof File) {
+                            formData.append("images", img);
+                        }
+                    });
+                }
             }
-            const response = await api.post("/post");
+
+            const response = await api.post("/post", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    async searchPosts(query: string) {
+        try {
+            const response = await api.get(`/post/search?q=${encodeURIComponent(query)}`);
             return response.data;
         } catch (error) {
             throw error;

@@ -1,13 +1,14 @@
 import styled from "styled-components";
 
-export type TabType = "posts" | "pets" | "history";
+export type TabType = "posts" | "pets" | "adopted" | "history";
 
 interface ProfileTabsProps {
     activeTab: TabType;
     onTabChange: (tab: TabType) => void;
+    accountRole?: "user" | "admin" | "institution";
 }
 
-export default function ProfileTabs({ activeTab, onTabChange }: ProfileTabsProps) {
+export default function ProfileTabs({ activeTab, onTabChange, accountRole }: ProfileTabsProps) {
     return (
         <TabsContainer>
             <TabButton 
@@ -21,6 +22,12 @@ export default function ProfileTabs({ activeTab, onTabChange }: ProfileTabsProps
                 onClick={() => onTabChange("pets")}
             >
                 Pets Desejados
+            </TabButton>
+            <TabButton 
+                active={activeTab === "adopted"} 
+                onClick={() => onTabChange("adopted")}
+            >
+                {accountRole === "institution" ? "Pets na instituição" : "Pets Adotados"}
             </TabButton>
             <TabButton 
                 active={activeTab === "history"} 

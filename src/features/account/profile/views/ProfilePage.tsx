@@ -7,6 +7,7 @@ import ProfileCard from "../components/ProfileCard";
 import ProfileTabs, { type TabType } from "../components/ProfileTabs";
 import PostsTab from "../components/PostsTab";
 import PetsTab from "../components/PetsTab";
+import AdoptedPetsTab from "../components/AdoptedPetsTab";
 import HistoryTab from "../components/HistoryTab";
 
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
@@ -50,7 +51,9 @@ export default function ProfileSection() {
             case "posts":
                 return <PostsTab account={viewedAccount} profileAccountId={profileAccountId} />;
             case "pets":
-                return <PetsTab accountId={viewedAccount?.id} />;
+                return <PetsTab accountId={viewedAccount?.id} accountRole={viewedAccount?.role} />;
+            case "adopted":
+                return <AdoptedPetsTab accountId={viewedAccount?.id} accountRole={viewedAccount?.role} />;
             case "history":
                 return <HistoryTab accountId={viewedAccount?.id} />;
             default:
@@ -66,7 +69,11 @@ export default function ProfileSection() {
                     {!loadingViewedAccount && viewedAccount && viewedAccountStatus && (
                         <ProfileCard account={viewedAccount} accountStatus={viewedAccountStatus} />
                     )}
-                    <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
+                    <ProfileTabs 
+                        activeTab={activeTab} 
+                        onTabChange={setActiveTab} 
+                        accountRole={viewedAccount?.role}
+                    />
                     {renderTabContent()}
                 </MainContent>
             </SectionContent>

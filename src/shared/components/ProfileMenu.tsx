@@ -24,10 +24,10 @@ const ProfileMenuContainer = styled.div`
     margin: 0;
     font-weight: 500;
     color: #333;
-    flex-grow: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    max-width: 30%;
   }
 
   &:hover {
@@ -45,7 +45,6 @@ export default function ProfileMenu() {
   }
 
   if (!account) return null;
-
 
   return (
     <ProfileMenuContainer onClick={() => profileClick(account?.id)}>

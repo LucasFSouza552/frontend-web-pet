@@ -1,43 +1,84 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { petInteractionService } from "@/features/account/interactions/petInteractionService";
+import { petService } from "@/features/pet/petService";
 import type { AccountPetInteraction } from "@/shared/models/AccountPetInteraction";
 import type IPet from "@/shared/models/Pet";
-import MatchCard from "@/features/match/components/MatchCard";
+import type { IAccount } from "@/shared/models/Account";
+import PetDetailCard from "./PetDetailCard";
 import animationFile from "@/shared/assets/lottie/loading.lottie?url";
+
+interface AdoptionRequest {
+    account: IAccount;
+    pet: IPet;
+    institution?: IAccount;
+    createdAt?: string;
+}
+
+interface PetWithRequests extends IPet {
+    requestsCount?: number;
+}
 
 interface PetsTabProps {
     accountId?: string;
+    accountRole?: "user" | "admin" | "institution";
 }
 
-export default function PetsTab({ accountId }: PetsTabProps) {
-    const [desiredPets, setDesiredPets] = useState<IPet[]>([]);
+export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
+    const [desiredPets, setDesiredPets] = useState<PetWithRequests[]>([]);
     const [loadingPets, setLoadingPets] = useState(false);
 
-    const loadDesiredPets = async () => {
+    const loadDesiredPets = useCallback(async () => {
         if (!accountId) return;
         setLoadingPets(true);
         try {
-            const interactions = await petInteractionService.fetchAccountPetsInteractions();
-            const likedInteractions = interactions.filter((interaction: AccountPetInteraction) => 
-                interaction.status === "liked"
-            );
-            const pets = likedInteractions.map((interaction: AccountPetInteraction) => interaction.pet as IPet);
-            setDesiredPets(pets);
+            if (accountRole === "institution") {
+                const requests = await petService.getRequestedAdoptions(accountId);
+                console.log(requests);
+                
+                const petMap = new Map<string, { pet: IPet; count: number; institution?: IAccount }>();
+                
+                (requests || []).forEach((request: AdoptionRequest) => {
+                    const petId = request.pet.id;
+                    
+                    if (petMap.has(petId)) {
+                        const existing = petMap.get(petId)!;
+                        existing.count += 1;
+                    } else {
+                        petMap.set(petId, {
+                            pet: { ...request.pet, account: request.institution || request.pet.account },
+                            count: 1,
+                            institution: request.institution
+                        });
+                    }
+                });
+
+                const petsWithRequests: PetWithRequests[] = Array.from(petMap.values()).map(({ pet, count }) => ({
+                    ...pet,
+                    requestsCount: count
+                }));
+
+                setDesiredPets(petsWithRequests);
+            } else {
+                const interactions = await petInteractionService.getInteractionByAccount(accountId);
+                const likedInteractions = interactions.filter((interaction: AccountPetInteraction) =>
+                    interaction.status === "liked"
+                );
+                const pets = likedInteractions.map((interaction: AccountPetInteraction) => interaction.pet as IPet);
+                setDesiredPets(pets);
+            }
         } catch (error) {
-            console.error("Erro ao carregar pets desejados:", error);
+            console.error("Erro ao carregar dados:", error);
             setDesiredPets([]);
         } finally {
             setLoadingPets(false);
         }
-    };
+    }, [accountId, accountRole]);
 
     useEffect(() => {
-        if (accountId) {
-            loadDesiredPets();
-        }
-    }, [accountId]);
+        loadDesiredPets();
+    }, [loadDesiredPets]);
 
     if (loadingPets) {
         return (
@@ -46,19 +87,30 @@ export default function PetsTab({ accountId }: PetsTabProps) {
             </LoadingContainer>
         );
     }
-
     return (
         <ContentContainer>
-            <h2>Pets que deseja adotar</h2>
+            <h2>{accountRole === "institution" ? "Pets desejados pelos usuários" : "Pets que deseja adotar"}</h2>
             {desiredPets.length === 0 ? (
                 <EmptyState>
-                    <h3>Nenhum pet marcado ainda</h3>
-                    <p>Quando você demonstrar interesse em um pet, ele aparecerá aqui.</p>
+                    <h3>
+                        {accountRole === "institution"
+                            ? "Nenhum pet desejado ainda"
+                            : "Nenhum pet marcado ainda"}
+                    </h3>
+                    <p>
+                        {accountRole === "institution"
+                            ? "Quando usuários demonstrarem interesse em seus pets, eles aparecerão aqui."
+                            : "Quando você demonstrar interesse em um pet, ele aparecerá aqui."}
+                    </p>
                 </EmptyState>
             ) : (
                 <PetsGrid>
                     {desiredPets.map((pet, index) => (
-                        <MatchCard key={`${pet.id}-${index}`} Pet={pet} />
+                        <PetDetailCard 
+                            key={`${pet.id}-${index}`} 
+                            pet={pet}
+                            adoptionRequestsCount={pet.requestsCount}
+                        />
                     ))}
                 </PetsGrid>
             )}
@@ -119,13 +171,18 @@ const EmptyState = styled.div`
 const PetsGrid = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: 2rem;
     align-items: start;
     padding: 1rem 0;
 
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
     }
+
+    @media (max-width: 1024px) {
+        grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    }
 `;
+
 

@@ -48,6 +48,15 @@ export const petInteractionService = {
         } catch (error) {
             throw error;
         }
+    },
+    async getInteractionByAccount(accountId: string) {
+        try {
+            const response = await api.get(`/interaction/profile/${accountId}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+
+        }
     }
 
 }
