@@ -2,10 +2,10 @@ import { createContext, useCallback, useEffect, useState } from "react";
 import type { IAccount } from "../models/Account";
 
 import type Pet from "@models/Pet";
-import { accountService } from "../api/accountService";
-import type { IAccountStatus } from "@models/accountStatus";
+import { accountService } from "@api/AccountService";
+import type { IAccountStatus } from "@models/AccountStatus";
 import { pictureService } from "../api/pictureService";
-import { getStorage } from "../utils/storageUtils";
+import { getStorage, removeStorage } from "../utils/storageUtils";
 
 interface ProfileContextType {
     account: IAccount | null;
@@ -59,7 +59,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
             }
             setViewedAccountStatus(fetchStatus);
         } catch (error) {
-            // Se falhar, limpa a conta (token pode estar inválido)
+            removeStorage("@token");
             setAccount(null);
             throw error;
         } finally {
@@ -91,7 +91,6 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
             setPetFeed((prev) => [...prev, pets]);
             return pets;
         } catch (error) {
-
             setHasMorePets(false);
             throw error;
         } finally {

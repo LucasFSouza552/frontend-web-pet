@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { petService } from "@/features/pet/petService";
 import type IPet from "@/shared/models/Pet";
-import MatchCard from "@/features/match/components/MatchCard";
 import animationFile from "@/shared/assets/lottie/loading.lottie?url";
 import PetDetailCard from "./PetDetailCard";
 
@@ -25,7 +24,7 @@ export default function AdoptedPetsTab({ accountId, accountRole }: AdoptedPetsTa
                 setAdoptedPets(pets);
             } else {
                 const pets = await petService.getAdoptedPetsByAccount(accountId);
-                console.log("Meus pets:",pets)
+                console.log("Meus pets:", pets)
                 setAdoptedPets(pets);
             }
         } catch (error) {

@@ -66,8 +66,6 @@ export default function PetDetailCard({ pet, adoptionRequestsCount }: PetDetailC
         return date.toLocaleDateString("pt-BR");
     };
 
-    console.log(pet);
-
     return (
         <CardContainer>
             <ImageSection onClick={handleImageClick}>
