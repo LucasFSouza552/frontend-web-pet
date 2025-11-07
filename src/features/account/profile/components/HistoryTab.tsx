@@ -23,7 +23,6 @@ export default function HistoryTab({ accountId }: HistoryTabProps) {
         setLoadingHistory(true);
         try {
             const histories = await historyService.listHistoriesByAccount();
-            console.log(histories);
             setHistoryRecords(histories || []);
         } catch (error) {
             console.error("Erro ao carregar histórico:", error);
@@ -54,9 +53,9 @@ export default function HistoryTab({ accountId }: HistoryTabProps) {
                     {historyRecords.map((history, index) => (
                         <HistoryCard key={history.id || index}>
                             <HistoryContent>
-                                <HistoryTitle>{history.title || "Registro de histórico"}</HistoryTitle>
+                                <HistoryTitle>{history.type || "Registro de histórico"}</HistoryTitle>
                                 <HistoryDescription>
-                                    {history.description || history.content || "Sem descrição"}
+                                    {history.institution.name || history.content || "Sem descrição"}
                                 </HistoryDescription>
                                 {history.createdAt && (
                                     <HistoryDate>
@@ -75,6 +74,7 @@ export default function HistoryTab({ accountId }: HistoryTabProps) {
         </ContentContainer>
     );
 }
+
 
 const ContentContainer = styled.div`
     width: 100%;
