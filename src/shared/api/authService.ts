@@ -1,5 +1,5 @@
 import api from "@api/http";
-import type { IAccount } from "@models/Account";
+import type { IAccount } from "@/shared/models/Account";
 import { removeStorage, saveStorage } from "@utils/storageUtils";
 
 export const authService = {

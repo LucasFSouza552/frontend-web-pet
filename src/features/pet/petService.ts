@@ -1,5 +1,5 @@
 import api from "@api/http";
-import type IPet from "@models/Pet";
+import type IPet from "@/shared/models/Pet";
 
 export const petService = {
     async adminFetchAllPets() {
