@@ -25,6 +25,7 @@ export default function AdoptedPetsTab({ accountId, accountRole }: AdoptedPetsTa
                 setAdoptedPets(pets);
             } else {
                 const pets = await petService.getAdoptedPetsByAccount(accountId);
+                console.log("Meus pets:",pets)
                 setAdoptedPets(pets);
             }
         } catch (error) {

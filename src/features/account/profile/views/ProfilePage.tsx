@@ -14,7 +14,6 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 import backgroundPage from "@assets/images/background-page.jpg";
 import { useNavigate, useParams } from "react-router-dom";
-import { AuthContext } from "@contexts/AuthContext";
 import { ProfileContext } from "@contexts/ProfileContext";
 import SideBar from "@components/Sidebar";
 
@@ -22,21 +21,20 @@ export default function ProfileSection() {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<TabType>("posts");
 
-    const { loading } = useContext(AuthContext);
-    const { account, viewedAccount, loadViewedProfile, viewedAccountStatus, loadingViewedAccount } = useContext(ProfileContext);
+    const { account, loading, viewedAccount, loadViewedProfile, viewedAccountStatus, loadingViewedAccount } = useContext(ProfileContext);
 
     useEffect(() => {
-        if (!loading && !account) {
+        if (!account && !loading) {
             navigate("/");
         }
-    }, [loading, account, navigate]);
+    }, [account, navigate, loading]);
 
     const profileAccountId = useParams().username;
 
     useEffect(() => {
         if (!profileAccountId) return;
         loadViewedProfile(profileAccountId);
-    }, [profileAccountId]);
+    }, [profileAccountId, loadViewedProfile]);
 
     const renderTabContent = () => {
         if (loadingViewedAccount) {
@@ -69,9 +67,9 @@ export default function ProfileSection() {
                     {!loadingViewedAccount && viewedAccount && viewedAccountStatus && (
                         <ProfileCard account={viewedAccount} accountStatus={viewedAccountStatus} />
                     )}
-                    <ProfileTabs 
-                        activeTab={activeTab} 
-                        onTabChange={setActiveTab} 
+                    <ProfileTabs
+                        activeTab={activeTab}
+                        onTabChange={setActiveTab}
                         accountRole={viewedAccount?.role}
                     />
                     {renderTabContent()}
@@ -80,10 +78,6 @@ export default function ProfileSection() {
         </ProfileContainer>
     );
 }
-
-
-
-
 
 const ProfileContainer = styled.div`
     display: flex;

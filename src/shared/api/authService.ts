@@ -1,6 +1,6 @@
 import api from "@api/http";
 import type { IAccount } from "@models/Account";
-import { removeStorage, saveStorage } from "@utils/StorageUtils";
+import { removeStorage, saveStorage } from "@utils/storageUtils";
 
 export const authService = {
     async login(email: string, password: string) {
@@ -10,7 +10,7 @@ export const authService = {
             if (!token) {
                 throw Error("Falha ao realizar login");
             }
-            saveStorage("@token", token);
+            await saveStorage("@token", token);
         } catch (error) {
             throw error;
         }

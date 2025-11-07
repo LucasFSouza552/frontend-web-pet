@@ -39,7 +39,8 @@ export default function PostPage() {
 
     currentPostDetails(id)
       .then((post) => {
-        setPost(post)})
+        setPost(post)
+      })
       .finally(() => setLoadingPost(false));
   }, [id]);
 
@@ -63,7 +64,7 @@ export default function PostPage() {
         if (newComments.length < 10) setHasMore(false);
       })
       .catch(() => setHasMore(false));
-  }, [id, page, hasMore, loadingPost]);
+  }, [id, page, hasMore, loadingPost ]);
 
   const observeLastComment = useCallback(
     (node: HTMLDivElement | null) => {
@@ -107,7 +108,7 @@ export default function PostPage() {
         </StickySidebar>
 
         <Main>
-          <PostsContainerList account={account} posts={[post]} title="" refCallback={() => {}} />
+          <PostsContainerList account={account} posts={[post]} title="" refCallback={() => { }} />
 
           <CommentBox>
             <textarea

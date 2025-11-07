@@ -23,10 +23,10 @@ export default function SideBar({ account }: { account: IAccount | null }) {
     { label: "Página Principal", path: "/", icon: <FaHome color={iconsConfig.color} size={iconsConfig.size} /> },
     { label: "Comunidade", path: "/", icon: <FaUsers color={iconsConfig.color} size={iconsConfig.size} /> },
     // { label: "Pesquisar", path: "/", icon: <FaSearch color={iconsConfig.color} size={iconsConfig.size} /> },
-    { label: "Divulgação", path: "/disclosure", icon: <FaBullhorn color={iconsConfig.color} size={iconsConfig.size} /> },
+    // { label: "Divulgação", path: "/disclosure", icon: <FaBullhorn color={iconsConfig.color} size={iconsConfig.size} /> },
     { label: "Suporte", path: "/support", icon: <FaHandsHelping color={iconsConfig.color} size={iconsConfig.size} /> },
     { label: "Match", path: "/match", icon: <FaHeart color={iconsConfig.color} size={iconsConfig.size} /> },
-    { label: "Doar", path: "/donate", icon: <FaDonate color={iconsConfig.color} size={iconsConfig.size} /> },
+    // { label: "Doar", path: "/donate", icon: <FaDonate color={iconsConfig.color} size={iconsConfig.size} /> },
   ];
 
   return (
@@ -39,7 +39,7 @@ export default function SideBar({ account }: { account: IAccount | null }) {
 
       <NavLinks>
         {navItems.map((item) => (
-          <NavLink key={item.path} to={item.path}>
+          <NavLink key={item.label} to={item.path}>
             <span className="icon">{item.icon}</span>
             {item.label}
           </NavLink>

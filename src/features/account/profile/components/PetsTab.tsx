@@ -8,16 +8,20 @@ import type IPet from "@/shared/models/Pet";
 import type { IAccount } from "@/shared/models/Account";
 import PetDetailCard from "./PetDetailCard";
 import animationFile from "@/shared/assets/lottie/loading.lottie?url";
+import { pictureService } from "@/shared/api/pictureService";
+import { FaCheck, FaTimes, FaUsers } from "react-icons/fa";
 
 interface AdoptionRequest {
     account: IAccount;
     pet: IPet;
     institution?: IAccount;
     createdAt?: string;
+    id?: string;
 }
 
 interface PetWithRequests extends IPet {
     requestsCount?: number;
+    requests?: AdoptionRequest[];
 }
 
 interface PetsTabProps {
@@ -28,6 +32,9 @@ interface PetsTabProps {
 export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
     const [desiredPets, setDesiredPets] = useState<PetWithRequests[]>([]);
     const [loadingPets, setLoadingPets] = useState(false);
+    const [processingRequest, setProcessingRequest] = useState<string | null>(null);
+    const [selectedPet, setSelectedPet] = useState<PetWithRequests | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const loadDesiredPets = useCallback(async () => {
         if (!accountId) return;
@@ -35,28 +42,30 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
         try {
             if (accountRole === "institution") {
                 const requests = await petService.getRequestedAdoptions(accountId);
-                console.log(requests);
-                
-                const petMap = new Map<string, { pet: IPet; count: number; institution?: IAccount }>();
-                
+
+                const petMap = new Map<string, { pet: IPet; requests: AdoptionRequest[] }>();
+
                 (requests || []).forEach((request: AdoptionRequest) => {
                     const petId = request.pet.id;
-                    
+                    if (request.pet.adopted) {
+                        return;
+                    }
+
                     if (petMap.has(petId)) {
                         const existing = petMap.get(petId)!;
-                        existing.count += 1;
+                        existing.requests.push(request);
                     } else {
                         petMap.set(petId, {
                             pet: { ...request.pet, account: request.institution || request.pet.account },
-                            count: 1,
-                            institution: request.institution
+                            requests: [request]
                         });
                     }
                 });
 
-                const petsWithRequests: PetWithRequests[] = Array.from(petMap.values()).map(({ pet, count }) => ({
+                const petsWithRequests: PetWithRequests[] = Array.from(petMap.values()).map(({ pet, requests }) => ({
                     ...pet,
-                    requestsCount: count
+                    requestsCount: requests.length,
+                    requests: requests
                 }));
 
                 setDesiredPets(petsWithRequests);
@@ -75,6 +84,32 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
             setLoadingPets(false);
         }
     }, [accountId, accountRole]);
+
+    const handleAcceptAdoption = async (petId: string, accountId: string) => {
+        try {
+            setProcessingRequest(`${petId}-${accountId}`);
+            await petService.acceptPetAdoption(petId, accountId);
+            await loadDesiredPets();
+        } catch (error) {
+            console.error("Erro ao aceitar adoção:", error);
+            alert("Erro ao aceitar solicitação de adoção");
+        } finally {
+            setProcessingRequest(null);
+        }
+    };
+
+    const handleRejectAdoption = async (petId: string, accountId: string) => {
+        try {
+            setProcessingRequest(`${petId}-${accountId}`);
+            await petService.rejectPetAdoption(petId, accountId);
+            await loadDesiredPets();
+        } catch (error) {
+            console.error("Erro ao rejeitar adoção:", error);
+            alert("Erro ao rejeitar solicitação de adoção");
+        } finally {
+            setProcessingRequest(null);
+        }
+    };
 
     useEffect(() => {
         loadDesiredPets();
@@ -104,15 +139,67 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
                     </p>
                 </EmptyState>
             ) : (
-                <PetsGrid>
+                <PetsContainer>
                     {desiredPets.map((pet, index) => (
-                        <PetDetailCard 
-                            key={`${pet.id}-${index}`} 
-                            pet={pet}
-                            adoptionRequestsCount={pet.requestsCount}
-                        />
+                        <PetSection key={`${pet.id}-${index}`}>
+                            <PetDetailCard
+                                pet={pet}
+                                adoptionRequestsCount={pet.requestsCount}
+                            />
+                            {accountRole === "institution" && pet.requests && pet.requests.length > 0 && (
+                                <RequestsContainer>
+                                    <RequestsTitle>
+                                        <FaUsers size={20} />
+                                        <span>Solicitações de Adoção ({pet.requests.length})</span>
+                                    </RequestsTitle>
+                                    <RequestsList>
+                                        {pet.requests.map((request, reqIndex) => {
+                                            const requestId = `${pet.id}-${typeof request.account === 'string' ? request.account : request.account.id}`;
+                                            const isProcessing = processingRequest === requestId;
+                                            const account = typeof request.account === 'string' ? null : request.account;
+
+                                            return (
+                                                <RequestCard key={reqIndex}>
+                                                    <RequestUserInfo>
+                                                        <UserAvatar
+                                                            src={account?.avatar ? pictureService.fetchPicture(account.avatar) : pictureService.fetchPicture(undefined)}
+                                                            alt={account?.name || "Usuário"}
+                                                        />
+                                                        <UserDetails>
+                                                            <UserName>{account?.name || "Usuário"}</UserName>
+                                                            <UserEmail>{account?.email || ""}</UserEmail>
+                                                            {request.createdAt && (
+                                                                <RequestDate>
+                                                                    Solicitado em: {new Date(request.createdAt).toLocaleDateString('pt-BR')}
+                                                                </RequestDate>
+                                                            )}
+                                                        </UserDetails>
+                                                    </RequestUserInfo>
+                                                    <RequestActions>
+                                                        <AcceptButton
+                                                            onClick={() => handleAcceptAdoption(pet.id, typeof request.account === 'string' ? request.account : request.account.id)}
+                                                            disabled={isProcessing}
+                                                        >
+                                                            <FaCheck size={16} />
+                                                            Aceitar
+                                                        </AcceptButton>
+                                                        <RejectButton
+                                                            onClick={() => handleRejectAdoption(pet.id, typeof request.account === 'string' ? request.account : request.account.id)}
+                                                            disabled={isProcessing}
+                                                        >
+                                                            <FaTimes size={16} />
+                                                            Negar
+                                                        </RejectButton>
+                                                    </RequestActions>
+                                                </RequestCard>
+                                            );
+                                        })}
+                                    </RequestsList>
+                                </RequestsContainer>
+                            )}
+                        </PetSection>
                     ))}
-                </PetsGrid>
+                </PetsContainer>
             )}
         </ContentContainer>
     );
@@ -168,20 +255,180 @@ const EmptyState = styled.div`
     }
 `;
 
-const PetsGrid = styled.div`
+const PetsContainer = styled.div`
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 2rem;
-    align-items: start;
     padding: 1rem 0;
+`;
 
-    @media (max-width: 768px) {
-        grid-template-columns: 1fr;
+const PetSection = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+`;
+
+const RequestsContainer = styled.div`
+    width: 100%;
+    background-color: ${({ theme }) => theme.colors.quarternary || "rgba(0, 0, 0, 0.3)"};
+    border-radius: 16px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const RequestsTitle = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 600;
+
+    span {
+        display: flex;
+        align-items: center;
+    }
+`;
+
+const RequestsList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+`;
+
+const RequestCard = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    gap: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.2);
     }
 
-    @media (max-width: 1024px) {
-        grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+`;
+
+const RequestUserInfo = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+`;
+
+const UserAvatar = styled.img`
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid ${({ theme }) => theme.colors.primary || "#008CFF"};
+`;
+
+const UserDetails = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    color: white;
+`;
+
+const UserName = styled.span`
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+`;
+
+const UserEmail = styled.span`
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+`;
+
+const RequestDate = styled.span`
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.25rem;
+`;
+
+const RequestActions = styled.div`
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        justify-content: stretch;
+    }
+`;
+
+const AcceptButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+
+    &:hover:not(:disabled) {
+        background-color: #059669;
+        transform: translateY(-2px);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+        flex: 1;
+        justify-content: center;
+    }
+`;
+
+const RejectButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+
+    &:hover:not(:disabled) {
+        background-color: #dc2626;
+        transform: translateY(-2px);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+        flex: 1;
+        justify-content: center;
     }
 `;
 

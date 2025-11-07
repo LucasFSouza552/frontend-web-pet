@@ -5,6 +5,7 @@ import type Pet from "@models/Pet";
 import { accountService } from "../api/accountService";
 import type { IAccountStatus } from "@models/accountStatus";
 import { pictureService } from "../api/pictureService";
+import { getStorage } from "../utils/storageUtils";
 
 interface ProfileContextType {
     account: IAccount | null;
@@ -31,21 +32,25 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
     const [petFeed, setPetFeed] = useState<Pet[]>([]);
     const [loadingFeed, setLoadingFeed] = useState(false);
     const [hasMorePets, setHasMorePets] = useState(true);
-    const [likedPets, setLikedPets] = useState([]);
 
     // Conta visualizada
     const [viewedAccount, setViewedAccount] = useState<IAccount | null>(null);
     const [viewedAccountStatus, setViewedAccountStatus] = useState<IAccountStatus | null>(null);
     const [loadingViewedAccount, setLoadingViewedAccount] = useState(false);
 
-    const loadProfile = async () => {
-        setLoading(true);
+    const loadProfile = useCallback(async () => {
+        const token = getStorage("@token");
+        if (!token) {
+            return;
+        }
+        
         try {
+            setLoading(true);
             const fetchAccount = await accountService.fetchMyProfile();
             if (!fetchAccount) {
                 throw Error("Falha ao buscar perfil");
             }
-            const avatarPicture = await pictureService.fetchPicture(fetchAccount.avatar || "");
+            const avatarPicture = pictureService.fetchPicture(fetchAccount.avatar || "");
             fetchAccount.avatar = avatarPicture;
             setAccount(fetchAccount);
             const fetchStatus = await accountService.fetchAccountStatusById(fetchAccount.id);
@@ -54,16 +59,20 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
             }
             setViewedAccountStatus(fetchStatus);
         } catch (error) {
+            // Se falhar, limpa a conta (token pode estar inválido)
+            setAccount(null);
             throw error;
         } finally {
             setLoading(false);
         }
-    }
+    }, []);
 
     useEffect(() => {
-        if(!account)
-        loadProfile();
-    }, [account]);
+        const token = getStorage("@token");
+        if (!account && !loading && token) {
+            loadProfile();
+        }
+    }, [account, loading, loadProfile]);
 
 
     const loadFeed = useCallback(async () => {
@@ -90,7 +99,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
         }
     }, []);
 
-    const loadViewedProfile = async (id: string) => {
+    const loadViewedProfile = useCallback(async (id: string) => {
         try {
             setLoadingViewedAccount(true);
             const fetchAccount = await accountService.fetchAccountById(id);
@@ -98,7 +107,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
                 throw Error("Falha ao buscar perfil");
             }
 
-             const avatarPicture = await pictureService.fetchPicture(fetchAccount.avatar || "");
+            const avatarPicture = pictureService.fetchPicture(fetchAccount.avatar || "");
             fetchAccount.avatar = avatarPicture;
 
             setViewedAccount(fetchAccount);
@@ -112,7 +121,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
         } finally {
             setLoadingViewedAccount(false);
         }
-    }
+    }, []);
 
 
     return (

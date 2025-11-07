@@ -36,8 +36,8 @@ export const petService = {
         });
         return response.data;
     },
-    async rejectPetAdoption(petId: string) {
-        const response = await api.post(`/pet/${petId}/reject`);
+    async rejectPetAdoption(petId: string, accountId?: string) {
+        const response = await api.post(`/pet/${petId}/reject`, accountId ? { account: accountId } : {});
         return response.data;
     },
     async sponsorPet(petId: string, amount: number) {

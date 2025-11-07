@@ -3,7 +3,7 @@ import { accountService } from "@/shared/api/accountService";
 import { createContext, useState, type ReactNode } from "react";
 
 interface AuthContextType {
-    login: (email: string, password: string) => void;
+    login: (email: string, password: string) => Promise<string>;
     logout: () => void;
     loading: boolean;
 }
@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const login = async (email: string, password: string) => {
         try {
+            setLoading(true);
             await authService.login(email, password);
 
             const fetchAccount = await accountService.fetchMyProfile();
@@ -25,6 +26,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             return fetchAccount.id;
         } catch (error) {
             throw error;
+        } finally {
+            setLoading(false);
         }
     };
 

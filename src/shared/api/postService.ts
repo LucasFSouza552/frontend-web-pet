@@ -19,14 +19,6 @@ export const postService = {
             throw error;
         }
     },
-    async searchPosts() {
-        try {
-            const response = await api.get("/post/search");
-            return response.data;
-        } catch (error) {
-            throw error;
-        }
-    },
     async fetchAllPosts() {
         try {
             const response = await api.get("/post");
