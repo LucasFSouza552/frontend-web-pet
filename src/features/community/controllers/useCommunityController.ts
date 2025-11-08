@@ -1,9 +1,22 @@
 import { useCallback, useContext, useEffect, useRef } from "react";
-import { PostsContext } from "@/shared/contexts/PostContext";
+import { PostsContext } from "@contexts/PostContext";
 
 export function useCommunityController() {
-    const { posts, refreshPosts, loadMorePosts, hasMorePosts, loadingPosts } = useContext(PostsContext);
+    const { 
+        posts, 
+        refreshPosts, 
+        loadMorePosts, 
+        hasMorePosts, 
+        loadingPosts, 
+        searchPosts,
+        loadMoreSearchPosts,
+        searchResults,
+        hasMoreSearchResults,
+        loadingSearchResults
+    } = useContext(PostsContext);
+    
     const observer = useRef<IntersectionObserver>(null);
+    const searchObserver = useRef<IntersectionObserver>(null);
 
     useEffect(() => {
         refreshPosts();
@@ -22,12 +35,31 @@ export function useCommunityController() {
         [hasMorePosts, loadMorePosts, loadingPosts]
     );
 
+    const lastSearchPostRef = useCallback(
+        (node: HTMLDivElement | null) => {
+            if (searchObserver.current) searchObserver.current.disconnect();
+            searchObserver.current = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && hasMoreSearchResults && !loadingSearchResults) {
+                    loadMoreSearchPosts();
+                }
+            });
+            if (node) searchObserver.current.observe(node);
+        },
+        [hasMoreSearchResults, loadMoreSearchPosts, loadingSearchResults]
+    );
+
     return {
         posts,
         loadingPosts,
         lastPostRef,
         hasMorePosts,
-        refreshPosts
+        refreshPosts,
+        searchPosts,
+        loadMoreSearchPosts,
+        searchResults,
+        hasMoreSearchResults,
+        loadingSearchResults,
+        lastSearchPostRef
     };
 }
 

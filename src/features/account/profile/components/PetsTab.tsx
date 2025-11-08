@@ -162,7 +162,7 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
                                                 <RequestCard key={reqIndex}>
                                                     <RequestUserInfo>
                                                         <UserAvatar
-                                                            src={account?.avatar ? pictureService.fetchPicture(account.avatar) : pictureService.fetchPicture(undefined)}
+                                                            src={pictureService.fetchPicture(account?.avatar || "")}
                                                             alt={account?.name || "Usuário"}
                                                         />
                                                         <UserDetails>

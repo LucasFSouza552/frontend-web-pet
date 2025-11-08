@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import backgroundPage from "../../../shared/assets/images/background-page.jpg";
+import backgroundPage from "@assets/images/background-page.jpg";
 import { useContext, useState } from "react";
-import Section from "../../../shared/styles/SectionStyle";
+import Section from "@styles/SectionStyle";
 import { ProfileContext } from "@/shared/contexts/ProfileContext";
 import SideBar from "@/shared/components/Sidebar";
 import PostsFeed from "../components/PostsFeed";
@@ -9,33 +9,33 @@ import TrendingPosts from "../components/TrendingPosts";
 import SearchBar from "../components/SearchBar";
 import CreatePostForm from "../components/CreatePostForm";
 import { useCommunityController } from "../controllers/useCommunityController";
-import { postService } from "@/shared/api/postService";
-import type { IPost } from "@/shared/models/Post";
 
 export default function CommunityPage() {
   const { account } = useContext(ProfileContext);
-  const { posts, lastPostRef } = useCommunityController();
-  const [filteredPosts, setFilteredPosts] = useState<IPost[] | null>(null);
+  const { 
+    posts, 
+    lastPostRef, 
+    searchPosts,
+    searchResults,
+    hasMoreSearchResults,
+    loadingSearchResults,
+    lastSearchPostRef
+  } = useCommunityController();
   const [isSearching, setIsSearching] = useState(false);
 
   const handleSearch = async (query: string) => {
     if (!query.trim()) {
-      setFilteredPosts(null);
       setIsSearching(false);
       return;
     }
 
     setIsSearching(true);
     try {
-      const searchResults = await postService.searchPosts(query);
-      setFilteredPosts(searchResults || []);
+      await searchPosts(query);
     } catch (error) {
       console.error("Erro ao pesquisar posts:", error);
-      setFilteredPosts([]);
     }
   };
-
-  const displayPosts = filteredPosts !== null ? filteredPosts : posts;
 
   return (
     <Container>
@@ -47,14 +47,20 @@ export default function CommunityPage() {
         <MiddleSideContainer>
           <SearchBar onSearch={handleSearch} />
           <CreatePostForm />
-          {isSearching && filteredPosts !== null && (
-            <SearchResultsInfo>
-              {filteredPosts.length > 0 
-                ? `Encontrados ${filteredPosts.length} resultado(s)` 
-                : "Nenhum resultado encontrado"}
-            </SearchResultsInfo>
+
+          {!isSearching && <PostsFeed posts={posts} refCallback={lastPostRef} />}
+          {isSearching && (
+            <>
+              {searchResults.length > 0 && (
+                <PostsFeed posts={searchResults} refCallback={lastSearchPostRef} />
+              )}
+              {loadingSearchResults && searchResults.length > 0 && (
+                <LoadingMore>
+                  Carregando mais resultados...
+                </LoadingMore>
+              )}
+            </>
           )}
-          <PostsFeed posts={displayPosts} refCallback={lastPostRef} />
         </MiddleSideContainer>
         <StickySidebar>
           <TrendingPosts />
@@ -188,4 +194,12 @@ const SearchResultsInfo = styled.div`
     margin-bottom: 1rem;
     text-align: center;
     border: 1px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
+`;
+
+const LoadingMore = styled.div`
+    padding: 1rem;
+    text-align: center;
+    color: ${({ theme }) => theme.colors.primary || "#B648A0"};
+    font-size: 0.875rem;
+    font-weight: 500;
 `;

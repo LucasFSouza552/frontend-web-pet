@@ -10,7 +10,7 @@ export default function ProfileCard({ account, accountStatus }: { account: IAcco
     return (
         <ProfileContainer>
             <ProfileContent>
-                {<ProfileAvatar avatar={account?.avatar} alt="avatar" width={150} border />}
+                {<ProfileAvatar avatar={account?.avatar || ""} alt="avatar" width={150} border />}
 
                 <ProfileDetails
                     account={account || null}

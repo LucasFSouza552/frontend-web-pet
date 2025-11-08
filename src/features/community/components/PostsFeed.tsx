@@ -7,7 +7,7 @@ import type { IPost } from "@/shared/models/Post";
 
 interface PostsFeedProps {
     posts: IPost[];
-    refCallback: RefCallback<HTMLDivElement>;
+    refCallback?: RefCallback<HTMLDivElement>;
 }
 
 export default function PostsFeed({ posts, refCallback }: PostsFeedProps) {
@@ -19,7 +19,7 @@ export default function PostsFeed({ posts, refCallback }: PostsFeedProps) {
                 account={account}
                 posts={posts}
                 title={"Comunidade"}
-                refCallback={refCallback}
+                refCallback={refCallback || (() => {})}
             />
         </FeedContainer>
     );

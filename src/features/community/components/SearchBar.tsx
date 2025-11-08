@@ -28,7 +28,7 @@ export default function SearchBar({ onSearch, placeholder = "Pesquisar posts..."
             <SearchForm onSubmit={handleSubmit}>
                 <SearchInputWrapper>
                     <SearchIcon>
-                        <FaSearch size={18} />
+                        <FaSearch size={20} />
                     </SearchIcon>
                     <SearchInput
                         type="text"

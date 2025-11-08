@@ -21,6 +21,13 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     const [hasMoreUserPosts, setHasMoreUserPosts] = useState(true);
     const [loadingUserPosts, setLoadingUserPosts] = useState(false);
 
+    // Busca
+    const [searchResults, setSearchResults] = useState<IPost[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [searchPage, setSearchPage] = useState(1);
+    const [hasMoreSearchResults, setHasMoreSearchResults] = useState(true);
+    const [loadingSearchResults, setLoadingSearchResults] = useState(false);
+
     const loadAvatarPostsImage = async (posts: IPost[] | IPost) => {
         if (!posts) return;
         if (posts && !Array.isArray(posts)) {
@@ -33,9 +40,23 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         });
     }
 
+    const addPostsWithoutDuplicates = (currentPosts: IPost[], newPosts: IPost[]): IPost[] => {
+        const existingIds = new Set(currentPosts.map(post => post.id));
+        const uniqueNewPosts = newPosts.filter(post => !existingIds.has(post.id));
+        return [...currentPosts, ...uniqueNewPosts];
+    }
+
+    // Função auxiliar para adicionar um único post sem duplicata
+    const addPostWithoutDuplicate = (currentPosts: IPost[], newPost: IPost): IPost[] => {
+        const exists = currentPosts.some(post => post.id === newPost.id);
+        if (exists) {
+            return currentPosts;
+        }
+        return [...currentPosts, newPost];
+    }
+
 
     const loadPostDetails = async (id: string) => {
-
         setLoadingPosts(true);
         try {
             const existingPost = posts.find(p => p.id === id);
@@ -45,13 +66,13 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
 
             const fetchedPost = await postService.fetchPostWithAuthor(id);
             loadAvatarPostsImage(fetchedPost);
-            setPosts(prev => [...prev, fetchedPost]);
+            setPosts(prev => addPostWithoutDuplicate(prev, fetchedPost));
 
             return fetchedPost;
         } catch (error) {
             throw error;
         } finally {
-            setLoadingPosts(true);
+            setLoadingPosts(false);
         }
     }
 
@@ -61,7 +82,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         try {
             const newPosts = await postService.fetchPostsWithAuthor({ account, page: userPage, limit: LIMIT });
             loadAvatarPostsImage(newPosts);
-            setUserPosts(prevPosts => [...prevPosts, ...newPosts]);
+            setUserPosts(prevPosts => addPostsWithoutDuplicates(prevPosts, newPosts));
             setUserPage(prevPage => prevPage + 1);
             setHasMoreUserPosts(newPosts.length === LIMIT);
         } catch (error) {
@@ -94,7 +115,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
             const newPosts = await postService.fetchPostsWithAuthor({ page, limit: LIMIT });
 
             loadAvatarPostsImage(newPosts);
-            setPosts(prevPosts => [...prevPosts, ...newPosts]);
+            setPosts(prevPosts => addPostsWithoutDuplicates(prevPosts, newPosts));
             setPage(prevPage => prevPage + 1);
             setHasMorePosts(newPosts.length === LIMIT);
         } catch (error) {
@@ -124,8 +145,10 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         try {
             if (!postId) throw new Error("Post não encontrado");
             const post = await postService.toggleLikePostById(postId);
-            setPosts(prev => prev.map(p => (p.id === post.id ? { ...p, likes: post.likes } : p)));
-            setUserPosts(prev => prev.map(p => (p.id === post.id ? { ...p, likes: post.likes } : p)));
+            const updateLikes = (p: IPost) => (p.id === post.id ? { ...p, likes: post.likes } : p);
+            setPosts(prev => prev.map(updateLikes));
+            setUserPosts(prev => prev.map(updateLikes));
+            setSearchResults(prev => prev.map(updateLikes));
             return post;
         } catch (error) {
             throw error;
@@ -134,16 +157,15 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
 
     const addComment = async (postId: string, comment: IComment[]): Promise<IPost> => {
         try {
-
-            let updatedPost: IPost | undefined = posts.find(p => p.id === postId);
+            let updatedPost: IPost | undefined = [...posts, ...userPosts].find(p => p.id === postId);
             if (!updatedPost) {
                 const fetchedPost = await postService.fetchPostWithAuthor(postId);
                 if (!fetchedPost) throw new Error("Post não encontrado");
-                setPosts(prev => [...prev, fetchedPost]);
+                loadAvatarPostsImage(fetchedPost);
+                setPosts(prev => addPostWithoutDuplicate(prev, fetchedPost));
                 updatedPost = fetchedPost;
             }
             const post = { ...updatedPost, account: { ...updatedPost.account } }
-
 
             if (!comment) {
                 return { ...post, account: { ...post.account, avatar: pictureService.fetchPicture(post.account.avatar) } };
@@ -152,6 +174,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
             const comments = updatedPost.comments ? [...comment, ...updatedPost.comments] : [...comment];
 
             setPosts(prev => prev.map(p => p.id === postId ? { ...p, comments } : p));
+            setUserPosts(prev => prev.map(p => p.id === postId ? { ...p, comments } : p));
 
             return { ...post, comments, account: { ...post.account, avatar: pictureService.fetchPicture(post.account.avatar) } };
 
@@ -166,7 +189,8 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
             if (!currentPost) {
                 const fetchedPost = await postService.fetchPostWithAuthor(postId);
                 if (!fetchedPost) throw new Error("Post nao encontrado");
-                setPosts(prev => [...prev, fetchedPost]);
+                loadAvatarPostsImage(fetchedPost);
+                setPosts(prev => addPostWithoutDuplicate(prev, fetchedPost));
                 currentPost = fetchedPost;
             }
             const post = { ...currentPost, account: { ...currentPost.account } };
@@ -184,6 +208,71 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
             setUserPosts((prevPost) => prevPost.filter((post) => post.id !== postId))
         } catch (error) {
             throw error;
+        }
+    }
+
+    const searchPosts = async (query: string) => {
+        if (!query.trim()) {
+            setSearchResults([]);
+            setSearchQuery("");
+            setSearchPage(1);
+            setHasMoreSearchResults(true);
+            return [];
+        }
+
+        setLoadingSearchResults(true);
+        setSearchQuery(query);
+        setSearchPage(1);
+
+        try {
+            const localPosts: IPost[] = [...posts, ...userPosts].filter((post: IPost) =>
+                post.content?.toLowerCase().includes(query.toLowerCase()) ||
+                post.title?.toLowerCase().includes(query.toLowerCase())
+            );
+
+            const apiPosts = await postService.searchPosts(query, 1, LIMIT);
+            loadAvatarPostsImage(apiPosts);
+
+            const allPosts = addPostsWithoutDuplicates(localPosts, apiPosts);
+
+            if (localPosts.length > 0) {
+                loadAvatarPostsImage(localPosts);
+            }
+
+            setSearchResults(allPosts);
+            setSearchPage(2);
+            setHasMoreSearchResults(apiPosts.length === LIMIT);
+
+            setPosts(prevPosts => addPostsWithoutDuplicates(prevPosts, apiPosts));
+
+            return allPosts;
+        } catch (error) {
+            console.error("Erro ao buscar posts:", error);
+            throw error;
+        } finally {
+            setLoadingSearchResults(false);
+        }
+    }
+
+    const loadMoreSearchPosts = async () => {
+        if (loadingSearchResults || !hasMoreSearchResults || !searchQuery.trim()) return;
+
+        setLoadingSearchResults(true);
+        try {
+            const newPosts = await postService.searchPosts(searchQuery, searchPage, LIMIT);
+            loadAvatarPostsImage(newPosts);
+            setSearchResults(prevResults => addPostsWithoutDuplicates(prevResults, newPosts));
+            setSearchPage(prevPage => prevPage + 1);
+            setHasMoreSearchResults(newPosts.length === LIMIT);
+
+            setPosts(prevPosts => addPostsWithoutDuplicates(prevPosts, newPosts));
+
+            return newPosts;
+        } catch (error) {
+            console.error("Erro ao carregar mais posts da busca:", error);
+            throw error;
+        } finally {
+            setLoadingSearchResults(false);
         }
     }
 
@@ -205,7 +294,12 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
                 addComment,
                 archivePost,
                 currentPostDetails,
-                topPosts
+                topPosts,
+                searchPosts,
+                loadMoreSearchPosts,
+                searchResults,
+                hasMoreSearchResults,
+                loadingSearchResults
             }}>
             {children}
         </PostsContext.Provider>
@@ -239,7 +333,11 @@ interface PostsContextType {
     addComment: (postId: string, comment: IComment[]) => Promise<IPost>;
     // addReplyComment: (commentId: string, content: string) => Promise<void>;
     archivePost: (postId: string) => Promise<void>
-
+    searchPosts: (query: string) => Promise<IPost[]>
+    loadMoreSearchPosts: () => Promise<IPost[] | void>
+    searchResults: IPost[]
+    hasMoreSearchResults: boolean
+    loadingSearchResults: boolean
     currentPostDetails: (postId: string) => Promise<IPost>
 
     topPosts: () => Promise<IPost[]>

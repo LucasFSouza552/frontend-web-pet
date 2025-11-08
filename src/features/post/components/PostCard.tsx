@@ -82,7 +82,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions }) =
                     </PostOptions>
 
                 </PostHeader>
-                <div>{post.title}</div>
+                <div>{post.content || "Sem conteúdo"}</div>
                 <PostPictureContainer images={post.image || []} />
             </PostContent>
             <RowContainer>

@@ -7,7 +7,17 @@ export const pictureService = {
             if (!pictureId) return avatarDefault;
             const urlRegex = /^https?:\/\S*$/;
             if (urlRegex.test(pictureId)) {
-                return pictureId
+                return pictureId;
+            }
+
+            if (
+                pictureId.startsWith("/src/") ||
+                pictureId.startsWith("src/") ||
+                pictureId.startsWith("/assets/") ||
+                pictureId.startsWith("assets/") ||
+                pictureId === avatarDefault
+            ) {
+                return pictureId;
             }
             const response = `${apiUrl}/picture/${pictureId}`;
             return response;

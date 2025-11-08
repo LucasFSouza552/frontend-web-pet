@@ -10,7 +10,6 @@ import { FaImage, FaTimes, FaPaperPlane } from "react-icons/fa";
 export default function CreatePostForm() {
     const { account } = useContext(ProfileContext);
     const { refreshPosts } = useContext(PostsContext);
-    const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [images, setImages] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -43,7 +42,7 @@ export default function CreatePostForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
-        if (!content.trim() && !title.trim()) {
+        if (!content.trim()) {
             alert("Por favor, escreva algo no post");
             return;
         }
@@ -51,10 +50,7 @@ export default function CreatePostForm() {
         setIsSubmitting(true);
         try {
             const formData = new FormData();
-            formData.append("title", title || "Sem título");
             formData.append("content", content);
-
-            console.log("content", content)
             
             images.forEach((image) => {
                 formData.append("images", image);
@@ -62,7 +58,6 @@ export default function CreatePostForm() {
 
             await postService.createPost(formData);
 
-            setTitle("");
             setContent("");
             setImages([]);
             imagePreviews.forEach(preview => URL.revokeObjectURL(preview));
@@ -72,7 +67,6 @@ export default function CreatePostForm() {
                 fileInputRef.current.value = "";
             }
 
-            // Atualizar feed
             refreshPosts();
         } catch (error) {
             console.error("Erro ao criar post:", error);
@@ -97,12 +91,6 @@ export default function CreatePostForm() {
             </FormHeader>
 
             <Form onSubmit={handleSubmit}>
-                <TitleInput
-                    type="text"
-                    placeholder="Título do post (opcional)"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
 
                 <ContentTextarea
                     placeholder="No que você está pensando?"
@@ -142,7 +130,7 @@ export default function CreatePostForm() {
                         </ImageButton>
                     </ImageInputWrapper>
 
-                    <SubmitButton type="submit" disabled={isSubmitting || (!content.trim() && !title.trim())}>
+                    <SubmitButton type="submit" disabled={isSubmitting || !content.trim()}>
                         <FaPaperPlane size={16} />
                         {isSubmitting ? "Publicando..." : "Publicar"}
                     </SubmitButton>
