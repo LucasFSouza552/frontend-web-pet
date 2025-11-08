@@ -24,17 +24,20 @@ export default function ProfileCard({ account, accountStatus }: { account: IAcco
 const ProfileContent = styled.div`
     width: 80%;
     display: flex;
+    color: white;
 `;
 
 const ProfileContainer = styled.div`
-  display: flex;
-  width: 100%;
-  padding: 15px;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    width: 100%;
+    padding: 15px;
+    justify-content: center;
+    align-items: center;
     background-image: url(${background});
     background-size: cover;
     background-position: center;
     background-position:  left left;
+    border-radius: 1.5rem;
+    background: linear-gradient(51deg,rgba(74, 58, 70, 0.6) 0%, rgba(182, 72, 160, 0.5) 100%);
 `;
 

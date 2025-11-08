@@ -114,13 +114,9 @@ const PostOptions = styled.div`
     background-color: ${({ theme }) => theme.colors.quarternary};
     padding: 5px;
     border-radius: 100%;
-    --size: 35px;
     justify-content: center;
     align-items: center;
-    width: var(--size);
-    height: var(--size);
     cursor: pointer;
-
     &:hover {
         background-color: ${({ theme }) => theme.colors.tertiary};
     }
@@ -193,9 +189,6 @@ const HeartIcon = styled(FaHeart) <{ $animate?: boolean }>`
     `}
 `;
 
-
-
-
 const PostContent = styled.div`
     display: flex;
     flex-direction: column;
@@ -217,8 +210,8 @@ const PictureContainer = styled.div`
 `;
 
 const PostPicture = styled.div`
-inline-size: 100%;
-block-size: 100%;
+    inline-size: 100%;
+    block-size: 100%;
     
     img {
         inline-size: 100%;
@@ -236,10 +229,11 @@ const PostContainer = styled.div`
     padding: 10px;
     display: flex;
     flex-direction: column;
-    max-inline-size: 600px;
+    max-inline-size: 70%;
     inline-size: 100%;
     gap: 5px;
     color: white;
+    border-radius: 1.5rem;
 `;
 
 const PostHeader = styled.div`
@@ -248,8 +242,6 @@ const PostHeader = styled.div`
     flex-direction: row;
     justify-content: space-between;
     background-color: ${({ theme }) => theme.colors.quinary};
-    
-    
     position: relative;
     border-radius: 50px;
 `;

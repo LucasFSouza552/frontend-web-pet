@@ -28,16 +28,14 @@ export default function PostModal({ postId, moreOptions = false, closeModal, han
 }
 
 const PostModalContainer = styled.div`
-    position: absolute;
+    position: relative;
+    z-index: 10;
     display: flex;
     flex-direction: column;
-   
-    
     background-color: ${({ theme }) => theme.colors.quarternary};
     border-radius: 10px;
     right: -10px;
     top: 0px;
-    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;

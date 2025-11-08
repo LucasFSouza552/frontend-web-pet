@@ -106,7 +106,7 @@ const MainContent = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    padding: 1rem;
+    padding-left: 1.2rem;
     overflow-y: auto;
 `;
 
