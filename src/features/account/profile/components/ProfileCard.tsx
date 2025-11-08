@@ -37,7 +37,7 @@ const ProfileContainer = styled.div`
     background-size: cover;
     background-position: center;
     background-position:  left left;
-    border-radius: 1.5rem;
-    background: linear-gradient(51deg,rgba(74, 58, 70, 0.6) 0%, rgba(182, 72, 160, 0.5) 100%);
+    border-radius: 1.5rem 0 0 1.5rem;
+    background: linear-gradient(51deg,rgba(74, 58, 70, 0.6) 0%, rgba(182, 72, 160, 0.5) 80%);
 `;
 

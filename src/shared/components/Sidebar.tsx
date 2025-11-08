@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import ProfileMenu from "./ProfileMenu";
 import { PrimaryButton } from "./PrimaryButton";
 
-import { FaHome, FaBullhorn, FaHandsHelping, FaHeart, FaUsers, FaSearch, FaDonate } from "react-icons/fa";
+import { FaHome, FaHandsHelping, FaHeart, FaUsers } from "react-icons/fa";
 import logo from "@assets/images/logo.png";
 import { useMemo, type JSX } from "react";
 
@@ -82,7 +82,7 @@ const SidebarContainer = styled.aside`
   justify-content: space-between;
   align-items: center;
   padding: 25px 15px;
-  
+
   background-color: ${({ theme }) => theme.colors.quarternary};
   border: 1px solid ${({ theme }) => theme.colors.primary};
   border-radius: 12px;

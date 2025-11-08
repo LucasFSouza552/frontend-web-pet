@@ -40,6 +40,7 @@ const ContentQuestions = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-bottom: 20px;
 `;
 
 const FooterContainer = styled.div`
@@ -65,23 +66,6 @@ const Description = styled.p`
   margin: 0 auto 40px auto;
   line-height: 1.6;
   color: #e0e0e0;
-`;
-
-const Button = styled.button`
-  border: 2px solid ${({ theme }) => theme.colors.primary};
-  background: transparent;
-  color: #b14ebf;
-  padding: 10px 25px;
-  margin-bottom: 20px;
-  font-size: 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.primary};
-    color: #fff;
-  }
 `;
 
 const FooterCurve = styled.div`

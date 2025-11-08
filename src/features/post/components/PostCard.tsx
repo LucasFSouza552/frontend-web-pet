@@ -5,7 +5,7 @@ import type { IPost } from "../../../shared/models/Post";
 import { FaHeart, FaShareAlt } from "react-icons/fa";
 import { BsChatFill } from "react-icons/bs";
 import { PostsContext } from "@contexts/PostContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 
 import AvatarDefault from "@assets/images/avatar-default.png";
 import { useNavigate } from "react-router-dom";

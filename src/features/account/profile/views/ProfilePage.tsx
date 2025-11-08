@@ -62,7 +62,9 @@ export default function ProfileSection() {
     return (
         <ProfileContainer>
             <SectionContent>
-                <SideBar account={account} />
+                <StickySidebar>
+                    <SideBar account={account} />
+                </StickySidebar>
                 <MainContent>
                     {!loadingViewedAccount && viewedAccount && viewedAccountStatus && (
                         <ProfileCard account={viewedAccount} accountStatus={viewedAccountStatus} />
@@ -85,6 +87,37 @@ const ProfileContainer = styled.div`
     align-items: center;
     min-height: 100dvh;
     width: 100%;
+`;
+
+const StickySidebar = styled.div`
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: fit-content;
+  max-height: calc(100dvh - 30px);
+  overflow-y: auto;
+  z-index: 10;
+  flex-shrink: 0;
+  
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.primary || "#B648A0"};
+    border-radius: 2px;
+  }
+  
+  @media (max-width: 1024px) {
+    position: static;
+    width: 100%;
+    max-height: none;
+    z-index: 1;
+  }
 `;
 
 const SectionContent = styled(Section)`
