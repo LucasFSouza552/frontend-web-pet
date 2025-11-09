@@ -1,13 +1,12 @@
 import { styled } from "styled-components";
-import { HeaderComponent } from "../../../shared/components/HeaderComponent";
 import MatchCard from "../components/MatchCard";
-import Section from "../../../shared/styles/SectionStyle";
-import backgroundPage from "../../../shared/assets/images/background-page.jpg";
+import Section from "@styles/SectionStyle";
+import backgroundPage from "@assets/images/background-page.jpg";
 import { useContext, useEffect } from "react";
 import MatchCardSkeleton from "../components/MatchCardSkeleton";
 import NoMorePetsCard from "../components/NoMorePetsCard";
-import { ProfileContext } from "@/shared/contexts/ProfileContext";
-import SideBar from "@/shared/components/Sidebar";
+import { ProfileContext } from "@contexts/ProfileContext";
+import SideBar from "@components/Sidebar";
 
 export default function MatchSection() {
 
@@ -44,7 +43,6 @@ const MatchContentWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
 `;
 
 const Container = styled.div`
@@ -63,6 +61,20 @@ const SectionContent = styled(Section)`
     background-size: cover;
     background-position: center;
     background-repeat: repeat;
-
     background-attachment: fixed;
+    padding: 1.25rem;
+    gap: 1.25rem;
+    box-sizing: border-box;
+
+    @media (max-width: 1024px) {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
 `;

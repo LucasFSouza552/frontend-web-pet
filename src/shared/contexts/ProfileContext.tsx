@@ -3,7 +3,7 @@ import type { IAccount } from "../models/Account";
 
 import type Pet from "@models/Pet";
 import { accountService } from "@api/AccountService";
-import type { IAccountStatus } from "@models/AccountStatus";
+import type { IAccountStatus } from "@/shared/models/AccountStatus";
 import { pictureService } from "../api/pictureService";
 import { getStorage, removeStorage } from "../utils/storageUtils";
 

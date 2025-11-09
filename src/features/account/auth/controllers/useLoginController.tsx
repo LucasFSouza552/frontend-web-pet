@@ -28,7 +28,7 @@ export default function useLoginController() {
             const accountId = await login(credentials.email, credentials.password);
             console.log(getStorage("@token"))
             setError("");
-            // Carrega o perfil no ProfileContext após o login
+            
             await loadProfile();
             navigate(`/profile/${accountId}`);
         } catch (error: unknown) {

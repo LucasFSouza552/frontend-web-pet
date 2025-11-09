@@ -88,7 +88,7 @@ const TrendingPostsContainer = styled.aside`
     box-shadow: 0 4px 12px rgba(182, 72, 160, 0.2);
     overflow-y: auto;
     align-self: flex-start;
-    z-index: 10;
+    z-index: 5;
     
     &::-webkit-scrollbar {
         width: 4px;

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { PostsContext } from "@contexts/PostContext";
 
 export function useCommunityController() {
@@ -14,7 +14,8 @@ export function useCommunityController() {
         hasMoreSearchResults,
         loadingSearchResults
     } = useContext(PostsContext);
-    
+    const [isSearching, setIsSearching] = useState(false);
+
     const observer = useRef<IntersectionObserver>(null);
     const searchObserver = useRef<IntersectionObserver>(null);
 
@@ -48,6 +49,20 @@ export function useCommunityController() {
         [hasMoreSearchResults, loadMoreSearchPosts, loadingSearchResults]
     );
 
+    const handleSearch = async (query: string) => {
+        if (!query.trim()) {
+          setIsSearching(false);
+          return;
+        }
+    
+        setIsSearching(true);
+        try {
+          await searchPosts(query);
+        } catch (error) {
+          console.error("Erro ao pesquisar posts:", error);
+        }
+      };
+
     return {
         posts,
         loadingPosts,
@@ -59,7 +74,9 @@ export function useCommunityController() {
         searchResults,
         hasMoreSearchResults,
         loadingSearchResults,
-        lastSearchPostRef
+        lastSearchPostRef,
+        handleSearch,
+        isSearching
     };
 }
 

@@ -13,6 +13,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import SmallProfile from "@components/SmallProfile";
 import type { IAccount } from "@/shared/models/Account";
 import { ErrorBoundary } from "@/shared/Error/ErrorBoundary";
+import PostModal from "./PostModal";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -20,7 +21,9 @@ interface PostCardProps {
     post: IPost;
     accountId?: string;
     onLike?: (postId: string) => void;
-    handleOptions: (postId: string) => void
+    handleOptions: (postId: string) => void;
+    handleAbout: (postId: string) => void;
+    postOptions: string;
 }
 
 const PostPictureContainer = ({ images }: { images: string[] }) => {
@@ -37,13 +40,14 @@ const PostPictureContainer = ({ images }: { images: string[] }) => {
     )
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions, handleAbout, postOptions }) => {
     const navigate = useNavigate();
     if (!post) return null;
 
     const { likePost } = useContext(PostsContext);
     const [animateLike, setAnimateLike] = useState(false);
     const [showSmallProfile, setShowSmallProfile] = useState(false);
+    const [showShareMessage, setShowShareMessage] = useState(false);
 
     const handleLike = () => {
         setAnimateLike(true);
@@ -67,46 +71,150 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions }) =
         setShowSmallProfile(!showSmallProfile);
     }
 
+    const handleShare = async () => {
+        const postUrl = `${window.location.origin}/post/${post.id}`;
+        const shareData = {
+            title: `Post de ${post.account.name}`,
+            text: post.content ? `${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}` : `Confira este post de ${post.account.name}!`,
+            url: postUrl
+        };
+
+        try {handleOptions("");
+            if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(postUrl);
+                setShowShareMessage(true);
+                setTimeout(() => {
+                    setShowShareMessage(false);
+                }, 2000);
+            }
+        } catch (error) {
+            if (error instanceof Error && error.name !== 'AbortError') {
+                try {
+                    await navigator.clipboard.writeText(postUrl);
+                    setShowShareMessage(true);
+                    setTimeout(() => {
+                        setShowShareMessage(false);
+                    }, 2000);
+                } catch (clipboardError) {
+                    console.error('Erro ao copiar link:', clipboardError);
+                }
+            }
+        }
+    }
+
+    const formatDate = (dateString: string) => {
+        if (!dateString) return "";
+
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+        if (diffInSeconds < 60) {
+            return "agora";
+        } else if (diffInSeconds < 3600) {
+            const minutes = Math.floor(diffInSeconds / 60);
+            return `há ${minutes} ${minutes === 1 ? 'minuto' : 'minutos'}`;
+        } else if (diffInSeconds < 86400) {
+            const hours = Math.floor(diffInSeconds / 3600);
+            return `há ${hours} ${hours === 1 ? 'hora' : 'horas'}`;
+        } else if (diffInSeconds < 604800) {
+            const days = Math.floor(diffInSeconds / 86400);
+            return `há ${days} ${days === 1 ? 'dia' : 'dias'}`;
+        } else {
+            return date.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: 'short',
+                year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+            });
+        }
+    }
+
     return (
         <ErrorBoundary>
-        <PostContainer>
-            <PostContent>
-                <PostHeader className="no-select">
-                    <PostProfileContainer onMouseEnter={handleSmallProfile} onMouseLeave={handleSmallProfile} onClick={() => handleProfile(post.account.id)}>
-                        <ProfileAvatar avatar={post.account.avatar} alt={post.account.name} />
-                        <span>{post.account.name || "Unknown"}</span>
-                        {showSmallProfile && post.account && <SmallProfile account={post.account as IAccount} />}
-                    </PostProfileContainer>
-                    <PostOptions onClick={() => handleOptions(post.id)}>
-                        <HiDotsVertical size={25} />
-                    </PostOptions>
+            <PostContainer>
+                <PostContent>
+                    <PostHeader className="no-select">
+                        <PostProfileContainer onMouseEnter={handleSmallProfile} onMouseLeave={handleSmallProfile} onClick={() => handleProfile(post.account.id)}>
+                            <ProfileAvatar avatar={post.account.avatar} alt={post.account.name} />
+                            <ProfileInfo>
+                                <ProfileName>{post.account.name || "Unknown"}</ProfileName>
+                                <PostDate>{formatDate(post.createdAt || post.date)}</PostDate>
+                            </ProfileInfo>
+                            {showSmallProfile && post.account && <SmallProfile account={post.account as IAccount} />}
+                        </PostProfileContainer>
+                        <PostOptions onClick={() => handleOptions(post.id)}>
+                            <HiDotsVertical size={25} />
+                        </PostOptions>
 
-                </PostHeader>
-                <div>{post.content || "Sem conteúdo"}</div>
-                <PostPictureContainer images={post.image || []} />
-            </PostContent>
-            <RowContainer>
-                <RowContainer className="no-select">
-                    <CircleIcon onClick={handleLike}>
-                        <HeartIcon $animate={animateLike} color={accountId && post?.likes?.includes(accountId) ? "red" : "white"} />
-                    </CircleIcon>
-                    <p>{post?.likes?.length || 0} Curtidas</p>
+
+
+                        {postOptions === post.id && <PostModal postId={post.id} moreOptions={post.account.id === accountId} closeModal={handleOptions} handleAbout={handleAbout}  handleShare={handleShare} />}
+
+                    </PostHeader>
+                    <div>{post.content || "Sem conteúdo"}</div>
+                    <PostPictureContainer images={post.image || []} />
+                </PostContent>
+                <RowContainer>
+                    <RowContainer className="no-select">
+                        <CircleIcon onClick={handleLike}>
+                            <HeartIcon $animate={animateLike} color={accountId && post?.likes?.includes(accountId) ? "red" : "white"} />
+                        </CircleIcon>
+                        <p>{post?.likes?.length || 0} Curtidas</p>
+                    </RowContainer>
+                    <RowContainer className="no-select" onClick={() => handleComments(post.id)}>
+                        <CircleIcon><BsChatFill /></CircleIcon>
+                        <p>Comentários</p>
+                    </RowContainer>
+                    <RowContainer className="no-select" onClick={handleShare}>
+                        <ShareIconContainer>
+                            <CircleIcon><FaShareAlt /></CircleIcon>
+                            {showShareMessage && <ShareMessage>Link copiado!</ShareMessage>}
+                        </ShareIconContainer>
+                        <p>Compartilhar</p>
+                    </RowContainer>
                 </RowContainer>
-                <RowContainer className="no-select" onClick={() => handleComments(post.id)}>
-                    <CircleIcon><BsChatFill /></CircleIcon>
-                    <p>Comentários</p>
-                </RowContainer>
-                <RowContainer className="no-select" onClick={() => { }}>
-                    <CircleIcon><FaShareAlt /></CircleIcon>
-                    <p>Compartilhar</p>
-                </RowContainer>
-            </RowContainer>
-        </PostContainer>
+            </PostContainer>
         </ErrorBoundary>
     )
 }
 
 export default PostCard;
+
+const ProfileName = styled.span`
+    font-weight: bold;
+    font-size: 1rem;
+    color: white;
+    transition: text-decoration 0.2s ease;
+`;
+
+const PostDate = styled.span`
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: normal;
+`;
+
+const ProfileInfo = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+`;
+
+const PostProfileContainer = styled.div`
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 50px;
+    cursor: pointer;
+    position: relative;
+
+    &:hover ${ProfileName} {
+        text-decoration: underline;
+    }
+`;
 
 const PostOptions = styled.div`
     display: flex;
@@ -119,24 +227,6 @@ const PostOptions = styled.div`
     cursor: pointer;
     &:hover {
         background-color: ${({ theme }) => theme.colors.tertiary};
-    }
-`;
-
-const PostProfileContainer = styled.div`
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    gap: 10px;
-    padding: 8px;
-    border-radius: 50px;
-    cursor: pointer;
-    
-    span {
-        font-weight: bold;
-    }
-
-    &:hover {
-        text-decoration: underline;
     }
 `;
 
@@ -238,10 +328,66 @@ const PostContainer = styled.div`
 
 const PostHeader = styled.div`
     display: flex;
+    position: relative;
     align-items: center;
     flex-direction: row;
     justify-content: space-between;
     background-color: ${({ theme }) => theme.colors.quinary};
     position: relative;
     border-radius: 50px;
+`;
+
+const ShareIconContainer = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const ShareMessage = styled.span`
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    animation: fadeInOut 2s ease-in-out;
+    z-index: 100;
+    pointer-events: none;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-bottom: 4px solid ${({ theme }) => theme.colors.primary};
+    }
+
+    @keyframes fadeInOut {
+        0% {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-5px);
+        }
+        20% {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        80% {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        100% {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-5px);
+        }
+    }
 `;

@@ -91,11 +91,9 @@ export default function Step4({ handleChange }: { images?: string, handleChange:
             const containerWidth = container.clientWidth;
             const containerHeight = container.clientHeight;
             
-            // Calcular escala entre a imagem original e o preview
             const scaleX = img.width / containerWidth;
             const scaleY = img.height / containerHeight;
             
-            // Calcular dimensões do crop na imagem original
             const cropWidth = cropArea.width * scaleX;
             const cropHeight = cropArea.height * scaleY;
             const cropX = cropArea.x * scaleX;
@@ -122,7 +120,6 @@ export default function Step4({ handleChange }: { images?: string, handleChange:
                     setCroppedImage(croppedUrl);
                     setIsCropping(false);
                     
-                    // Converter para base64 para enviar
                     const reader = new FileReader();
                     reader.onload = () => {
                         handleChange("images", reader.result as string);

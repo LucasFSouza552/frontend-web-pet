@@ -1,5 +1,5 @@
 import type IAddress from "../interfaces/IAddress";
-import type { IAccountAchievement } from "./accountAchievement";
+import type { IAccountAchievement } from "./AccountAchievement";
 
 export interface IAccount {
     id: string;

@@ -1,10 +1,8 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext } from "react";
 import { styled } from "styled-components";
 
 import Section from "@styles/SectionStyle";
 import backgroundPage from "@assets/images/background-page.jpg";
-import { PostsContext } from "@contexts/PostContext";
 import { ProfileContext } from "@contexts/ProfileContext";
 import { CommentsContext } from "@contexts/CommentContext";
 
@@ -12,89 +10,28 @@ import SideBar from "@/shared/components/Sidebar";
 import PostsContainerList from "../components/PostsContainerList";
 import PostComments from "../components/CommentsContainerList";
 
-import type { IPost } from "@/shared/models/Post";
-import type IComment from "@/shared/models/Comments";
+import useManagePostController from "../controller/useManagePostController";
 
 export default function PostPage() {
-  const { id } = useParams<{ id: string }>();
   const { account } = useContext(ProfileContext);
-  const { currentPostDetails } = useContext(PostsContext);
-  const { createComment, loadCommentsByPostId, replyComment } = useContext(CommentsContext);
-
-  const [post, setPost] = useState<IPost | null>(null);
-  const [comments, setComments] = useState<IComment[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [loadingPost, setLoadingPost] = useState(true);
-  const [newComment, setNewComment] = useState("");
-
-  const observer = useRef<IntersectionObserver | null>(null);
-
-  useEffect(() => {
-    if (!id) return;
-    setLoadingPost(true);
-    setComments([]);
-    setPage(1);
-    setHasMore(true);
-
-    currentPostDetails(id)
-      .then((post) => {
-        setPost(post)
-      })
-      .finally(() => setLoadingPost(false));
-  }, [id]);
-
-  useEffect(() => {
-    if (!id || !hasMore || loadingPost) return;
-
-    loadCommentsByPostId(id, page)
-      .then((data: IPost | null) => {
-        const newComments = data?.comments ?? [];
-        if (!newComments.length) {
-          setHasMore(false);
-          return;
-        }
-
-        setComments((prev) => {
-          const ids = new Set(prev.map((c) => c.id));
-          const uniques = newComments.filter((c) => !ids.has(c.id));
-          return [...prev, ...uniques];
-        });
-
-        if (newComments.length < 10) setHasMore(false);
-      })
-      .catch(() => setHasMore(false));
-  }, [id, page, hasMore, loadingPost ]);
-
-  const observeLastComment = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (observer.current) observer.current.disconnect();
-      if (!node || !hasMore) return;
-
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) setPage((p) => p + 1);
-      });
-      observer.current.observe(node);
-    },
-    [hasMore]
-  );
-
-  const handleSubmit = async () => {
-    if (!newComment.trim() || !post?.id) return;
-    try {
-      const comment = await createComment(post.id, newComment);
-      if (comment) setComments((prev) => [comment, ...prev]);
-      setNewComment("");
-    } catch (err) {
-      console.error("Erro ao criar comentário:", err);
-    }
-  };
+  const { replyComment } = useContext(CommentsContext);
+  const { 
+    post, 
+    loadingPost, 
+    handleSubmit, 
+    newComment, 
+    handleUpdateNewCommentValue, 
+    hasMoreComments, 
+    loadingComments 
+  } = useManagePostController();
 
   if (loadingPost || !post) {
     return (
       <Container>
         <Background />
-        <LoadingContainer />
+        <LoadingContainer>
+          <p>Carregando post...</p>
+        </LoadingContainer>
       </Container>
     );
   }
@@ -113,7 +50,7 @@ export default function PostPage() {
           <CommentBox>
             <textarea
               value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
+              onChange={handleUpdateNewCommentValue}
               placeholder="Escreva um comentário..."
               onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
                 const target = e.currentTarget;
@@ -133,19 +70,24 @@ export default function PostPage() {
           </CommentBox>
 
           <PostComments
-            comments={comments}
-            lastCommentRef={observeLastComment}
+            comments={post.comments || []}
+            lastCommentRef={() => {}}
             onReply={async (parentId: string, content: string) => {
               try {
-                const reply = await replyComment(parentId, content);
-                if (reply) setComments((prev) => [...prev, reply]);
+                await replyComment(parentId, content);
               } catch (error) {
                 console.error("Erro ao responder comentário:", error);
               }
             }}
           />
 
-          {!hasMore && <EndText>Sem mais comentários.</EndText>}
+          {loadingComments && (
+            <LoadingCommentsText>Carregando mais comentários...</LoadingCommentsText>
+          )}
+
+          {!hasMoreComments && post.comments && post.comments.length > 0 && (
+            <EndText>Sem mais comentários.</EndText>
+          )}
         </Main>
       </Content>
     </Container>
@@ -337,6 +279,16 @@ const CommentBox = styled.div`
 const EndText = styled.p`
   text-align: center;
   color: rgba(255, 255, 255, 0.6);
+  margin-top: 1rem;
+  padding: 1rem;
+`;
+
+const LoadingCommentsText = styled.p`
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 1rem;
+  padding: 1rem;
+  font-style: italic;
 `;
 
 const LoadingContainer = styled.div`

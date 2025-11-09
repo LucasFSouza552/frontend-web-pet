@@ -2,14 +2,13 @@ import styled from "styled-components";
 import type IPet from "@/shared/models/Pet";
 
 import { IoLocationSharp } from "react-icons/io5";
-import { FaWeightHanging, FaShieldDog, FaShareFromSquare } from "react-icons/fa6";
-import { IoMdMale, IoMdFemale, IoMdStar } from "react-icons/io";
+import { FaWeightHanging, FaShieldDog } from "react-icons/fa6";
+import { IoMdMale, IoMdFemale } from "react-icons/io";
 import { useState } from "react";
 import { usePetInteractionController } from "../../pet/controllers/usePetInteractionController";
 import MatchCardSkeleton from "./MatchCardSkeleton";
-import { pictureService } from "@/shared/api/pictureService";
+import { pictureService } from "@api/pictureService";
 import PetIconsMenu from "./PetIconsMenu";
-import { PiBird, PiCat, PiDog } from "react-icons/pi";
 import SponsorModal from "./PetModalSponsor";
 
 
@@ -35,8 +34,6 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
     const handleModalSponsor = () => {
         setModalSponsor(!modalSponsor);
     }
-    // Mostra isso quando o pet não ter foto
-    // import { SiDatadog } from "react-icons/si";
 
     return (
         <CardContainer>
@@ -164,8 +161,8 @@ const CardContainer = styled.div`
     justify-content: center;
     overflow: hidden;
     color: white;
+    min-height: 80%;
     max-height: 80%;
-    min-height: 100%;
 `;
 
 const PetInfo = styled.div`

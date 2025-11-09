@@ -19,23 +19,11 @@ export default function CommunityPage() {
     searchResults,
     hasMoreSearchResults,
     loadingSearchResults,
-    lastSearchPostRef
+    lastSearchPostRef,
+    handleSearch,
+    isSearching
   } = useCommunityController();
-  const [isSearching, setIsSearching] = useState(false);
-
-  const handleSearch = async (query: string) => {
-    if (!query.trim()) {
-      setIsSearching(false);
-      return;
-    }
-
-    setIsSearching(true);
-    try {
-      await searchPosts(query);
-    } catch (error) {
-      console.error("Erro ao pesquisar posts:", error);
-    }
-  };
+  
 
   return (
     <Container>

@@ -132,6 +132,21 @@ const SectionContent = styled(Section)`
     background-position: center;
     background-repeat: repeat;
     background-attachment: fixed;
+    padding: 1.25rem;
+    gap: 1.25rem;
+    box-sizing: border-box;
+
+    @media (max-width: 1024px) {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
 `;
 
 const MainContent = styled.div`
@@ -139,7 +154,6 @@ const MainContent = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    padding-left: 1.2rem;
     overflow-y: auto;
 `;
 

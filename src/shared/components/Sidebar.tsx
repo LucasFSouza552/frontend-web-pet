@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import ProfileMenu from "./ProfileMenu";
 import { PrimaryButton } from "./PrimaryButton";
 
-import { FaHome, FaHandsHelping, FaHeart, FaUsers } from "react-icons/fa";
+import { FaHome, FaHandsHelping, FaHeart, FaUsers, FaBullhorn, FaDonate } from "react-icons/fa";
 import logo from "@assets/images/logo.png";
 import { useMemo, type JSX } from "react";
 
