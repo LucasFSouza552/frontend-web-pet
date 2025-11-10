@@ -142,7 +142,3 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
         </ProfileContext.Provider>
     )
 }
-
-function fetchInteractionByAccountId() {
-    throw new Error("Function not implemented.");
-}
