@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import useManagePostController from "../controller/useManagePostController";
-import { FaArrowRight, FaShareAlt, FaUser, FaTrash, FaTimes } from "react-icons/fa";
+import { FaArrowRight, FaShareAlt, FaUser, FaTrash, FaTimes, FaEdit } from "react-icons/fa";
+import { useState } from "react";
 
 interface PostModalProps {
     postId: string;
@@ -9,12 +10,16 @@ interface PostModalProps {
     closeModal: (postId: string) => void;
     handleAbout: (postId: string) => void;
     handleShare: () => Promise<void>;
+    initialContent?: string;
+    onEditPost?: (postId: string) => void;
 }
 
-export default function PostModal({ postId, moreOptions = false, closeModal, handleAbout, handleShare }: PostModalProps) {
+export default function PostModal({ postId, moreOptions = false, closeModal, handleAbout, handleShare, initialContent = "", onEditPost }: PostModalProps) {
     const navigate = useNavigate();
 
     const { handleDeletePost } = useManagePostController();
+
+    const [/*unused*/_] = useState(initialContent || "");
 
     const goToPost = () => {
         navigate(`/post/${postId}`);
@@ -42,6 +47,11 @@ export default function PostModal({ postId, moreOptions = false, closeModal, han
                 </ModalButton>
                 {moreOptions && (
                     <>
+                        <Separator />
+                        <ModalButton onClick={() => { onEditPost && onEditPost(postId); closeModal(""); }}>
+                            <FaEdit />
+                            <span>Editar post</span>
+                        </ModalButton>
                         <Separator />
                         <ModalButton $danger onClick={() => handleDeletePost(postId)}>
                             <FaTrash />
@@ -214,3 +224,5 @@ const CancelButton = styled.button`
         transform: translateY(0);
     }
 `;
+
+// Removed inline text editing styles; editing now occurs in PostCard title.

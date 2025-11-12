@@ -113,59 +113,75 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
 
     const addComment = async (postId: string, comment: IComment[]): Promise<IPost> => {
         try {
-            let updatedPost: IPost | null = generalPosts.getPost(postId) ||
+            let basePost: IPost | null =
+                generalPosts.getPost(postId) ||
                 userPostsHook.getPost(postId) ||
-                searchResults.find(p => p.id === postId) || null;
+                searchResults.find(p => p.id === postId) ||
+                null;
 
-            if (!updatedPost) {
+            if (!basePost) {
                 const fetchedPost = await postService.fetchPostWithAuthor(postId);
                 if (!fetchedPost) throw new Error("Post não encontrado");
                 loadAvatarPostsImage(fetchedPost);
                 generalPosts.addPost(fetchedPost);
-                updatedPost = fetchedPost;
+                basePost = fetchedPost;
             }
 
             if (!comment || comment.length === 0) {
-                const post = { ...updatedPost, account: { ...updatedPost.account } };
-                return { ...post, account: { ...post.account, avatar: pictureService.fetchPicture(post.account.avatar) } };
+                const postToReturn = { ...basePost, account: { ...basePost.account } };
+                return {
+                    ...postToReturn,
+                    account: { ...postToReturn.account, avatar: pictureService.fetchPicture(postToReturn.account.avatar) }
+                };
             }
 
-            comment.forEach((c: IComment) => {
-                if (c.account?.avatar) {
+            const incomingComments = comment.map((c: IComment) => {
+                if (c?.account?.avatar) {
                     c.account.avatar = pictureService.fetchPicture(c.account.avatar);
                 }
+                return c;
             });
 
-            const generalPost = generalPosts.addComments(postId, comment);
-            const userPost = userPostsHook.addComments(postId, comment);
-
-            setSearchResults(prev => {
-                const postIndex = prev.findIndex(p => p.id === postId);
-                if (postIndex === -1) return prev;
-
-                const post = prev[postIndex];
-                const commentsMap = new Map<string, IComment>();
-
-                if (post.comments && post.comments.length > 0) {
-                    post.comments.forEach(c => {
-                        if (c.id) commentsMap.set(c.id, c);
-                    });
+            const mergeComments = (existing?: IComment[], incoming?: IComment[]): IComment[] => {
+                const byId = new Map<string, IComment>();
+                if (existing && existing.length > 0) {
+                    existing.forEach(c => { if (c?.id) byId.set(c.id, c); });
                 }
-
-                comment.forEach(c => {
-                    if (c.id) commentsMap.set(c.id, c);
+                if (incoming && incoming.length > 0) {
+                    incoming.forEach(c => { if (c?.id) byId.set(c.id, c); });
+                }
+                const merged = Array.from(byId.values());
+                merged.sort((a, b) => {
+                    const aTime = new Date(a.createdAt as any).getTime();
+                    const bTime = new Date(b.createdAt as any).getTime();
+                    return aTime - bTime;
                 });
+                return merged;
+            };
 
-                const uniqueComments = Array.from(commentsMap.values());
-                const newItems = [...prev];
-                newItems[postIndex] = { ...post, comments: uniqueComments };
-                return newItems;
+            const applyMerge = (p: IPost) => {
+                const mergedComments = mergeComments(p.comments, incomingComments);
+                return { ...p, comments: mergedComments };
+            };
+
+            generalPosts.updatePost(postId, applyMerge);
+            userPostsHook.updatePost(postId, applyMerge);
+            setSearchResults(prev => {
+                const idx = prev.findIndex(p => p.id === postId);
+                if (idx === -1) return prev;
+                const post = prev[idx];
+                const updated = applyMerge(post);
+                const next = [...prev];
+                next[idx] = updated;
+                return next;
             });
 
-            const finalPost = generalPost || userPost || updatedPost;
-            const post = { ...finalPost, account: { ...finalPost.account } };
-            return { ...post, account: { ...post.account, avatar: pictureService.fetchPicture(post.account.avatar) } };
-
+            const mergedForReturn = applyMerge(basePost);
+            const postToReturn = { ...mergedForReturn, account: { ...mergedForReturn.account } };
+            return {
+                ...postToReturn,
+                account: { ...postToReturn.account, avatar: pictureService.fetchPicture(postToReturn.account.avatar) }
+            };
         } catch (error) {
             throw error;
         }
@@ -283,6 +299,40 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
+    const updatePostContent = async (postId: string, newContent: string) => {
+        try {
+            const updated = await postService.updatePost(postId, { content: newContent } as any);
+
+            const applyUpdatedContent = (p: IPost) =>
+                p.id === updated.id ? { ...p, content: updated.content } : p;
+
+            generalPosts.updatePost(postId, applyUpdatedContent);
+            userPostsHook.updatePost(postId, applyUpdatedContent);
+            setSearchResults(prev => prev.map(applyUpdatedContent));
+
+            return updated as IPost;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const updatePostTitle = async (postId: string, newTitle: string) => {
+        try {
+            const updated = await postService.updatePost(postId, { title: newTitle } as any);
+
+            const applyUpdatedTitle = (p: IPost) =>
+                p.id === updated.id ? { ...p, title: updated.title } : p;
+
+            generalPosts.updatePost(postId, applyUpdatedTitle);
+            userPostsHook.updatePost(postId, applyUpdatedTitle);
+            setSearchResults(prev => prev.map(applyUpdatedTitle));
+
+            return updated as IPost;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     return (
         <PostsContext.Provider
             value={{
@@ -298,7 +348,9 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
                 loadMoreSearchPosts,
                 searchResults,
                 hasMoreSearchResults,
-                loadingSearchResults
+                loadingSearchResults,
+                updatePostContent,
+                updatePostTitle
             }}>
             {children}
         </PostsContext.Provider>
@@ -338,4 +390,6 @@ interface PostsContextType {
     currentPostDetails: (postId: string) => Promise<IPost>
 
     topPosts: () => Promise<IPost[]>
+    updatePostContent: (postId: string, newContent: string) => Promise<IPost>
+    updatePostTitle: (postId: string, newTitle: string) => Promise<IPost>
 }

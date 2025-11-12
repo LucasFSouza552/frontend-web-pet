@@ -36,6 +36,7 @@ export default function useManagePostController() {
         setHasMoreComments(true);
 
         loadCommentsByPostId(id, 1).then((data) => {
+            console.log('data', data);
             if (data) {
                 const commentsCount = data.comments?.length || 0;
                 console.log('commentsCount', data);

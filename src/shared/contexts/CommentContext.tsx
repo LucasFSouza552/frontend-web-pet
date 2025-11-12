@@ -51,7 +51,6 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
             });
 
             const existingComments = getExistingComments(postId);
-
             const newComments = filterNewComments(existingComments, comments);
 
             if (newComments.length === 0) {
@@ -59,7 +58,7 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
                 const post = allPosts.find(p => p.id === postId);
                 return post || null;
             }
-
+            
             const PostsWithComments = await addComment(postId, newComments);
             return PostsWithComments;
 
