@@ -20,7 +20,8 @@ export const accountService = {
     },
     async updateAccount(IAccount: IAccount) {
         try {
-            const response = await api.patch("/", IAccount);
+            const response = await api.patch("/account", IAccount);
+            console.log(response.data);
             return response.data;
         } catch (error) {
             throw error;
@@ -44,7 +45,7 @@ export const accountService = {
     },
     async uploadAvatar(file: string) {
         try {
-            const response = await api.post("/account/avatar", file);
+            const response = await api.put("/account/avatar", file);
             return response.data;
         } catch (error) {
             throw error

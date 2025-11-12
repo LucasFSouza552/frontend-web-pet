@@ -16,6 +16,7 @@ import InstitutePage from "./features/institution/views/InstitutePage"
 // import ForgotPasswordPage from "./features/account/forgotPassword/views/forgotPasswordPage"
 // import DesiredPetsPage from "./features/pet/views/DesiredPetsPage"
 import PostPage from "./features/post/views/postPage"
+import ProfileEditionPage from "./features/account/profile/views/ProfileEditionPage"
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
         <Route path="/institution" element={<InstitutePage />} />
         {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} /> */}
         {/* <Route path="/pets" element={<DesiredPetsPage />} /> */}
+        <Route path="/profile-edition" element={<ProfileEditionPage />} />
       </NavigationRouter>
     </ThemeProvider>
   )

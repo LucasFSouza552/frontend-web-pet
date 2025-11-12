@@ -43,9 +43,9 @@ export const authService = {
         }
     },
 
-    async changePassword(accountId: string, currentPassword: string) {
+    async changePassword(currentPassword: string, newPassword: string) {
         try {
-            const response = await api.put("/auth/change-password", { accountId, currentPassword });
+            const response = await api.put("/auth/change-password", { newPassword, currentPassword });
             return response.data;
         } catch (error) {
             throw error;

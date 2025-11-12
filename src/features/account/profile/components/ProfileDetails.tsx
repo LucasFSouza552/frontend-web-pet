@@ -4,7 +4,7 @@ import { BsPatchCheckFill } from "react-icons/bs";
 import type { IAccountStatus } from "@/shared/models/AccountStatus";
 
 import { FaShieldDog } from "react-icons/fa6";
-import { FaHandsHelping } from "react-icons/fa";
+import { FaHandsHelping, FaRegEdit } from "react-icons/fa";
 
 
 
@@ -21,6 +21,11 @@ export default function ProfileDetails({ account, accountStatus }: { account: IA
     navigate(`/profile/${account?.id}`);
   }
 
+  const goToEdition = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    navigate("/profile-edition");
+  }
+
   if (!account || !accountStatus) {
     return <ProfileDetailsSkeleton />
   }
@@ -31,6 +36,9 @@ export default function ProfileDetails({ account, accountStatus }: { account: IA
 
         <ProfileName onClick={goToProfile}>
           {account.name}
+          <EditProfileButton onClick={goToEdition}>
+            Editar <FaRegEdit />
+          </EditProfileButton>
         </ProfileName>
 
         <BadgesContainer>
@@ -159,3 +167,19 @@ const BadgesContainer = styled.div`
     align-items: center;
     margin: 0px 10px;
   `;
+
+
+const EditProfileButton = styled.button`
+    background-color: ${({ theme }) => theme.colors.primary};
+    text-align: center;
+    font-size: 15px;
+    display: flex;
+    height: min-content;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 0px 10px;
+    color: white;
+    margin-left: 15px;
+    border-radius: 50px;
+`;
