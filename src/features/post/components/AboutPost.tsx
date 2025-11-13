@@ -1,5 +1,5 @@
 import ProfileAvatar from "@/shared/components/ProfileAvatar";
-import type { IPost } from "@/shared/models/Post";
+import type { IPost } from "@/shared/models/post";
 import { styled } from "styled-components";
 import { BsX } from "react-icons/bs";
 

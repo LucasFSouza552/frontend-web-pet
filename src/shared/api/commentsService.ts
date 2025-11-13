@@ -63,7 +63,7 @@ export const commentService = {
 
     async updateComment(commentId: string, comment: string) {
         try {
-            const response = await api.patch(`/comment/${commentId}`, { comment });
+            const response = await api.patch(`/comment/${commentId}`, { comment, content: comment });
             return response.data;
         } catch (error) {
             console.error(`Erro ao atualizar comentário ${commentId}:`, error);

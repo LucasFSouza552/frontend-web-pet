@@ -32,13 +32,9 @@ const LIMIT = 10;
 
 export const CommentsProvider = ({ children }: { children: ReactNode }) => {
     const [loadingComments, setLoadingComments] = useState(false);
-<<<<<<< HEAD
-    const { addComment, posts, userPosts, currentPostDetails } = useContext(PostsContext);
-=======
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const { addComment, posts, userPosts, updateComment: updatePostComment, removeComment: removePostComment } = useContext(PostsContext);
->>>>>>> feat/latestUpdates
 
     const getExistingComments = useCallback((postId: string): IComment[] | undefined => {
         const allPosts = [...posts, ...userPosts];
@@ -49,28 +45,8 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
     const loadCommentsByPostId = async (postId: string, pageParam = 1) => {
         setLoadingComments(true);
         try {
-<<<<<<< HEAD
-            const comments = await commentService.fetchCommentsByPost(postId, page, LIMIT);
-            
-            if (!comments || comments.length === 0) {
-                const allPosts = [...posts, ...userPosts];
-                let post = allPosts.find(p => p.id === postId);
-                
-                if (!post) {
-                    try {
-                        post = await currentPostDetails(postId);
-                    } catch (error) {
-                        console.error("Erro ao buscar detalhes do post:", error);
-                        return { post: null, commentsReturned: 0 };
-                    }
-                }
-                
-                return { post: post || null, commentsReturned: 0 };
-            }
-=======
             const comments = await commentService.fetchCommentsByPost(postId, pageParam, LIMIT);
             if (!comments || comments.length === 0) return null;
->>>>>>> feat/latestUpdates
 
             comments.forEach((comment: IComment) => {
                 comment.account.avatar = pictureService.fetchPicture(comment.account.avatar);
@@ -96,13 +72,9 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
             }
             
             const PostsWithComments = await addComment(postId, newComments);
-<<<<<<< HEAD
-            return { post: PostsWithComments, commentsReturned };
-=======
             setHasMore(comments.length === LIMIT);
             setPage(pageParam + 1);
             return PostsWithComments;
->>>>>>> feat/latestUpdates
 
         } catch (error) {
             throw error;
@@ -111,13 +83,8 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
-<<<<<<< HEAD
-    const loadMoreCommentsByPostId = async (postId: string, page = 1) => {
-        if (loadingComments) return;
-=======
     const loadMoreCommentsByPostId = async (postId: string) => {
         if (loadingComments || !hasMore) return;
->>>>>>> feat/latestUpdates
         setLoadingComments(true);
         try {
             const comments = await commentService.fetchCommentsByPost(postId, page, LIMIT);

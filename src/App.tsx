@@ -13,6 +13,7 @@ import FAQPage from "@features/support/views/FAQPage"
 import { useContext } from "react"
 import { ProfileContext } from "./shared/contexts/ProfileContext"
 import InstitutePage from "./features/institution/views/InstitutePage"
+import DonationPage from "./features/institution/views/DonationPage"
 // import ForgotPasswordPage from "./features/account/forgotPassword/views/forgotPasswordPage"
 // import DesiredPetsPage from "./features/pet/views/DesiredPetsPage"
 import PostPage from "./features/post/views/postPage"
@@ -36,6 +37,7 @@ function App() {
         {/* <Route path="/community" element={<CommunityPage />} /> */}
         <Route path="/support" element={<FAQPage />} />
         <Route path="/institution/:id" element={<InstitutePage />} />
+        <Route path="/donate" element={<DonationPage />} />
         {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} /> */}
         {/* <Route path="/pets" element={<DesiredPetsPage />} /> */}
         <Route path="/profile-edition" element={<ProfileEditionPage />} />

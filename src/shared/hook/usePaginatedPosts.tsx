@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import type { IPost } from "../models/Post";
+import type { IPost } from "../models/post";
 import type IComment from "../models/Comments";
 import { pictureService } from "../api/pictureService";
 
