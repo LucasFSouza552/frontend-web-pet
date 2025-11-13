@@ -28,42 +28,49 @@ export default function useManagePostController() {
     }, [id]);
 
     useEffect(() => {
-        if (!id || post) return;
+        return () => {
+            if (observer.current) {
+                observer.current.disconnect();
+            }
+        };
+    }, []);
 
+    useEffect(() => {
+        if (!id || post) return;
 
         setLoadingPost(true);
         setCommentsPage(1);
         setHasMoreComments(true);
 
-        loadCommentsByPostId(id, 1).then((data) => {
-            console.log('data', data);
-            if (data) {
-                const commentsCount = data.comments?.length || 0;
-                console.log('commentsCount', data);
-                setPost(data);
-                setHasMoreComments(commentsCount >= 10);
+        loadCommentsByPostId(id, 1).then((result) => {
+            if (result && result.post) {
+                setPost(result.post);
+                setHasMoreComments(result.commentsReturned >= 10);
                 setCommentsPage(2);
                 setLoadingPost(false);
+            } else {
+                currentPostDetails(id).then((postData) => {
+                    setPost(postData);
+                    setHasMoreComments(false);
+                    setLoadingPost(false);
+                }).catch((error) => {
+                    console.error("Erro ao buscar post:", error);
+                    setHasMoreComments(false);
+                    setLoadingPost(false);
+                });
             }
         }).catch((error) => {
             console.error("Erro ao carregar comentários:", error);
-            setHasMoreComments(false);
-            setLoadingPost(false);
+            currentPostDetails(id).then((postData) => {
+                setPost(postData);
+                setHasMoreComments(false);
+                setLoadingPost(false);
+            }).catch((err) => {
+                console.error("Erro ao buscar post:", err);
+                setHasMoreComments(false);
+                setLoadingPost(false);
+            });
         });
-
-        // currentPostDetails(id)
-        //     .then((postData) => {
-        //         setPost(postData);
-        //         setLoadingPost(false);
-
-        //         if (postData) {
-
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         setError(error.message);
-        //         setLoadingPost(false);
-        //     });
     }, [id, currentPostDetails, loadCommentsByPostId]);
 
     const loadMoreComments = useCallback(async () => {
@@ -73,12 +80,13 @@ export default function useManagePostController() {
 
         try {
             setLoadingComments(true);
-            const data = await loadCommentsByPostId(currentId, commentsPage);
-            if (data) {
-                setPost(data);
-
-                setHasMoreComments(data.comments?.length && data.comments.length > 10 || false);
+            const result = await loadCommentsByPostId(currentId, commentsPage);
+            if (result && result.post) {
+                setPost(result.post);
+                setHasMoreComments(result.commentsReturned >= 10);
                 setCommentsPage(prev => prev + 1);
+            } else {
+                setHasMoreComments(false);
             }
         } catch (error) {
             console.error("Erro ao carregar mais comentários:", error);
@@ -88,18 +96,30 @@ export default function useManagePostController() {
         }
     }, [hasMoreComments, loadingComments, loadCommentsByPostId, commentsPage]);
 
-    // const lastCommentRef = useCallback(
-    //     (node: HTMLDivElement | null) => {
-    //         if (observer.current) observer.current.disconnect();
-    //         observer.current = new IntersectionObserver((entries) => {
-    //             if (entries[0].isIntersecting && hasMoreComments && !loadingComments) {
-    //                 loadMoreComments();
-    //             }
-    //         });
-    //         if (node) observer.current.observe(node);
-    //     },
-    //     [hasMoreComments, loadMoreComments, loadingComments]
-    // );
+    const lastCommentRef = useCallback(
+        (node: HTMLDivElement | null) => {
+            if (observer.current) observer.current.disconnect();
+            
+            if (!node || !hasMoreComments || loadingComments) {
+                return;
+            }
+            
+            observer.current = new IntersectionObserver(
+                (entries) => {
+                    if (entries[0].isIntersecting && hasMoreComments && !loadingComments) {
+                        loadMoreComments();
+                    }
+                },
+                {
+                    rootMargin: '100px',
+                    threshold: 0.1
+                }
+            );
+            
+            observer.current.observe(node);
+        },
+        [hasMoreComments, loadMoreComments, loadingComments]
+    );
 
     const handleDeletePost = async (postId: string) => {
         try {
@@ -120,10 +140,27 @@ export default function useManagePostController() {
         try {
             await createComment(post.id, newComment);
             setNewComment("");
+            
+            const allPosts = [...posts, ...userPosts];
+            const updatedPost = allPosts.find(p => p.id === post.id);
+            if (updatedPost) {
+                setPost(updatedPost);
+            }
         } catch (err) {
             console.error("Erro ao criar comentário:", err);
         }
     };
+
+    useEffect(() => {
+        if (!id || !post) return;
+        
+        const allPosts = [...posts, ...userPosts];
+        const updatedPost = allPosts.find(p => p.id === id);
+        
+        if (updatedPost && updatedPost.comments?.length !== post.comments?.length) {
+            setPost(updatedPost);
+        }
+    }, [id, posts, userPosts, post]);
 
     const handleUpdateNewCommentValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setNewComment(e.target.value || "");
@@ -138,6 +175,7 @@ export default function useManagePostController() {
         newComment,
         handleUpdateNewCommentValue,
         hasMoreComments,
-        loadingComments
+        loadingComments,
+        lastCommentRef
     };
 }

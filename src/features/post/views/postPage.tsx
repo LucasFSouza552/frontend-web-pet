@@ -22,7 +22,8 @@ export default function PostPage() {
     newComment, 
     handleUpdateNewCommentValue, 
     hasMoreComments, 
-    loadingComments 
+    loadingComments,
+    lastCommentRef
   } = useManagePostController();
 
   if (loadingPost || !post) {
@@ -71,7 +72,7 @@ export default function PostPage() {
 
           <PostComments
             comments={post.comments || []}
-            lastCommentRef={() => {}}
+            lastCommentRef={lastCommentRef}
             onReply={async (parentId: string, content: string) => {
               try {
                 await replyComment(parentId, content);

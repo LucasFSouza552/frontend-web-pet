@@ -224,5 +224,3 @@ const CancelButton = styled.button`
         transform: translateY(0);
     }
 `;
-
-// Removed inline text editing styles; editing now occurs in PostCard title.
