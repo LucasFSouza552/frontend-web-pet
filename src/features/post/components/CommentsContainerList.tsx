@@ -40,13 +40,7 @@ export default function PostComments({ comments, lastCommentRef, onReply, onEdit
                 
                 return (
                     <CommentContainer key={comment.id} ref={isLast ? lastCommentRef : null}>
-                        <CommentCard
-                            comment={comment}
-                            onReply={onReply}
-                            onEdit={onEdit}
-                            onDelete={onDelete}
-                            currentUserId={currentUserId}
-                        />
+                        <CommentCard comment={comment} onReply={onReply} onEdit={onEdit} onDelete={onDelete} currentUserId={currentUserId} />
                         {replies.length > 0 && (
                             <RepliesSection>
                                 <RepliesToggle onClick={() => toggleReplies(comment.id)}>
