@@ -17,6 +17,7 @@ import InstitutePage from "./features/institution/views/InstitutePage"
 // import DesiredPetsPage from "./features/pet/views/DesiredPetsPage"
 import PostPage from "./features/post/views/postPage"
 import ProfileEditionPage from "./features/account/profile/views/ProfileEditionPage"
+import DonatePage from "./shared/components/DonatePage"
 
 function App() {
 
@@ -31,6 +32,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/post/:id" element={<PostPage />} />
         <Route path="/match" element={<MatchPage />} />
+        <Route path="/DonatePage" element={<DonatePage />} />
         {/* <Route path="/community" element={<CommunityPage />} /> */}
         <Route path="/support" element={<FAQPage />} />
         <Route path="/institution" element={<InstitutePage />} />

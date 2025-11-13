@@ -25,7 +25,7 @@ export default function SideBar({ account }: { account: IAccount | null }) {
     { label: "Divulgação", path: "/disclosure", icon: <FaBullhorn color={iconsConfig.color} size={iconsConfig.size} /> },
     { label: "Suporte", path: "/support", icon: <FaHandsHelping color={iconsConfig.color} size={iconsConfig.size} /> },
     { label: "Match", path: "/match", icon: <FaHeart color={iconsConfig.color} size={iconsConfig.size} /> },
-    { label: "Doar", path: "/donate", icon: <FaDonate color={iconsConfig.color} size={iconsConfig.size} /> }
+    { label: "Doar", path: "/DonatePage", icon: <FaDonate color={iconsConfig.color} size={iconsConfig.size} /> }
   ];
 
   return (
