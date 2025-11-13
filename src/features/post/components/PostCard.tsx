@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from "styled-components"
 import ProfileAvatar from "@components/ProfileAvatar"
-import type { IPost } from "../../../shared/models/Post";
+import type { IPost } from "../../../shared/models/post";
 
 import { FaHeart, FaShareAlt } from "react-icons/fa";
 import { BsChatFill } from "react-icons/bs";

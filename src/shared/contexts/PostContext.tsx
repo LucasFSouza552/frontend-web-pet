@@ -1,5 +1,5 @@
 import { createContext, useState, useCallback, type ReactNode, useEffect } from "react";
-import type { IPost } from "@/shared/models/Post";
+import type { IPost } from "@/shared/models/post";
 import { postService } from "@api/postService";
 import type IComment from "../models/Comments";
 import { pictureService } from "../api/pictureService";
@@ -171,6 +171,58 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
+    const updateComment = async (postId: string, commentId: string, updater: (comment: IComment) => IComment): Promise<IPost | null> => {
+        try {
+            const generalPost = generalPosts.updateComment(postId, commentId, updater);
+            const userPost = userPostsHook.updateComment(postId, commentId, updater);
+
+            setSearchResults(prev => {
+                const postIndex = prev.findIndex(p => p.id === postId);
+                if (postIndex === -1) return prev;
+
+                const post = prev[postIndex];
+                if (!post.comments) return prev;
+
+                const updatedComments = post.comments.map(comment =>
+                    comment.id === commentId ? updater(comment) : comment
+                );
+
+                const newItems = [...prev];
+                newItems[postIndex] = { ...post, comments: updatedComments };
+                return newItems;
+            });
+
+            return generalPost || userPost || null;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const removeComment = async (postId: string, commentId: string): Promise<IPost | null> => {
+        try {
+            const generalPost = generalPosts.removeComment(postId, commentId);
+            const userPost = userPostsHook.removeComment(postId, commentId);
+
+            setSearchResults(prev => {
+                const postIndex = prev.findIndex(p => p.id === postId);
+                if (postIndex === -1) return prev;
+
+                const post = prev[postIndex];
+                if (!post.comments) return prev;
+
+                const filteredComments = post.comments.filter(comment => comment.id !== commentId);
+
+                const newItems = [...prev];
+                newItems[postIndex] = { ...post, comments: filteredComments };
+                return newItems;
+            });
+
+            return generalPost || userPost || null;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     const currentPostDetails = async (postId: string) => {
         try {
             let currentPost = generalPosts.getPost(postId) ||
@@ -291,6 +343,8 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
                 hasMorePosts, hasMoreUserPosts, likePost,
                 loadPostDetails,
                 addComment,
+                updateComment,
+                removeComment,
                 archivePost,
                 currentPostDetails,
                 topPosts,
@@ -329,6 +383,8 @@ interface PostsContextType {
     likePost: (post: string) => Promise<IPost>;
 
     addComment: (postId: string, comment: IComment[]) => Promise<IPost>;
+    updateComment: (postId: string, commentId: string, updater: (comment: IComment) => IComment) => Promise<IPost | null>;
+    removeComment: (postId: string, commentId: string) => Promise<IPost | null>;
     archivePost: (postId: string) => Promise<void>
     searchPosts: (query: string) => Promise<IPost[]>
     loadMoreSearchPosts: () => Promise<IPost[] | void>

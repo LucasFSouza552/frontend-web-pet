@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { PostsContext } from "@/shared/contexts/PostContext";
-import type { IPost } from "@/shared/models/Post";
+import type { IPost } from "@/shared/models/post";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import animationFile from "@/shared/assets/lottie/loading.lottie?url";
 import { useNavigate } from "react-router-dom";

@@ -9,13 +9,19 @@ import ProfileAvatar from "@/shared/components/ProfileAvatar";
 interface PostCommentProps {
     comment: IComment;
     onReply: (parentId: string, content: string) => Promise<void> | void;
+    onEdit: (commentId: string, content: string) => Promise<void> | void;
+    onDelete: (commentId: string) => Promise<void> | void;
+    currentUserId?: string;
 }
 
-export default function CommentCard({ comment, onReply }: PostCommentProps) {
+export default function CommentCard({ comment, onReply, onEdit, onDelete, currentUserId }: PostCommentProps) {
     const navigate = useNavigate();
     const [replyingTo, setReplyingTo] = useState<string | null>(null);
     const [replyText, setReplyText] = useState<string>("");
     const [showSmallProfile, setShowSmallProfile] = useState<boolean>(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editText, setEditText] = useState(comment.content);
+    const isOwner = currentUserId === comment.account?.id;
 
     const handleSendReply = async (parentId: string) => {
         if (!replyText.trim()) return;
@@ -45,10 +51,45 @@ export default function CommentCard({ comment, onReply }: PostCommentProps) {
                 </CommentProfileContainer>
             </CommentHeader>
 
-            <CommentContent>{comment.content}</CommentContent>
+            {isEditing ? (
+                <EditContainer>
+                    <EditTextarea
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
+                            const target = e.currentTarget;
+                            target.style.height = "auto";
+                            target.style.height = target.scrollHeight + "px";
+                        }}
+                    />
+                    <EditActions>
+                        <EditSaveButton
+                            onClick={async () => {
+                                if (!editText.trim()) return;
+                                await onEdit(comment.id, editText.trim());
+                                setIsEditing(false);
+                            }}
+                        >
+                            Salvar
+                        </EditSaveButton>
+                        <CancelButton onClick={() => {
+                            setEditText(comment.content);
+                            setIsEditing(false);
+                        }}>Cancelar</CancelButton>
+                    </EditActions>
+                </EditContainer>
+            ) : (
+                <CommentContent>{comment.content}</CommentContent>
+            )}
 
             <CommentOptions>
                 <p className="no-select" onClick={() => handleToReply(comment.id)}>Responder</p>
+                {isOwner && (
+                    <>
+                        <p className="no-select" onClick={() => setIsEditing(true)}>Editar</p>
+                        <p className="no-select" onClick={() => onDelete(comment.id)}>Excluir</p>
+                    </>
+                )}
             </CommentOptions>
             {replyingTo === comment.id && (
                 <ReplyBox>
@@ -74,6 +115,43 @@ export default function CommentCard({ comment, onReply }: PostCommentProps) {
 
 const CommentContent = styled.p`
 
+`;
+
+const EditContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+`;
+
+const EditTextarea = styled.textarea`
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    background-color: ${({ theme }) => theme.colors.quarternary};
+    color: white;
+    min-height: 48px;
+    resize: none;
+`;
+
+const EditActions = styled.div`
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+`;
+
+const EditSaveButton = styled.button`
+    padding: 8px 16px;
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.9;
+    }
 `;
 
 const CommentProfileContainer = styled.div`
@@ -114,6 +192,9 @@ const CommentArea = styled.div`
 `;
 
 const CommentOptions = styled.div`
+display: flex;
+gap: 10px;
+flex-direction: row;
 margin-top: 10px;
 p { 
         cursor: pointer;

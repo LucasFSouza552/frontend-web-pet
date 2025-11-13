@@ -8,9 +8,12 @@ interface PostCommentsProps {
     comments: IComment[];
     lastCommentRef?: (node: HTMLDivElement | null) => void;
     onReply: (parentId: string, content: string) => Promise<void> | void;
+    onEdit: (commentId: string, content: string) => Promise<void> | void;
+    onDelete: (commentId: string) => Promise<void> | void;
+    currentUserId?: string;
 }
 
-export default function PostComments({ comments, lastCommentRef, onReply }: PostCommentsProps) {
+export default function PostComments({ comments, lastCommentRef, onReply, onEdit, onDelete, currentUserId }: PostCommentsProps) {
     const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set());
 
     const toggleReplies = (commentId: string) => {
@@ -37,7 +40,13 @@ export default function PostComments({ comments, lastCommentRef, onReply }: Post
                 
                 return (
                     <CommentContainer key={comment.id} ref={isLast ? lastCommentRef : null}>
-                        <CommentCard comment={comment} onReply={onReply} />
+                        <CommentCard
+                            comment={comment}
+                            onReply={onReply}
+                            onEdit={onEdit}
+                            onDelete={onDelete}
+                            currentUserId={currentUserId}
+                        />
                         {replies.length > 0 && (
                             <RepliesSection>
                                 <RepliesToggle onClick={() => toggleReplies(comment.id)}>
@@ -46,7 +55,13 @@ export default function PostComments({ comments, lastCommentRef, onReply }: Post
                                 {isExpanded && (
                                     <RepliesContainer>
                                         {replies.map(reply => (
-                                            <ReplyCard key={reply.id} reply={reply} />
+                                            <ReplyCard
+                                                key={reply.id}
+                                                reply={reply}
+                                                onEdit={onEdit}
+                                                onDelete={onDelete}
+                                                currentUserId={currentUserId}
+                                            />
                                         ))}
                                     </RepliesContainer>
                                 )}

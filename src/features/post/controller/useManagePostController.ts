@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { PostsContext } from "@contexts/PostContext";
 import { useNavigate, useParams } from "react-router-dom";
-import type { IPost } from "@/shared/models/Post";
+import type { IPost } from "@/shared/models/post";
 import { CommentsContext } from "@/shared/contexts/CommentContext";
 
 export default function useManagePostController() {
@@ -64,6 +64,15 @@ export default function useManagePostController() {
         //         setLoadingPost(false);
         //     });
     }, [id, currentPostDetails, loadCommentsByPostId]);
+
+    useEffect(() => {
+        if (!id) return;
+        const allPosts = [...posts, ...userPosts];
+        const updated = allPosts.find(p => p.id === id);
+        if (updated) {
+            setPost(updated);
+        }
+    }, [posts, userPosts, id]);
 
     const loadMoreComments = useCallback(async () => {
         const currentId = idRef.current;
