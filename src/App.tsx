@@ -35,7 +35,7 @@ function App() {
         <Route path="/DonatePage" element={<DonatePage />} />
         {/* <Route path="/community" element={<CommunityPage />} /> */}
         <Route path="/support" element={<FAQPage />} />
-        <Route path="/institution" element={<InstitutePage />} />
+        <Route path="/institution/:id" element={<InstitutePage />} />
         {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} /> */}
         {/* <Route path="/pets" element={<DesiredPetsPage />} /> */}
         <Route path="/profile-edition" element={<ProfileEditionPage />} />

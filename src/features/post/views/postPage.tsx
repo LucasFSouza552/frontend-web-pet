@@ -14,7 +14,7 @@ import useManagePostController from "../controller/useManagePostController";
 
 export default function PostPage() {
   const { account } = useContext(ProfileContext);
-  const { replyComment } = useContext(CommentsContext);
+  const { replyComment, editComment, deleteComment } = useContext(CommentsContext);
   const { 
     post, 
     loadingPost, 
@@ -70,6 +70,7 @@ export default function PostPage() {
             </button>
           </CommentBox>
 
+<<<<<<< HEAD
           <PostComments
             comments={post.comments || []}
             lastCommentRef={lastCommentRef}
@@ -81,6 +82,34 @@ export default function PostPage() {
               }
             }}
           />
+=======
+           <PostComments
+             comments={post.comments || []}
+             lastCommentRef={() => {}}
+             currentUserId={account?.id}
+             onReply={async (parentId: string, content: string) => {
+               try {
+                 await replyComment(parentId, content);
+               } catch (error) {
+                 console.error("Erro ao responder comentário:", error);
+               }
+             }}
+             onEdit={async (commentId: string, content: string) => {
+               try {
+                 await editComment(post.id, commentId, content);
+               } catch (error) {
+                 console.error("Erro ao editar comentário:", error);
+               }
+             }}
+             onDelete={async (commentId: string) => {
+               try {
+                 await deleteComment(post.id, commentId);
+               } catch (error) {
+                 console.error("Erro ao excluir comentário:", error);
+               }
+             }}
+           />
+>>>>>>> feat/latestUpdates
 
           {loadingComments && (
             <LoadingCommentsText>Carregando mais comentários...</LoadingCommentsText>

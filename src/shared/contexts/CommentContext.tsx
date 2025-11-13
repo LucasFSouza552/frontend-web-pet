@@ -3,7 +3,7 @@ import type IComment from "../models/Comments";
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
 import { commentService } from "../api/commentsService";
 import { PostsContext } from "./PostContext";
-import type { IPost } from "../models/Post";
+import type { IPost } from "../models/post";
 import { pictureService } from "../api/pictureService";
 
 interface CommentsContextType {
@@ -12,6 +12,8 @@ interface CommentsContextType {
     loadingComments: boolean
     replyComment: (commentId: string, content: string) => Promise<IComment>
     loadMoreCommentsByPostId: (postId: string) => Promise<IComment[] | null | undefined>
+    editComment: (postId: string, commentId: string, content: string) => Promise<IComment>
+    deleteComment: (postId: string, commentId: string) => Promise<void>
 };
 
 export const CommentsContext = createContext<CommentsContextType>({} as CommentsContextType);
@@ -30,7 +32,13 @@ const LIMIT = 10;
 
 export const CommentsProvider = ({ children }: { children: ReactNode }) => {
     const [loadingComments, setLoadingComments] = useState(false);
+<<<<<<< HEAD
     const { addComment, posts, userPosts, currentPostDetails } = useContext(PostsContext);
+=======
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const { addComment, posts, userPosts, updateComment: updatePostComment, removeComment: removePostComment } = useContext(PostsContext);
+>>>>>>> feat/latestUpdates
 
     const getExistingComments = useCallback((postId: string): IComment[] | undefined => {
         const allPosts = [...posts, ...userPosts];
@@ -38,9 +46,10 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
         return post?.comments;
     }, [posts, userPosts]);
 
-    const loadCommentsByPostId = async (postId: string, page = 1) => {
+    const loadCommentsByPostId = async (postId: string, pageParam = 1) => {
         setLoadingComments(true);
         try {
+<<<<<<< HEAD
             const comments = await commentService.fetchCommentsByPost(postId, page, LIMIT);
             
             if (!comments || comments.length === 0) {
@@ -58,6 +67,10 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
                 
                 return { post: post || null, commentsReturned: 0 };
             }
+=======
+            const comments = await commentService.fetchCommentsByPost(postId, pageParam, LIMIT);
+            if (!comments || comments.length === 0) return null;
+>>>>>>> feat/latestUpdates
 
             comments.forEach((comment: IComment) => {
                 comment.account.avatar = pictureService.fetchPicture(comment.account.avatar);
@@ -83,7 +96,13 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
             }
             
             const PostsWithComments = await addComment(postId, newComments);
+<<<<<<< HEAD
             return { post: PostsWithComments, commentsReturned };
+=======
+            setHasMore(comments.length === LIMIT);
+            setPage(pageParam + 1);
+            return PostsWithComments;
+>>>>>>> feat/latestUpdates
 
         } catch (error) {
             throw error;
@@ -92,8 +111,13 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
+<<<<<<< HEAD
     const loadMoreCommentsByPostId = async (postId: string, page = 1) => {
         if (loadingComments) return;
+=======
+    const loadMoreCommentsByPostId = async (postId: string) => {
+        if (loadingComments || !hasMore) return;
+>>>>>>> feat/latestUpdates
         setLoadingComments(true);
         try {
             const comments = await commentService.fetchCommentsByPost(postId, page, LIMIT);
@@ -105,6 +129,8 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
             const newComments = filterNewComments(existingComments, comments);
             if (newComments.length === 0) return null;
             await addComment(postId, newComments);
+            setHasMore(comments.length === LIMIT);
+            setPage(prev => prev + 1);
             return newComments;
         } catch (error) {
             throw error;
@@ -148,8 +174,39 @@ export const CommentsProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
+    const editComment = async (postId: string, commentId: string, content: string) => {
+        try {
+            const updated = await commentService.updateComment(commentId, content);
+            const updatedContent = updated?.content ?? updated?.comment ?? content;
+            const updatedAt = updated?.updatedAt ?? new Date().toISOString();
+
+            await updatePostComment(postId, commentId, (prev) => ({
+                ...prev,
+                content: updatedContent,
+                updatedAt
+            }));
+
+            return {
+                ...updated,
+                content: updatedContent,
+                updatedAt
+            } as IComment;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const deleteComment = async (postId: string, commentId: string) => {
+        try {
+            await commentService.deleteOwnComment(commentId);
+            await removePostComment(postId, commentId);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     return (
-        <CommentsContext.Provider value={{ loadMoreCommentsByPostId, loadCommentsByPostId, createComment, loadingComments, replyComment }}>
+        <CommentsContext.Provider value={{ loadMoreCommentsByPostId, loadCommentsByPostId, createComment, loadingComments, replyComment, editComment, deleteComment }}>
             {children}
         </CommentsContext.Provider>
     )

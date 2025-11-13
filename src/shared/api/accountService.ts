@@ -106,6 +106,14 @@ export const accountService = {
         } catch (error) {
             throw error;
         }
+    },
+    async donateToInstitution(institutionId: string, amount: number) {
+        try {
+            const response = await api.post(`/account/${institutionId}/donate`, { amount });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
     }
 }
 
