@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import SideBar from "@components/SideBar";
+import SideBar from "@components/Sidebar";
 import { useState } from "react";
 import { FaDonate } from "react-icons/fa";
 import { PrimaryButton } from "@components/PrimaryButton";
