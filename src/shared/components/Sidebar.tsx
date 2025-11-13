@@ -81,7 +81,6 @@ const SidebarContainer = styled.aside`
   justify-content: space-between;
   align-items: center;
   padding: 25px 15px;
-
   background-color: ${({ theme }) => theme.colors.quarternary};
   border: 1px solid ${({ theme }) => theme.colors.primary};
   border-radius: 12px;

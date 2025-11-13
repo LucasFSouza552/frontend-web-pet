@@ -12,7 +12,7 @@ import { IoPaw } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import ProfileDetailsSkeleton from "./ProfileDetailsSkeleton";
 
-export default function ProfileDetails({ account, accountStatus }: { account: IAccount | null, accountStatus?: IAccountStatus | null }) {
+export default function ProfileDetails({ account, accountStatus, editButtonProfile = false }: { account: IAccount | null, accountStatus?: IAccountStatus | null, editButtonProfile?: boolean }) {
   const navigate = useNavigate();
 
   if (!account) { return null; }
@@ -36,9 +36,9 @@ export default function ProfileDetails({ account, accountStatus }: { account: IA
 
         <ProfileName onClick={goToProfile}>
           {account.name}
-          <EditProfileButton onClick={goToEdition}>
+          {editButtonProfile && <EditProfileButton onClick={goToEdition}>
             Editar <FaRegEdit />
-          </EditProfileButton>
+          </EditProfileButton>}
         </ProfileName>
 
         <BadgesContainer>

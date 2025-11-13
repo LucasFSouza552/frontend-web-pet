@@ -67,7 +67,7 @@ export default function ProfileSection() {
                 </StickySidebar>
                 <MainContent>
                     {!loadingViewedAccount && viewedAccount && viewedAccountStatus && (
-                        <ProfileCard account={viewedAccount} accountStatus={viewedAccountStatus} />
+                        <ProfileCard account={viewedAccount} accountStatus={viewedAccountStatus} editButtonProfile={viewedAccount?.id === account?.id} />
                     )}
                     <ProfileTabs
                         activeTab={activeTab}
@@ -91,7 +91,7 @@ const ProfileContainer = styled.div`
 
 const StickySidebar = styled.div`
   position: sticky;
-  top: 0;
+  top: 15px;
   align-self: flex-start;
   height: fit-content;
   max-height: calc(100dvh - 30px);

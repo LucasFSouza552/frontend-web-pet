@@ -4,7 +4,7 @@ import styled from "styled-components";
 import type { IAccount } from "@/shared/models/Account";
 import type { IAccountStatus } from "@/shared/models/AccountStatus";
 
-export default function ProfileCard({ account, accountStatus }: { account: IAccount | null, accountStatus?: IAccountStatus | null }) {
+export default function ProfileCard({ account, accountStatus, editButtonProfile = false }: { account: IAccount | null, accountStatus?: IAccountStatus | null, editButtonProfile?: boolean }) {
     return (
         <ProfileContainer>
             <ProfileContent>
@@ -12,6 +12,7 @@ export default function ProfileCard({ account, accountStatus }: { account: IAcco
                 <ProfileDetails
                     account={account || null}
                     accountStatus={accountStatus}
+                    editButtonProfile={editButtonProfile}
                 />
             </ProfileContent>
         </ProfileContainer>
