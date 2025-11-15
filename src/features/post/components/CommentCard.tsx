@@ -3,8 +3,8 @@ import { useState } from "react";
 import SmallProfile from "@components/SmallProfile";
 import type IComment from "@models/Comments";
 import { useNavigate } from "react-router-dom";
-import type { IAccount } from "@/shared/models/Account";
-import ProfileAvatar from "@/shared/components/ProfileAvatar";
+import type { IAccount } from "@models/Account";
+import ProfileAvatar from "@components/ProfileAvatar";
 
 interface PostCommentProps {
     comment: IComment;

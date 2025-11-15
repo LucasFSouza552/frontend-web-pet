@@ -1,5 +1,5 @@
 import api from "@api/http";
-import type IPet from "@/shared/models/Pet";
+import type IPet from "@models/Pet";
 
 export const petService = {
     async adminFetchAllPets() {
@@ -26,8 +26,12 @@ export const petService = {
         const response = await api.get("/pet/avaliable");
         return response.data;
     },
-    async requestPetAdoption(petId: string) {
-        const response = await api.post(`/pet/${petId}/request`);
+    async likePet(petId: string) {
+        const response = await api.post(`/pet/${petId}/like`);
+        return response.data;
+    },
+    async dislikePet(petId: string) {
+        const response = await api.post(`/pet/${petId}/dislike`);
         return response.data;
     },
     async acceptPetAdoption(petId: string, accountId: string) {

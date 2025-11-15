@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
-import WomenImg from "@/shared/assets/images/women-with-cat.png";
-import Section from "../../../shared/styles/SectionStyle";
+import WomenImg from "@assets/images/women-with-cat.png";
+import Section from "@styles/SectionStyle";
 
 export default function IntroSection() {
   return (

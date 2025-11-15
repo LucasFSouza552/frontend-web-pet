@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import Section from "../../../shared/styles/SectionStyle";
-import { PrimaryButton } from "../../../shared/components/PrimaryButton";
+import Section from "@styles/SectionStyle";
+import { PrimaryButton } from "@components/PrimaryButton";
 
 export default function FooterSection() {
   return (

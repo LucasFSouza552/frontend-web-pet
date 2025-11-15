@@ -7,8 +7,8 @@ import {
 } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 
-import Section from "../../../shared/styles/SectionStyle";
-import { FeatureCard } from "../../../shared/components/FeatureCard";
+import Section from "@styles/SectionStyle";
+import { FeatureCard } from "@components/FeatureCard";
 
 const featuresData = [
   {

@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from "styled-components"
 import ProfileAvatar from "@components/ProfileAvatar"
-import type { IPost } from "../../../shared/models/post";
+import type { IPost } from "@models/post";
 
 import { FaHeart, FaShareAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { BsChatFill } from "react-icons/bs";
@@ -11,8 +11,8 @@ import AvatarDefault from "@assets/images/avatar-default.png";
 import { useNavigate } from "react-router-dom";
 import { HiDotsVertical } from "react-icons/hi";
 import SmallProfile from "@components/SmallProfile";
-import type { IAccount } from "@/shared/models/Account";
-import { ErrorBoundary } from "@/shared/Error/ErrorBoundary";
+import type { IAccount } from "@models/Account";
+import { ErrorBoundary } from "@Error/ErrorBoundary";
 import PostModal from "./PostModal";
 
 const apiUrl = import.meta.env.VITE_API_URL;

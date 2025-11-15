@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
 import styled from "styled-components";
 import { useContext } from "react";
-import { ProfileContext } from "@/shared/contexts/ProfileContext";
-import { PostsContext } from "@/shared/contexts/PostContext";
-import { postService } from "@/shared/api/postService";
-import ProfileAvatar from "@/shared/components/ProfileAvatar";
+import { ProfileContext } from "@contexts/ProfileContext";
+import { PostsContext } from "@contexts/PostContext";
+import { postService } from "@api/postService";
+import ProfileAvatar from "@components/ProfileAvatar";
 import { FaImage, FaTimes, FaPaperPlane } from "react-icons/fa";
 
 export default function CreatePostForm() {

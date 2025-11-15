@@ -3,7 +3,7 @@ import SideBar from "@components/Sidebar";
 import { useContext, useState } from "react";
 import { FaDonate } from "react-icons/fa";
 import { PrimaryButton } from "@components/PrimaryButton";
-import { ProfileContext } from "@/shared/contexts/ProfileContext";
+import { ProfileContext } from "@contexts/ProfileContext";
 
 export default function DonatePage() {
   const { account } = useContext(ProfileContext);

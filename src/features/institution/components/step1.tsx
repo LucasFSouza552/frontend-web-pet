@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { InputComponent } from "../../../shared/components/InputComponent";
+import { InputComponent } from "@components/InputComponent";
 import { LabelDiv } from "./LabelStyles";
 
 export default function Step1({ name, age, handleChange }: { name: string, age: number, handleChange: (key: string, value: string) => void }) {

@@ -1,18 +1,18 @@
-import { InputComponent } from "@/shared/components/InputComponent";
-import { ProfileContext } from "@/shared/contexts/ProfileContext";
-import { PrimaryButton } from "@/shared/components/PrimaryButton";
-import { accountService } from "@/shared/api/accountService";
-import { pictureService } from "@/shared/api/pictureService";
+import { InputComponent } from "@components/InputComponent";
+import { ProfileContext } from "@contexts/ProfileContext";
+import { PrimaryButton } from "@components/PrimaryButton";
+import { accountService } from "@api/accountService";
+import { pictureService } from "@api/pictureService";
 import { useContext, useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import Section from "@/shared/styles/SectionStyle";
-import SideBar from "@/shared/components/Sidebar";
-import backgroundPage from "@/shared/assets/images/background-page.jpg";
+import Section from "@styles/SectionStyle";
+import SideBar from "@components/Sidebar";
+import backgroundPage from "@assets/images/background-page.jpg";
 import { FaArrowLeft, FaCamera, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
-import type { IAccount } from "@/shared/models/Account";
-import type IAddress from "@/shared/interfaces/IAddress";
-import { authService } from "@/shared/api/authService";
+import type { IAccount } from "@models/Account";
+import type IAddress from "@interfaces/IAddress";
+import { authService } from "@api/authService";
 
 export default function ProfileEditionPage() {
     const { account, loadProfile } = useContext(ProfileContext);

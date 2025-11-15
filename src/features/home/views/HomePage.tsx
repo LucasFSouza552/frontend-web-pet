@@ -1,11 +1,11 @@
 import IntroSection from "../components/IntroSection";
 import FeaturesSection from "../components/FeaturesSection";
-import { HeaderComponent } from "../../../shared/components/HeaderComponent";
+import { HeaderComponent } from "@components/HeaderComponent";
 import styled from "styled-components";
 import FooterSection from "../components/FooterSection";
 import Assessment from "../components/Assessment";
 import GallerySection from "../components/GallerySection";
-import { ProfileContext } from "@/shared/contexts/ProfileContext";
+import { ProfileContext } from "@contexts/ProfileContext";
 import { useContext } from "react";
 
 export default function HomeSection() {

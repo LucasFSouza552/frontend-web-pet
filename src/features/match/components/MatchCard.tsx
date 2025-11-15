@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import type IPet from "@/shared/models/Pet";
+import type IPet from "@models/Pet";
 
 import { IoLocationSharp } from "react-icons/io5";
 import { FaWeightHanging, FaShieldDog } from "react-icons/fa6";
@@ -9,14 +9,12 @@ import { usePetInteractionController } from "../../pet/controllers/usePetInterac
 import MatchCardSkeleton from "./MatchCardSkeleton";
 import { pictureService } from "@api/pictureService";
 import PetIconsMenu from "./PetIconsMenu";
-import SponsorModal from "./PetModalSponsor";
 
 
 export default function MatchCard({ Pet }: { Pet: IPet }) {
     const [imagePage, setImagePage] = useState(0);
     const [showInfo, setShowInfo] = useState(false);
-    const [modalSponsor, setModalSponsor] = useState(false);
-    const { loading, error, handleRequestAdoption, handleRejectAdoption, handleSponsor } = usePetInteractionController();
+    const { loading, error, handleLikePet, handleDislikePet } = usePetInteractionController();
 
     const handleClick = async () => {
         const imageIndex = imagePage < Pet.images.length - 1 ? imagePage + 1 : 0;
@@ -29,11 +27,7 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
 
     const pictures = Pet.images.map((image) => {
         return pictureService.fetchPicture(image);
-    });
-
-    const handleModalSponsor = () => {
-        setModalSponsor(!modalSponsor);
-    }
+    })
 
     return (
         <CardContainer>
@@ -72,7 +66,7 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
                     </Info>
                 </PetInfo>
             </CardDetails>
-            <PetIconsMenu pet={Pet} setShowInfo={setShowInfo} handleRequestAdoption={handleRequestAdoption} handleRejectAdoption={handleRejectAdoption} handleModalSponsor={handleModalSponsor} />
+            <PetIconsMenu pet={Pet} setShowInfo={setShowInfo} handleLikePet={handleLikePet} handleDislikePet={handleDislikePet} />
             {showInfo && (
                 <ModalOverlay onClick={() => setShowInfo(false)}>
                     <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -97,17 +91,10 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
                                 {Pet.account.name}
                             </Info>
                         </ModalBody>
-                        <ModalFooter>
-                            <ActionButton disabled={loading} onClick={() => { }}>
-                                {loading ? "Processando..." : "Apadrinhar"}
-                            </ActionButton>
-                        </ModalFooter>
                         {error && <ErrorText>{error}</ErrorText>}
                     </ModalContent>
                 </ModalOverlay>
             )}
-
-            <SponsorModal visible={modalSponsor} onClose={handleModalSponsor} onDonate={handleSponsor} petId={Pet.id} />
         </CardContainer>
     );
 }

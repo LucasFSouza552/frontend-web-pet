@@ -1,5 +1,5 @@
 import { createContext, useState, useCallback, type ReactNode, useEffect } from "react";
-import type { IPost } from "@/shared/models/post";
+import type { IPost } from "@models/post";
 import { postService } from "@api/postService";
 import type IComment from "../models/Comments";
 import { pictureService } from "../api/pictureService";

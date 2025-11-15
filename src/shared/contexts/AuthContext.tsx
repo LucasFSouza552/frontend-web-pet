@@ -1,5 +1,5 @@
-import { authService } from "@/shared/api/authService";
-import { accountService } from "@/shared/api/accountService";
+import { authService } from "@api/authService";
+import { accountService } from "@api/accountService";
 import { createContext, useState, type ReactNode } from "react";
 
 interface AuthContextType {

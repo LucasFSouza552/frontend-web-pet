@@ -1,6 +1,5 @@
-import { AuthContext } from "@/shared/contexts/AuthContext";
-import { ProfileContext } from "@/shared/contexts/ProfileContext";
-import { getStorage } from "@/shared/utils/storageUtils";
+import { AuthContext } from "@contexts/AuthContext";
+import { ProfileContext } from "@contexts/ProfileContext";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -26,12 +25,12 @@ export default function useLoginController() {
         e.preventDefault();
         try {
             const accountId = await login(credentials.email, credentials.password);
-            console.log(getStorage("@token"))
             setError("");
             
             await loadProfile();
             navigate(`/profile/${accountId}`);
         } catch (error: unknown) {
+            console.log(error);
             if (error instanceof Error) {
                 setError(error.message);
             } else {

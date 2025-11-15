@@ -1,16 +1,16 @@
 import { useState } from "react";
 import styled from "styled-components";
-import type IPet from "@/shared/models/Pet";
-import { pictureService } from "@/shared/api/pictureService";
-import { 
-    IoMdLocate, 
-    IoMdMale, 
+import type IPet from "@models/Pet";
+import { pictureService } from "@api/pictureService";
+import {
+    IoMdLocate,
+    IoMdMale,
     IoMdFemale,
     IoMdCalendar,
     IoMdStar
 } from "react-icons/io";
-import { 
-    FaWeightHanging, 
+import {
+    FaWeightHanging,
     FaShieldDog,
     FaHeart,
     FaUsers
@@ -20,9 +20,10 @@ import { PiBird, PiCat, PiDog, PiPawPrint } from "react-icons/pi";
 interface PetDetailCardProps {
     pet: IPet;
     adoptionRequestsCount?: number;
+    handleModalRequests?: () => void;
 }
 
-export default function PetDetailCard({ pet, adoptionRequestsCount }: PetDetailCardProps) {
+export default function PetDetailCard({ pet, adoptionRequestsCount, handleModalRequests = () => {} }: PetDetailCardProps) {
     const [imagePage, setImagePage] = useState(0);
 
     const handleImageClick = () => {
@@ -48,7 +49,7 @@ export default function PetDetailCard({ pet, adoptionRequestsCount }: PetDetailC
     const formatAddress = () => {
         const { address } = pet.account;
         if (!address) return "Localização não informada";
-        
+
         const parts = [
             address.street,
             address.number,
@@ -56,7 +57,7 @@ export default function PetDetailCard({ pet, adoptionRequestsCount }: PetDetailC
             address.city,
             address.state
         ].filter(Boolean);
-        
+
         return parts.join(", ");
     };
 
@@ -65,6 +66,7 @@ export default function PetDetailCard({ pet, adoptionRequestsCount }: PetDetailC
         const date = new Date(dateString);
         return date.toLocaleDateString("pt-BR");
     };
+
 
     return (
         <CardContainer>
@@ -75,8 +77,8 @@ export default function PetDetailCard({ pet, adoptionRequestsCount }: PetDetailC
                         {pet.images.length > 1 && (
                             <ImageIndicator>
                                 {pet.images.map((_, index) => (
-                                    <IndicatorDot 
-                                        key={index} 
+                                    <IndicatorDot
+                                        key={index}
                                         $active={imagePage === index}
                                     />
                                 ))}
@@ -157,9 +159,9 @@ export default function PetDetailCard({ pet, adoptionRequestsCount }: PetDetailC
                     )}
 
                     {adoptionRequestsCount !== undefined && adoptionRequestsCount > 0 && (
-                        <DetailItem>
+                        <DetailItem onClick={() => handleModalRequests()}>
                             <DetailIcon>
-                                <FaUsers size={18} color="#B648A0" />
+                                <FaUsers size={18} />
                             </DetailIcon>
                             <DetailContent>
                                 <DetailLabel>Interessados</DetailLabel>
@@ -193,6 +195,8 @@ export default function PetDetailCard({ pet, adoptionRequestsCount }: PetDetailC
 const CardContainer = styled.div`
     width: 100%;
     max-width: 500px;
+    width: 500;
+    min-width: 450px;
     background: linear-gradient(135deg, ${({ theme }) => theme.colors.quarternary} 0%, ${({ theme }) => theme.colors.quinary} 100%);
     border-radius: 24px;
     overflow: hidden;
@@ -204,6 +208,7 @@ const CardContainer = styled.div`
     &:hover {
         transform: translateY(-8px);
         box-shadow: 0 12px 48px rgba(182, 72, 160, 0.3);
+        z-index: 10;
     }
 `;
 
@@ -241,7 +246,7 @@ const IndicatorDot = styled.span<{ $active: boolean }>`
     width: ${({ $active }) => $active ? "24px" : "8px"};
     height: 8px;
     border-radius: 4px;
-    background-color: ${({ $active, theme }) => 
+    background-color: ${({ $active, theme }) =>
         $active ? theme.colors.primary : "rgba(255, 255, 255, 0.5)"};
     transition: all 0.3s ease;
 `;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { authService } from "../../../../shared/api/authService";
+import { authService } from "@api/authService";
 
 export const useForgotPasswordController = () => {
     const [email, setEmail] = useState("");

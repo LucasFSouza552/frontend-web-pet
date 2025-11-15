@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Section from "../../../shared/styles/SectionStyle";
+import Section from "@styles/SectionStyle";
 import FAQList from "./FAQList";
 
 export default function FAQ() {

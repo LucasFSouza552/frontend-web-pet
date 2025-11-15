@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { saveStorage } from "@utils/storageUtils";
-import { darkTheme, lightTheme } from "../../shared/styles/Theme";
+import { darkTheme, lightTheme } from "@styles/Theme";
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
 import GlobalStyle from "../styles/GlobalStyle";
 

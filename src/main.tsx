@@ -2,9 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import { AuthProvider } from '@contexts/AuthContext.tsx'
-import { ProfileProvider } from './shared/contexts/ProfileContext.tsx'
-import { PostsProvider } from './shared/contexts/PostContext.tsx'
-import { CommentsProvider } from './shared/contexts/CommentContext.tsx'
+import { ProfileProvider } from '@contexts/ProfileContext.tsx'
+import { PostsProvider } from '@contexts/PostContext.tsx'
+import { CommentsProvider } from '@contexts/CommentContext.tsx'
 
 
 createRoot(document.getElementById('root')!).render(

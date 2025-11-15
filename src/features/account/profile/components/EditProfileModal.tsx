@@ -1,9 +1,7 @@
-import { pictureService } from "@/shared/api/pictureService";
-import { ProfileContext } from "@/shared/contexts/ProfileContext";
+import { pictureService } from "@api/pictureService";
+import { ProfileContext } from "@contexts/ProfileContext";
 import { useContext, useRef } from "react";
 import { styled } from "styled-components";
-
-
 
 export default function EditProfile() {
     const { account } = useContext(ProfileContext);

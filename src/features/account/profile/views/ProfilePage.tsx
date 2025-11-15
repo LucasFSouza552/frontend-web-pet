@@ -23,18 +23,19 @@ export default function ProfileSection() {
 
     const { account, loading, viewedAccount, loadViewedProfile, viewedAccountStatus, loadingViewedAccount } = useContext(ProfileContext);
 
-    useEffect(() => {
-        if (!account && !loading) {
-            navigate("/");
-        }
-    }, [account, navigate, loading]);
-
     const profileAccountId = useParams().username;
 
     useEffect(() => {
         if (!profileAccountId) return;
         loadViewedProfile(profileAccountId);
     }, [profileAccountId, loadViewedProfile]);
+
+    
+    useEffect(() => {
+        if (!account && !loading) {
+            navigate("/");
+        }
+    }, [account, loading, navigate]);
 
     const renderTabContent = () => {
         if (loadingViewedAccount) {

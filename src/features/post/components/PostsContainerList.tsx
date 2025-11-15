@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
-import type { IPost } from "../../../shared/models/post";
+import type { IPost } from "@models/post";
 import React from "react";
-import type { IAccount } from "../../../shared/models/Account";
+import type { IAccount } from "@models/Account";
 import PostCard from "./PostCard";
 import AboutPost from "./AboutPost";
 

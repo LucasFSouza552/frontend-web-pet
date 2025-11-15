@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { PostsContext } from "@/shared/contexts/PostContext";
-import type { IPost } from "@/shared/models/post";
+import { PostsContext } from "@contexts/PostContext";
+import type { IPost } from "@models/post";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import animationFile from "@/shared/assets/lottie/loading.lottie?url";
+import animationFile from "@assets/lottie/loading.lottie?url";
 import { useNavigate } from "react-router-dom";
 
 export default function TrendingPosts() {

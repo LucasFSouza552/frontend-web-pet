@@ -1,11 +1,11 @@
 import { styled } from "styled-components";
-import { HeaderComponent } from "../../../shared/components/HeaderComponent";
-import Section from "../../../shared/styles/SectionStyle";
-import backgroundPage from "../../../shared/assets/images/background-page.jpg";
+import { HeaderComponent } from "@components/HeaderComponent";
+import Section from "@styles/SectionStyle";
+import backgroundPage from "@assets/images/background-page.jpg";
 import { useContext } from "react";
 import MatchCard from "../../match/components/MatchCard";
 import { AuthContext } from "@/features/account/auth/AuthContext";
-import { ProfileContext } from "@/app/contexts/ProfileContext";
+import { ProfileContext } from "@contexts/ProfileContext";
 
 export default function DesiredPetsPage() {
     const { account } = useContext(AuthContext);

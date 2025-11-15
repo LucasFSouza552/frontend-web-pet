@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { petService } from "@/features/pet/petService";
-import type IPet from "@/shared/models/Pet";
-import animationFile from "@/shared/assets/lottie/loading.lottie?url";
+import type IPet from "@models/Pet";
+import animationFile from "@assets/lottie/loading.lottie?url";
 import PetDetailCard from "./PetDetailCard";
 
 interface AdoptedPetsTabProps {

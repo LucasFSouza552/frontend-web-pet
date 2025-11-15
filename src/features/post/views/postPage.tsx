@@ -6,21 +6,22 @@ import backgroundPage from "@assets/images/background-page.jpg";
 import { ProfileContext } from "@contexts/ProfileContext";
 import { CommentsContext } from "@contexts/CommentContext";
 
-import SideBar from "@/shared/components/Sidebar";
+import SideBar from "@components/Sidebar";
 import PostsContainerList from "../components/PostsContainerList";
 import PostComments from "../components/CommentsContainerList";
 
 import useManagePostController from "../controller/useManagePostController";
+import TrendingPosts from "@/features/community/components/TrendingPosts";
 
 export default function PostPage() {
   const { account } = useContext(ProfileContext);
   const { replyComment, editComment, deleteComment } = useContext(CommentsContext);
   const { 
     post, 
-    loadingPost, 
-    handleSubmit, 
-    newComment, 
-    handleUpdateNewCommentValue, 
+    loadingPost,
+    handleSubmit,
+    newComment,
+    handleUpdateNewCommentValue,
     hasMoreComments, 
     loadingComments,
     lastCommentRef
@@ -105,6 +106,10 @@ export default function PostPage() {
             <EndText>Sem mais comentários.</EndText>
           )}
         </Main>
+
+        <StickySidebar>
+          <TrendingPosts />
+        </StickySidebar>
       </Content>
     </Container>
   );
@@ -182,10 +187,9 @@ const StickySidebar = styled.div`
 `;
 
 const Main = styled.div`
-  flex: 2;
-  max-width: 700px;
-  width: 100%;
-  margin: 0 auto;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
   background-color: ${({ theme }) => theme.colors.quarternary || "rgba(44, 39, 43, 0.85)"};
   border: 1px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
   border-radius: 12px;

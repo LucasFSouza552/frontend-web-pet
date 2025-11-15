@@ -1,6 +1,7 @@
 import api from "@api/http";
-import type { IAccount } from "@/shared/models/Account";
+import type { IAccount } from "@models/Account";
 import { removeStorage, saveStorage } from "@utils/storageUtils";
+import { ThrowError } from "../Error/ThrowError";
 
 export const authService = {
     async login(email: string, password: string) {
@@ -12,7 +13,10 @@ export const authService = {
             }
             await saveStorage("@token", token);
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar logar");
         }
     },
 
@@ -21,7 +25,10 @@ export const authService = {
             const response = await api.post("/auth/register", data);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar registrar");
         }
     },
 
@@ -30,7 +37,10 @@ export const authService = {
             const response = await api.post("/auth/forgot-password", { email });
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar recuperar senha");
         }
     },
 
@@ -39,7 +49,10 @@ export const authService = {
             const response = await api.post("/auth/reset-password", { token });
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar resetar senha");
         }
     },
 
@@ -48,7 +61,10 @@ export const authService = {
             const response = await api.put("/auth/change-password", { newPassword, currentPassword });
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar alterar senha");
         }
     },
 
@@ -57,7 +73,10 @@ export const authService = {
             const response = await api.post(`/auth/verify-email?token=${token}`);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar verificar email");
         }
     },
 
@@ -66,7 +85,10 @@ export const authService = {
             const response = await api.post("/auth/resend-verify-email");
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar reenviar verificação");
         }
     },
 

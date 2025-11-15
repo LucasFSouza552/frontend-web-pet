@@ -11,14 +11,14 @@ import MatchPage from "./features/match/views/matchPage"
 import CommunityPage from "./features/community/views/CommunityPage"
 import FAQPage from "@features/support/views/FAQPage"
 import { useContext } from "react"
-import { ProfileContext } from "./shared/contexts/ProfileContext"
+import { ProfileContext } from "@contexts/ProfileContext"
 import InstitutePage from "./features/institution/views/InstitutePage"
 import DonationPage from "./features/institution/views/DonationPage"
 // import ForgotPasswordPage from "./features/account/forgotPassword/views/forgotPasswordPage"
 // import DesiredPetsPage from "./features/pet/views/DesiredPetsPage"
 import PostPage from "./features/post/views/postPage"
 import ProfileEditionPage from "./features/account/profile/views/ProfileEditionPage"
-import DonatePage from "./shared/components/DonatePage"
+import DonatePage from "@components/DonatePage"
 
 function App() {
 

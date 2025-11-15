@@ -1,8 +1,8 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { PostsContext } from "@contexts/PostContext";
 import { useNavigate, useParams } from "react-router-dom";
-import type { IPost } from "@/shared/models/post";
-import { CommentsContext } from "@/shared/contexts/CommentContext";
+import type { IPost } from "@models/post";
+import { CommentsContext } from "@contexts/CommentContext";
 
 export default function useManagePostController() {
     const { id } = useParams<{ id: string }>();

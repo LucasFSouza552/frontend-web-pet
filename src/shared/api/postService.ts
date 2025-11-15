@@ -1,6 +1,7 @@
 import api from "@api/http";
-import type { IPost } from "@/shared/models/post";
+import type { IPost } from "@models/post";
 import buildQuery from "@utils/BuilderQuery";
+import { ThrowError } from "../Error/ThrowError";
 
 interface PostQuery {
     account?: string;
@@ -16,7 +17,10 @@ export const postService = {
             const response = await api.delete(`/post/${id}`);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar remover post");
         }
     },
     async fetchAllPosts() {
@@ -24,7 +28,10 @@ export const postService = {
             const response = await api.get("/post");
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar posts");
         }
     },
     async fetchPostById(id: string) {
@@ -32,7 +39,10 @@ export const postService = {
             const response = await api.get(`/post/${id}`);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar post por id");
         }
     },
     async createPost(data: IPost | FormData) {
@@ -61,7 +71,10 @@ export const postService = {
             });
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar posts");
         }
     },
     async searchPosts(query: string, page: number = 1, limit: number = 10) {
@@ -69,7 +82,10 @@ export const postService = {
             const response = await api.get(`/post/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar remover post");
         }
     },
     async softDeletePostById(id: string) {
@@ -77,7 +93,10 @@ export const postService = {
             const response = await api.post(`/post/${id}/delete`);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar remover post");
         }
     },
     async updatePost(id: string, data: IPost) {
@@ -85,7 +104,10 @@ export const postService = {
             const response = await api.patch(`/post/${id}`, data);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar atualizar post");
         }
     },
     async fetchPostWithAuthor(postId: string): Promise<IPost> {
@@ -93,7 +115,10 @@ export const postService = {
             const response = await api.get(`/post/${postId}/with-author`);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar post com autor");
         }
     },
     async fetchPostsWithAuthor(query: PostQuery) {
@@ -102,7 +127,10 @@ export const postService = {
             const response = await api.get(`/post/with-author${queryString}`);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar posts com autor");
         }
     },
     async toggleLikePostById(id: string) {
@@ -110,7 +138,10 @@ export const postService = {
             const response = await api.post(`/post/${id}/like`);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar dar like no post");
         }
     },
     async fetchTopPosts() {
@@ -118,7 +149,10 @@ export const postService = {
             const response = await api.get("/post/top-posts");
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar top posts");
         }
     }
 };

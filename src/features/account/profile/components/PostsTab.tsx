@@ -2,9 +2,9 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import { PostsContext } from "@contexts/PostContext";
 import PostsContainerList from "@/features/post/components/PostsContainerList";
-import type { IAccount } from "@/shared/models/Account";
+import type { IAccount } from "@models/Account";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import animationFile from "@/shared/assets/lottie/loading.lottie?url";
+import animationFile from "@assets/lottie/loading.lottie?url";
 
 interface PostsTabProps {
     account: IAccount | null;

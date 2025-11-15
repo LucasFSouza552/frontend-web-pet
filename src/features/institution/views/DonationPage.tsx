@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import backgroundPage from "../../../shared/assets/images/background-page.jpg";
+import backgroundPage from "@assets/images/background-page.jpg";
 import { useContext, useState } from "react";
-import Section from "../../../shared/styles/SectionStyle";
-import { ProfileContext } from "@/shared/contexts/ProfileContext";
-import SideBar from "@/shared/components/Sidebar";
-import { PrimaryButton } from "@/shared/components/PrimaryButton";
-import { InputComponent } from "@/shared/components/InputComponent";
+import Section from "@styles/SectionStyle";
+import { ProfileContext } from "@contexts/ProfileContext";
+import SideBar from "@components/Sidebar";
+import { PrimaryButton } from "@components/PrimaryButton";
+import { InputComponent } from "@components/InputComponent";
 import { FaHeart, FaCreditCard, FaPix, FaBarcode } from "react-icons/fa6";
 import { FaDonate } from "react-icons/fa";
 

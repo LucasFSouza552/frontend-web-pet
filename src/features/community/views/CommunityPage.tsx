@@ -2,8 +2,8 @@ import styled from "styled-components";
 import backgroundPage from "@assets/images/background-page.jpg";
 import { useContext, useState } from "react";
 import Section from "@styles/SectionStyle";
-import { ProfileContext } from "@/shared/contexts/ProfileContext";
-import SideBar from "@/shared/components/Sidebar";
+import { ProfileContext } from "@contexts/ProfileContext";
+import SideBar from "@components/Sidebar";
 import PostsFeed from "../components/PostsFeed";
 import TrendingPosts from "../components/TrendingPosts";
 import SearchBar from "../components/SearchBar";
@@ -172,17 +172,6 @@ const MiddleSideContainer = styled.div`
     }
 `;
 
-const SearchResultsInfo = styled.div`
-    padding: 0.75rem 1rem;
-    background-color: rgba(182, 72, 160, 0.1);
-    border-radius: 8px;
-    color: ${({ theme }) => theme.colors.primary || "#B648A0"};
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
-    text-align: center;
-    border: 1px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
-`;
 
 const LoadingMore = styled.div`
     padding: 1rem;

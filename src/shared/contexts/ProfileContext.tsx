@@ -1,11 +1,11 @@
 import { createContext, useCallback, useEffect, useState } from "react";
-import type { IAccount } from "../models/Account";
+import type { IAccount } from "@models/Account";
 
-import type Pet from "@/shared/models/Pet";
-import { accountService } from "@api/AccountService";
-import type { IAccountStatus } from "@/shared/models/AccountStatus";
-import { pictureService } from "../api/pictureService";
-import { getStorage, removeStorage } from "../utils/storageUtils";
+import type Pet from "@models/Pet";
+import { accountService } from "@api/accountService";
+import type { IAccountStatus } from "@models/AccountStatus";
+import { pictureService } from "@api/pictureService";
+import { getStorage, removeStorage } from "@utils/storageUtils";
 
 interface ProfileContextType {
     account: IAccount | null;
@@ -20,6 +20,7 @@ interface ProfileContextType {
     viewedAccount: IAccount | null;
     loadViewedProfile: (id: string) => Promise<void>;
     loadingViewedAccount: boolean;
+    error: string | null;
 }
 
 export const ProfileContext = createContext({} as ProfileContextType);
@@ -28,10 +29,11 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
 
     // Perfil
     const [account, setAccount] = useState<IAccount | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [petFeed, setPetFeed] = useState<Pet[]>([]);
     const [loadingFeed, setLoadingFeed] = useState(false);
     const [hasMorePets, setHasMorePets] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     // Conta visualizada
     const [viewedAccount, setViewedAccount] = useState<IAccount | null>(null);
@@ -39,19 +41,16 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
     const [loadingViewedAccount, setLoadingViewedAccount] = useState(false);
 
     const loadProfile = useCallback(async () => {
-        const token = getStorage("@token");
-        if (!token) {
-            return;
-        }
+        setLoading(true);
         
         try {
-            setLoading(true);
             const fetchAccount = await accountService.fetchMyProfile();
             if (!fetchAccount) {
                 throw Error("Falha ao buscar perfil");
             }
             const avatarPicture = pictureService.fetchPicture(fetchAccount.avatar || "");
             fetchAccount.avatar = avatarPicture;
+            
             setAccount(fetchAccount);
             const fetchStatus = await accountService.fetchAccountStatusById(fetchAccount.id);
             if (!fetchStatus) {
@@ -61,7 +60,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
         } catch (error) {
             removeStorage("@token");
             setAccount(null);
-            throw error;
+            setError(error as string);
         } finally {
             setLoading(false);
         }
@@ -69,11 +68,10 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
 
     useEffect(() => {
         const token = getStorage("@token");
-        if (!account && !loading && token) {
+        if (token) {
             loadProfile();
         }
-    }, [account, loading, loadProfile]);
-
+    }, [loadProfile]);
 
     const loadFeed = useCallback(async () => {
         try {
@@ -137,6 +135,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
             viewedAccount,
             loadingViewedAccount,
             viewedAccountStatus,
+            error,
         }}>
             {children}
         </ProfileContext.Provider>

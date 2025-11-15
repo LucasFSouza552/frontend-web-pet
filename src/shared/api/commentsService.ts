@@ -1,6 +1,7 @@
 import api from "@api/http";
 import type IComment from "../models/Comments";
 import buildQuery from "../utils/BuilderQuery";
+import { ThrowError } from "../Error/ThrowError";
 
 export const commentService = {
     async adminFetchComments() {
@@ -8,8 +9,10 @@ export const commentService = {
             const response = await api.get("/comment");
             return response.data;
         } catch (error) {
-            console.error("Erro ao buscar comentários:", error);
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar comentários");
         }
     },
     async adminDeleteComment(commentId: string) {
@@ -17,8 +20,10 @@ export const commentService = {
             const response = await api.delete(`/comment/${commentId}`);
             return response.data;
         } catch (error) {
-            console.error(`Erro ao deletar comentário ${commentId}:`, error);
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar deletar comentário");
         }
     },
     async fetchCommentsByPost(postId: string, page = 1, limit = 10) {
@@ -27,8 +32,10 @@ export const commentService = {
             const response = await api.get(`/comment/post/${postId}${query}`);
             return response.data;
         } catch (error) {
-            console.error(`Erro ao buscar comentários do post ${postId}:`, error);
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar comentários do post");
         }
     },
     async fetchCommentById(commentId: string) {
@@ -36,8 +43,10 @@ export const commentService = {
             const response = await api.get(`/comment/${commentId}`);
             return response.data;
         } catch (error) {
-            console.error(`Erro ao buscar comentário ${commentId}:`, error);
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar comentário por id");
         }
     },
     async createComment(postId: string, content: string): Promise<IComment> {
@@ -45,19 +54,22 @@ export const commentService = {
             const response = await api.post(`/comment/${postId}`, { content });
             return response.data;
         } catch (error) {
-            console.error(`Erro ao criar comentário no post ${postId}:`, error);
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar criar comentário");
         }
     },
 
     async replyToComment(commentId: string, content: string) {
         try {
-            console.log(content);
             const response = await api.post(`/comment/${commentId}/reply`, { content });
             return response.data;
         } catch (error) {
-            console.error(`Erro ao responder comentário ${commentId}:`, error);
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar responder comentário");
         }
     },
 
@@ -66,8 +78,10 @@ export const commentService = {
             const response = await api.patch(`/comment/${commentId}`, { comment, content: comment });
             return response.data;
         } catch (error) {
-            console.error(`Erro ao atualizar comentário ${commentId}:`, error);
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar atualizar comentário");
         }
     },
 
@@ -78,8 +92,10 @@ export const commentService = {
             const response = await api.patch(`/comment/own/${commentId}`);
             return response.data;
         } catch (error) {
-            console.error(`Erro ao ocultar comentário ${commentId}:`, error);
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar ocultar comentário");
         }
     },
 
@@ -88,8 +104,10 @@ export const commentService = {
             const response = await api.get(`/comment/${commentId}/replies`);
             return response.data;
         } catch (error) {
-            console.error(`Erro ao buscar respostas do comentário ${commentId}:`, error);
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar respostas do comentário");
         }
     },
 };

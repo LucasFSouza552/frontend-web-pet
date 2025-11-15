@@ -1,4 +1,5 @@
 import api from "@api/http";
+import { ThrowError } from "../Error/ThrowError";
 
 export const historyService = {
     async fetchAllHistories() {
@@ -6,7 +7,10 @@ export const historyService = {
             const response = await api.get("/history");
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar históricos");
         }
     },
 
@@ -15,7 +19,10 @@ export const historyService = {
             const response = await api.get(`/history/:${accountId}`);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar histórico por id");
         }
     },
 
@@ -24,7 +31,10 @@ export const historyService = {
             const response = await api.post("/history/", data);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar criar histórico");
         }
     },
 
@@ -33,7 +43,10 @@ export const historyService = {
             const response = await api.patch(`/history/${historyId}`, data);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar atualizar histórico");
         }
     },
 
@@ -42,7 +55,10 @@ export const historyService = {
             const response = await api.delete(`/history/${historyId}`);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar deletar histórico");
         }
     },
 
@@ -51,7 +67,10 @@ export const historyService = {
             const response = await api.get(`/history/profile/me`);
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar buscar históricos por conta");
         }
     },
 
@@ -60,7 +79,10 @@ export const historyService = {
             const response = await api.patch(`/history/status/${historyId}`, { status });
             return response.data;
         } catch (error) {
-            throw error;
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar atualizar status do histórico");
         }
     }
 }

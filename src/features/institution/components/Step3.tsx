@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { InputComponent } from "../../../shared/components/InputComponent";
+import { InputComponent } from "@components/InputComponent";
 import { LabelDiv } from "./LabelStyles";
 
 export default function Step3({ weight, description, handleChange }: { weight: string, description: string, handleChange: (key: string, value: string) => void }) {

@@ -2,8 +2,8 @@ import { styled } from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type IComment from "@models/Comments";
-import type { IAccount } from "@/shared/models/Account";
-import ProfileAvatar from "@/shared/components/ProfileAvatar";
+import type { IAccount } from "@models/Account";
+import ProfileAvatar from "@components/ProfileAvatar";
 import SmallProfile from "@components/SmallProfile";
 
 interface ReplyCardProps {

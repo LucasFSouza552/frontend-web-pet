@@ -1,9 +1,9 @@
-import ErrorContainer from "../../../../shared/components/ErrorContainer";
-import { HeaderComponent } from "../../../../shared/components/HeaderComponent";
-import Section from "../../../../shared/styles/SectionStyle";
-import { useForgotPasswordController } from "../../auth/controllers/useForgotPasswordController";
-import ReceivedScreen from "../components/Received";
-import RecoveryPasswordForm from "../components/SendForm";
+import ErrorContainer from "@components/ErrorContainer";
+import { HeaderComponent } from "@components/HeaderComponent";
+import Section from "@styles/SectionStyle";
+import { useForgotPasswordController } from "@features/account/auth/controllers/useForgotPasswordController";
+import ReceivedScreen from "@features/account/forgotPassword/components/Received";
+import RecoveryPasswordForm from "@features/account/forgotPassword/components/SendForm";
 import styled from "styled-components";
 
 export default function ForgotPasswordPage() {

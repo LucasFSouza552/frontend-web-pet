@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import Section from "../../../shared/styles/SectionStyle";
+import Section from "@styles/SectionStyle";
 import { useState } from "react";
 
 const faqs = [

@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import styled from "styled-components";
-import { ProfileContext } from "@/shared/contexts/ProfileContext";
+import { ProfileContext } from "@contexts/ProfileContext";
 import PostsContainerList from "@/features/post/components/PostsContainerList";
 import type { RefCallback } from "react";
-import type { IPost } from "@/shared/models/post";
+import type { IPost } from "@models/post";
 
 interface PostsFeedProps {
     posts: IPost[];

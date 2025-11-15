@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { historyService } from "@/features/account/history/historyService";
+import { historyService } from "@api/historyService";
 import animationFile from "@assets/lottie/loading.lottie?url";
 import type IHistory from "@models/History";
 import { FaHeart, FaHandHoldingHeart, FaDonate, FaPaw, FaBuilding, FaCalendarAlt, FaMoneyBillWave, FaWeight, FaBirthdayCake, FaMars, FaVenus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import type IPet from "@/shared/models/Pet";
+import type IPet from "@models/Pet";
+import ErrorContainer from "@components/ErrorContainer";
 
 interface HistoryTabProps {
     accountId?: string;
@@ -14,6 +15,7 @@ interface HistoryTabProps {
 
 export default function HistoryTab({ accountId }: HistoryTabProps) {
     const [historyRecords, setHistoryRecords] = useState<IHistory[]>([]);
+    const [error, setError] = useState<string | null>(null);
     const [loadingHistory, setLoadingHistory] = useState(false);
     const navigate = useNavigate();
 
@@ -30,8 +32,8 @@ export default function HistoryTab({ accountId }: HistoryTabProps) {
             const histories = await historyService.listHistoriesByAccount();
             setHistoryRecords(histories || []);
         } catch (error) {
-            console.error("Erro ao carregar histórico:", error);
             setHistoryRecords([]);
+            setError(error as string);
         } finally {
             setLoadingHistory(false);
         }
@@ -148,6 +150,12 @@ export default function HistoryTab({ accountId }: HistoryTabProps) {
         );
     }
 
+    if (error) {
+        return (
+            <ErrorContainer message={error as string}/>
+        );
+    }
+    
     return (
         <ContentContainer>
             <h2>Histórico</h2>
