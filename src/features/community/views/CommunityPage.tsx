@@ -13,9 +13,9 @@ import StickySidebar from "@/shared/styles/StickySidebar";
 
 export default function CommunityPage() {
   const { account } = useContext(ProfileContext);
-  const { 
-    posts, 
-    lastPostRef, 
+  const {
+    posts,
+    lastPostRef,
     searchPosts,
     searchResults,
     hasMoreSearchResults,
@@ -24,11 +24,10 @@ export default function CommunityPage() {
     handleSearch,
     isSearching
   } = useCommunityController();
-  
+
 
   return (
     <Container>
-      <BackgroundLayer />
       <SectionContent>
         <StickySidebar>
           <SideBar account={account} />
@@ -66,21 +65,6 @@ const Container = styled.div`
   overflow-x: hidden;
 `;
 
-const BackgroundLayer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url(${backgroundPage});
-  background-size: cover;
-  background-position: center;
-  background-repeat: repeat;
-  background-attachment: fixed;
-  z-index: 0;
-  pointer-events: none;
-`;
-
 const SectionContent = styled(Section)`
   position: relative;
   z-index: 1;
@@ -94,6 +78,12 @@ const SectionContent = styled(Section)`
   gap: 1.25rem;
   box-sizing: border-box;
   overflow-x: hidden;
+
+  background-image: url(${backgroundPage});
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat;
+  background-attachment: fixed;
 
   @media (max-width: 1024px) {
     flex-direction: column;

@@ -31,7 +31,7 @@ export default function ProfileSection() {
         loadViewedProfile(profileAccountId);
     }, [profileAccountId, loadViewedProfile]);
 
-    
+
     useEffect(() => {
         if (!account && !loading) {
             navigate("/");
@@ -89,9 +89,11 @@ const ProfileContainer = styled.div`
     align-items: center;
     min-height: 100dvh;
     width: 100%;
+    overflow-y: hidden;
 `;
 
 const SectionContent = styled(Section)`
+    
     display: flex;
     align-items: flex-start;
     width: 100%;

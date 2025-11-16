@@ -514,7 +514,7 @@ const PostContainer = styled.div`
     padding: 10px;
     display: flex;
     flex-direction: column;
-    max-inline-size: 70%;
+    max-inline-size: 100%;
     inline-size: 100%;
     gap: 5px;
     color: white;
