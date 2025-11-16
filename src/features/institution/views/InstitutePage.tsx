@@ -17,7 +17,7 @@ export default function InstitutePage() {
   const { account } = useContext(ProfileContext);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
+
   const [institution, setInstitution] = useState<IAccount | null>(null);
   const [loading, setLoading] = useState(true);
   const [donationAmount, setDonationAmount] = useState<string>("");
@@ -52,9 +52,9 @@ export default function InstitutePage() {
 
   const handleDonate = async () => {
     if (!id) return;
-    
+
     const amount = parseFloat(donationAmount.replace(",", "."));
-    
+
     if (isNaN(amount) || amount < 10) {
       setDonationError("O valor mínimo para doação é R$ 10,00");
       return;
@@ -68,8 +68,8 @@ export default function InstitutePage() {
     try {
       setDonating(true);
       setDonationError("");
-      const response = await accountService.donateToInstitution(id, amount);
-      
+      const response = await accountService.sponsorPet(id, amount);
+
       if (response.url) {
         const width = 1000;
         const height = 1100;
@@ -85,8 +85,8 @@ export default function InstitutePage() {
         setDonationAmount("");
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
+      const errorMessage = error instanceof Error
+        ? error.message
         : (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Erro ao processar doação. Tente novamente.";
       setDonationError(errorMessage);
     } finally {
@@ -125,7 +125,7 @@ export default function InstitutePage() {
         <MiddleSideContainer>
           <InstitutionHeader>
             <AvatarContainer>
-              <InstitutionAvatar src={institution.avatar || "/default-avatar.png"} alt={institution.name} />
+              <InstitutionAvatar src={pictureService.fetchPicture(institution.avatar || "")} alt={institution.name} />
               {institution.verified && <VerifiedBadge />}
             </AvatarContainer>
             <InstitutionInfo>
@@ -150,33 +150,50 @@ export default function InstitutePage() {
                 <FaHeart /> Sobre a Instituição
               </CardTitle>
               <CardContent>
-                {institution.phone_number && (
-                  <InfoItem>
-                    <FaPhone /> {institution.phone_number}
-                  </InfoItem>
+                {(institution.phone_number || institution.email) && (
+                  <>
+                    <CardSubTitle>Contatos</CardSubTitle>
+                    <InfoGrid>
+                      {institution.phone_number && (
+                        <InfoItem>
+                          <FaPhone /> {institution.phone_number}
+                        </InfoItem>
+                      )}
+                      {institution.email && (
+                        <InfoItem>
+                          <FaEnvelope /> {institution.email}
+                        </InfoItem>
+                      )}
+                    </InfoGrid>
+                  </>
                 )}
-                {institution.email && (
-                  <InfoItem>
-                    <FaEnvelope /> {institution.email}
-                  </InfoItem>
-                )}
+
                 {institution.cnpj && (
-                  <InfoItem>
-                    <strong>CNPJ:</strong> {institution.cnpj}
-                  </InfoItem>
+                  <>
+                    <CardSubTitle>Documentos</CardSubTitle>
+                    <InfoItem>
+                      <strong>CNPJ:</strong> {institution.cnpj}
+                    </InfoItem>
+                  </>
                 )}
+
                 {institution.address && (
-                  <InfoItem>
-                    <FaMapMarkerAlt />                     {institution.address.street}, {institution.address.number}
-                    <br />
-                    {institution.address.neighborhood} - {institution.address.city}/{institution.address.state}
-                    {institution.address.cep && (
-                      <>
-                        <br />
-                        CEP: {institution.address.cep}
-                      </>
-                    )}
-                  </InfoItem>
+                  <>
+                    <CardSubTitle>Endereço</CardSubTitle>
+                    <InfoItem>
+                      <FaMapMarkerAlt /> {institution.address.street}
+                      {institution.address.number ? `, ${institution.address.number}` : ""}
+                      {institution.address.neighborhood ? ` - ${institution.address.neighborhood}` : ""}
+                      <br />
+                      {institution.address.city}/{institution.address.state}
+                      {institution.address.cep && (
+                        <>
+                          <br />
+                          CEP: {institution.address.cep}
+                        </>
+                      )}
+                    </InfoItem>
+                  </>
                 )}
               </CardContent>
             </InfoCard>
@@ -381,6 +398,7 @@ const AvatarContainer = styled.div`
 const InstitutionAvatar = styled.img`
   width: 120px;
   height: 120px;
+  background-color: ${({ theme }) => theme.colors.bg};
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid ${({ theme }) => theme.colors.primary};
@@ -398,7 +416,6 @@ const VerifiedBadge = styled(BsPatchCheckFill)`
   right: 0;
   color: #00D9FF;
   font-size: 2rem;
-  background: ${({ theme }) => theme.colors.quarternary};
   border-radius: 50%;
   filter: drop-shadow(0px 2px 4px rgba(0, 217, 255, 0.5));
 `;
@@ -413,12 +430,11 @@ const InstitutionInfo = styled.div`
 const InstitutionName = styled.h1`
   font-size: 2rem;
   font-weight: bold;
-  color: white;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   margin: 0;
-
+  
   @media (max-width: 768px) {
     font-size: 1.5rem;
     justify-content: center;
@@ -491,10 +507,28 @@ const CardTitle = styled.h2`
   gap: 0.5rem;
 `;
 
+const CardSubTitle = styled.h3`
+  font-size: 1rem;
+  color: #ffffff;
+  opacity: 0.9;
+  margin: 0.5rem 0 0.5rem 0;
+  font-weight: 700;
+`;
+
 const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+`;
+
+const InfoGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const InfoItem = styled.div`

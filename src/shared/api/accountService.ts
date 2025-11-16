@@ -136,15 +136,26 @@ export const accountService = {
             throw ThrowError.internal("Erro inesperado ao tentar buscar posts");
         }
     },
-    async donateToInstitution(institutionId: string, amount: number) {
+    async donate(amount: number) {
         try {
-            const response = await api.post(`/account/${institutionId}/donate`, { amount });
+            const response = await api.post(`/account/donate`, { amount });
             return response.data;
         } catch (error) {
             if (error instanceof ThrowError) {
                 throw error;
             }
-            throw ThrowError.internal("Erro inesperado ao tentar buscar posts");
+            throw ThrowError.internal("Erro inesperado ao tentar doar para o pet");
+        }
+    },
+    async sponsorPet(petId: string, amount: number) {
+        try {
+            const response = await api.post(`/account/pets/${petId}/sponsor`, { amount });
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) {
+                throw error;
+            }
+            throw ThrowError.internal("Erro inesperado ao tentar apadrinhar pet");
         }
     }
 }

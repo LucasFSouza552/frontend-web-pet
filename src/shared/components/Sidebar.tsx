@@ -1,12 +1,12 @@
 import styled, { useTheme } from "styled-components";
 import type { IAccount } from "../models/Account";
-import { Link } from "react-router-dom";
+import { Link, NavLink as RouterNavLink } from "react-router-dom";
 import ProfileMenu from "./ProfileMenu";
 import { PrimaryButton } from "./PrimaryButton";
 
-import { FaHome, FaHandsHelping, FaHeart, FaUsers, FaBullhorn, FaDonate } from "react-icons/fa";
+import { FaHome, FaHandsHelping, FaHeart, FaUsers, FaDonate, FaHandHoldingHeart } from "react-icons/fa";
 import logo from "@assets/images/logo.png";
-import { useMemo, type JSX } from "react";
+import { useMemo, useState, type JSX } from "react";
 
 interface NavItem {
   label: string;
@@ -18,14 +18,15 @@ interface NavItem {
 
 export default function SideBar({ account }: { account: IAccount | null }) {
   const theme = useTheme();
+  const [menuOpen, setMenuOpen] = useState(false);
   const iconsConfig = useMemo(() => ({ color: theme.colors.primary, size: "1.5em" }), [theme.colors.primary]);
+
   const navItems: NavItem[] = [
     { label: "Página Principal", path: "/", icon: <FaHome color={iconsConfig.color} size={iconsConfig.size} /> },
-    { label: "Comunidade", path: "/", icon: <FaUsers color={iconsConfig.color} size={iconsConfig.size} /> },
-    { label: "Divulgação", path: "/disclosure", icon: <FaBullhorn color={iconsConfig.color} size={iconsConfig.size} /> },
-    { label: "Suporte", path: "/support", icon: <FaHandsHelping color={iconsConfig.color} size={iconsConfig.size} /> },
     { label: "Match", path: "/match", icon: <FaHeart color={iconsConfig.color} size={iconsConfig.size} /> },
-    { label: "Doar", path: "/DonatePage", icon: <FaDonate color={iconsConfig.color} size={iconsConfig.size} /> }
+    { label: "Suporte", path: "/support", icon: <FaHandsHelping color={iconsConfig.color} size={iconsConfig.size} /> },
+    { label: "Doar", path: "/DonatePage", icon: <FaDonate color={iconsConfig.color} size={iconsConfig.size} /> },
+    { label: "Instituições", path: "/institutions", icon: <FaHandHoldingHeart color={iconsConfig.color} size={iconsConfig.size} /> }
   ];
 
   return (
@@ -34,14 +35,27 @@ export default function SideBar({ account }: { account: IAccount | null }) {
         <Link to="/">
           <img src={logo} alt="Logo" />
         </Link>
+        <HamburgerButton
+          aria-label="Abrir menu"
+          onClick={() => setMenuOpen((prev) => !prev)}
+        >
+          <span />
+          <span />
+          <span />
+        </HamburgerButton>
       </LogoWrapper>
 
-      <NavLinks>
+      <NavLinks $open={menuOpen}>
         {navItems.map((item) => (
-          <NavLink key={item.label} to={item.path}>
+          <NavItemLink
+            key={item.label}
+            to={item.path}
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={() => setMenuOpen(false)}
+          >
             <span className="icon">{item.icon}</span>
             {item.label}
-          </NavLink>
+          </NavItemLink>
         ))}
       </NavLinks>
 
@@ -69,6 +83,12 @@ const LogoWrapper = styled.div`
     width: 100px;
     height: 100px;
     object-fit: contain;
+  }
+
+  @media (max-width: 768px) {
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
   }
 `;
 const SidebarContainer = styled.aside`
@@ -103,7 +123,7 @@ const SidebarContainer = styled.aside`
   }
 `;
 
-const NavLinks = styled.nav`
+const NavLinks = styled.nav<{ $open: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -115,9 +135,16 @@ const NavLinks = styled.nav`
     justify-content: center;
     flex-wrap: wrap;
   }
+
+  @media (max-width: 768px) {
+    display: ${({ $open }) => ($open ? "flex" : "none")};
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
 `;
 
-const NavLink = styled(Link)`
+const NavItemLink = styled(RouterNavLink)`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -164,5 +191,35 @@ const ProfileSection = styled.div`
   @media (max-width: 900px) {
     border-top: none;
     padding-top: 0;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const HamburgerButton = styled.button`
+  display: none;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 8px;
+  gap: 4px;
+  cursor: pointer;
+
+  align-items: center;
+  justify-content: center;
+
+  span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: white;
+    border-radius: 1px;
+  }
+
+  @media (max-width: 768px) {
+    display: inline-flex;
+    flex-direction: column;
   }
 `;

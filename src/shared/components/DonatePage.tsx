@@ -1,22 +1,39 @@
 import styled from "styled-components";
 import SideBar from "@components/Sidebar";
 import { useContext, useState } from "react";
-import { FaDonate } from "react-icons/fa";
+import { FaDonate, FaServer, FaPaw, FaUsers, FaHandHoldingHeart } from "react-icons/fa";
 import { PrimaryButton } from "@components/PrimaryButton";
 import { ProfileContext } from "@contexts/ProfileContext";
+import { accountService } from "../api/accountService";
 
 export default function DonatePage() {
   const { account } = useContext(ProfileContext);
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
 
-  const handleDonate = () => {
-    const number = Number(value.replace(",", "."));
-    if (isNaN(number) || number < 10) {
-      setError("O valor mínimo para doação é R$ 10,00");
-      return;
+  const handleDonate = async () => {
+
+    try {
+      const number = Number(value.replace(",", "."));
+      if (isNaN(number) || number < 10) {
+        setError("O valor mínimo para doação é R$ 10,00");
+        return;
+      }
+
+      const response = await accountService.donate(number);
+      if (response.url) {
+        const width = 1000;
+        const height = 1100;
+        const left = (window.innerWidth - width) / 2;
+        const top = (window.innerHeight - height) / 2;
+        window.open(response.url, "MercadoPago", `width=${width},height=${height},top=${top},left=${left}`);
+      } else {
+        setError("Erro ao processar doação");
+      }
+    } catch (error) {
+      setError(error as string);
     }
-    setError("");
+
   };
 
   return (
@@ -34,32 +51,31 @@ export default function DonatePage() {
           </IconContainer>
 
           <Title>Faça uma Doação</Title>
-          
+
           <ImageContainer>
             <DonationImage src="/donation-img1.jpg" alt="Doação para animais" />
           </ImageContainer>
 
-          <Text>
-            Sua contribuição é essencial para que nosso site continue funcionando e conectando animais em situação de vulnerabilidade a pessoas dispostas a oferecer um novo lar. 
-            Somos uma plataforma <strong>sem fins lucrativos</strong> dedicada a facilitar o processo de adoção e apoiar o resgate de pets que precisam de cuidado e proteção.
-          </Text>
+          <Text>Sua doação mantém a plataforma no ar e acelera melhorias.</Text>
 
-          <DescriptionText>
-            Com sua doação, conseguimos:
-          </DescriptionText>
-          
-          <BenefitsList>
-            <BenefitItem>• Manter o site ativo, estável e acessível</BenefitItem>
-            <BenefitItem>• Melhorar ferramentas que aproximam adotantes e animais</BenefitItem>
-            <BenefitItem>• Dar visibilidade a pets resgatados e em busca de uma família</BenefitItem>
-            <BenefitItem>• Apoiar instituições e protetores independentes que divulgam animais para adoção</BenefitItem>
-            <BenefitItem>• Continuar promovendo a adoção responsável e transformando vidas</BenefitItem>
-          </BenefitsList>
-
-          <Text>
-            Cada contribuição ajuda diretamente na manutenção e evolução da plataforma. 
-            Sua generosidade permite que mais pets tenham uma nova chance! 💙🐾
-          </Text>
+          <IconGrid>
+            <IconBenefit>
+              <IconCircle><FaServer /></IconCircle>
+              <BenefitLabel>Manter o site ativo</BenefitLabel>
+            </IconBenefit>
+            <IconBenefit>
+              <IconCircle><FaUsers /></IconCircle>
+              <BenefitLabel>Aproximar adotantes e pets</BenefitLabel>
+            </IconBenefit>
+            <IconBenefit>
+              <IconCircle><FaPaw /></IconCircle>
+              <BenefitLabel>Dar visibilidade aos resgates</BenefitLabel>
+            </IconBenefit>
+            <IconBenefit>
+              <IconCircle><FaHandHoldingHeart /></IconCircle>
+              <BenefitLabel>Apoiar instituições</BenefitLabel>
+            </IconBenefit>
+          </IconGrid>
 
           <Input
             type="number"
@@ -190,7 +206,7 @@ const Text = styled.p`
   color: #d8d8d8;
   font-size: 0.9rem;
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   line-height: 1.3;
   flex-shrink: 0;
 `;
@@ -243,30 +259,41 @@ const DonationImage = styled.img`
 
 `;
 
-const DescriptionText = styled.p`
-  color: #fff;
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-align: center;
-  margin: 10px 0 8px 0;
-  flex-shrink: 0;
-`;
-
-const BenefitsList = styled.ul`
+const IconGrid = styled.div`
   width: 100%;
-  list-style: none;
-  padding: 0;
-  margin: 0 0 12px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 10px 0 12px 0;
 `;
 
-const BenefitItem = styled.li`
-  color: #d8d8d8;
-  font-size: 0.85rem;
-  text-align: left;
-  line-height: 1.4;
-  padding-left: 8px;
+const IconBenefit = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px 12px;
+`;
+
+const IconCircle = styled.div`
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: white;
+  background: ${({ theme }) => theme.colors.primary};
+  box-shadow: 0 0 10px ${({ theme }) => theme.colors.primary};
+  flex-shrink: 0;
+  svg {
+    font-size: 16px;
+  }
+`;
+
+const BenefitLabel = styled.span`
+  color: #eaeaea;
+  font-size: 0.9rem;
+  line-height: 1.2;
 `;

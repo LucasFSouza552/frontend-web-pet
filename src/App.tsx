@@ -14,11 +14,10 @@ import { useContext } from "react"
 import { ProfileContext } from "@contexts/ProfileContext"
 import InstitutePage from "./features/institution/views/InstitutePage"
 import DonationPage from "./features/institution/views/DonationPage"
-// import ForgotPasswordPage from "./features/account/forgotPassword/views/forgotPasswordPage"
-// import DesiredPetsPage from "./features/pet/views/DesiredPetsPage"
 import PostPage from "./features/post/views/postPage"
 import ProfileEditionPage from "./features/account/profile/views/ProfileEditionPage"
 import DonatePage from "@components/DonatePage"
+import InstitutionsListPage from "./features/institution/views/InstitutionsListPage"
 
 function App() {
 
@@ -34,9 +33,10 @@ function App() {
         <Route path="/post/:id" element={<PostPage />} />
         <Route path="/match" element={<MatchPage />} />
         <Route path="/DonatePage" element={<DonatePage />} />
+        <Route path="/institutions" element={<InstitutionsListPage />} />
         {/* <Route path="/community" element={<CommunityPage />} /> */}
         <Route path="/support" element={<FAQPage />} />
-        <Route path="/institution/:id" element={<InstitutePage />} />
+        <Route path="/donate-institution/:id" element={<InstitutePage />} />
         <Route path="/donate" element={<DonationPage />} />
         {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} /> */}
         {/* <Route path="/pets" element={<DesiredPetsPage />} /> */}

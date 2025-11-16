@@ -1,87 +1,152 @@
 import api from "@api/http";
 import type IPet from "@models/Pet";
+import { ThrowError } from "@/shared/Error/ThrowError";
 
 export const petService = {
     async adminFetchAllPets() {
-        const response = await api.get("/pet");
-        return response.data;
+        try {
+            const response = await api.get("/pet");
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar buscar pets");
+        }
     },
     async institutionCreatePet(data: IPet) {
-        const response = await api.post("/pet", data);
-        return response.data;
+        try {
+            const response = await api.post("/pet", data);
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar criar pet");
+        }
     },
     async fetchPetById(petId: string) {
-        const response = await api.get(`/pet/${petId}`);
-        return response.data;
+        try {
+            const response = await api.get(`/pet/${petId}`);
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar buscar pet");
+        }
     },
     async updatePet(petId: string, data: Partial<IPet>) {
-        const response = await api.patch(`/pet/${petId}`, data);
-        return response.data;
+        try {
+            const response = await api.patch(`/pet/${petId}`, data);
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar atualizar pet");
+        }
     },
     async deletePet(petId: string) {
-        const response = await api.delete(`/pet/${petId}`);
-        return response.data;
+        try {
+            const response = await api.delete(`/pet/${petId}`);
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar remover pet");
+        }
     },
     async availablePets() {
-        const response = await api.get("/pet/avaliable");
-        return response.data;
+        try {
+            const response = await api.get("/pet/avaliable");
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar buscar pets disponíveis");
+        }
     },
     async likePet(petId: string) {
-        const response = await api.post(`/pet/${petId}/like`);
-        return response.data;
+        try {
+            const response = await api.post(`/pet/${petId}/like`);
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar curtir pet");
+        }
     },
     async dislikePet(petId: string) {
-        const response = await api.post(`/pet/${petId}/dislike`);
-        return response.data;
+        try {
+            const response = await api.post(`/pet/${petId}/dislike`);
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar descurtir pet");
+        }
     },
     async acceptPetAdoption(petId: string, accountId: string) {
-        const response = await api.post(`/pet/${petId}/accept`, {
-            account: accountId
-        });
-        return response.data;
+        try {
+            const response = await api.post(`/pet/${petId}/accept`, { account: accountId });
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar aceitar adoção");
+        }
     },
     async rejectPetAdoption(petId: string, accountId?: string) {
-        const response = await api.post(`/pet/${petId}/reject`, accountId ? { account: accountId } : {});
-        return response.data;
-    },
-    async sponsorPet(petId: string, amount: number) {
-        const response = await api.post(`/pet/${petId}/sponsor`, { amount });
-        return response.data;
-    },
-    async donate (petId: string, amount: number) {
-        const response = await api.post(`/pet/${petId}/donate`, { amount });
-        return response.data;
+        try {
+            const response = await api.post(`/pet/${petId}/reject`, accountId ? { account: accountId } : {});
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar negar adoção");
+        }
     },
     async updateImages(petId: string, formData: FormData) {
-        const response = await api.post(`/pet/${petId}/avatar`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data"
-            }
-        });
-        return response.data;
+        try {
+            const response = await api.post(`/pet/${petId}/avatar`, formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar atualizar imagens do pet");
+        }
     },
     async deleteImage(petId: string, imageId: string) {
-        const response = await api.delete(`/pet/${petId}/avatar/${imageId}`);
-        return response.data;
+        try {
+            const response = await api.delete(`/pet/${petId}/avatar/${imageId}`);
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar excluir imagem do pet");
+        }
     },
     async paymentReturn(paymentId: string, status: "completed" | "cancelled" | "refunded", externalReference: string) {
-        const response = await api.post(`/pet/payment-return`, {
-            id: paymentId,
-            status,
-            externalReference
-        });
-        return response.data;
+        try {
+            const response = await api.post(`/pet/payment-return`, { id: paymentId, status, externalReference });
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao processar retorno de pagamento");
+        }
     },
     async getAdoptedPetsByAccount(accountId: string) {
-        const response = await api.get(`/pet/adopted/${accountId}`);
-        return response.data;
+        try {
+            const response = await api.get(`/pet/adopted/${accountId}`);
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar buscar pets adotados");
+        }
     },
     async getAllByInstitution(institutionId: string) {
-        const response = await api.get(`/pet/institutions/${institutionId}/pets`);
-        return response.data;
+        try {
+            const response = await api.get(`/pet/institutions/${institutionId}/pets`);
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar buscar pets da instituição");
+        }
     },
     async getRequestedAdoptions(institutionId: string) {
-        const response = await api.get(`/pet/institutions/${institutionId}/pets/requested`);
-        return response.data;
+        try {
+            const response = await api.get(`/pet/institutions/${institutionId}/pets/requested`);
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar buscar solicitações de adoção");
+        }
     }
 };

@@ -71,6 +71,12 @@ export function usePaginatedPosts(
                 }
             });
 
+            const sortByDateDesc = (a: IPost, b: IPost) => {
+                const aTime = new Date((a as any).createdAt || (a as any).updatedAt || 0).getTime();
+                const bTime = new Date((b as any).createdAt || (b as any).updatedAt || 0).getTime();
+                return bTime - aTime;
+            };
+
             if (updateExisting) {
                 const result: IPost[] = [];
                 
@@ -87,13 +93,13 @@ export function usePaginatedPosts(
                     result.push(post);
                 });
                 
-                return result;
+                return result.sort(sortByDateDesc);
             } else {
                 const existingIds = new Set(currentPosts.map(post => post.id));
                 const uniqueNewPosts = Array.from(processedNewPosts.values()).filter(
                     post => !existingIds.has(post.id)
                 );
-                return [...currentPosts, ...uniqueNewPosts];
+                return [...currentPosts, ...uniqueNewPosts].sort(sortByDateDesc);
             }
         },
         []

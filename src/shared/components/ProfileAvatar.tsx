@@ -22,7 +22,7 @@ const AvatarContainer = styled.div<{ width: number; border?: boolean }>`
   border-radius: 50%;
   background-color: ${({ theme }) => theme.colors.bg || "white"};
   border: ${({ border, theme }) =>
-    border ? `5px solid ${theme.colors.primary}` : "none"};
+    border ? `2px solid ${theme.colors.primary}` : "none"};
   overflow: hidden;
 
   img {

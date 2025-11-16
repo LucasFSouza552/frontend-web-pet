@@ -1,11 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useContext } from "react";
 import { ProfileContext } from "@contexts/ProfileContext";
 import { PostsContext } from "@contexts/PostContext";
 import { postService } from "@api/postService";
 import ProfileAvatar from "@components/ProfileAvatar";
-import { FaImage, FaTimes, FaPaperPlane } from "react-icons/fa";
+import { FaImage, FaTimes, FaSmile } from "react-icons/fa";
 
 export default function CreatePostForm() {
     const { account } = useContext(ProfileContext);
@@ -14,7 +14,11 @@ export default function CreatePostForm() {
     const [images, setImages] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
+    const emojiPickerRef = useRef<HTMLDivElement>(null);
+    const emojiButtonRef = useRef<HTMLButtonElement>(null);
 
     const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
@@ -38,6 +42,43 @@ export default function CreatePostForm() {
         setImages(newImages);
         setImagePreviews(newPreviews);
     };
+
+    const insertEmojiAtCursor = (emoji: string) => {
+        const el = textAreaRef.current;
+        if (!el) {
+            setContent(prev => prev + emoji);
+            return;
+        }
+        const start = el.selectionStart ?? content.length;
+        const end = el.selectionEnd ?? content.length;
+        const before = content.slice(0, start);
+        const after = content.slice(end);
+        const next = `${before}${emoji}${after}`;
+        setContent(next);
+        setTimeout(() => {
+            el.focus();
+            const pos = start + emoji.length;
+            el.setSelectionRange(pos, pos);
+        }, 0);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            const pickerEl = emojiPickerRef.current;
+            const btnEl = emojiButtonRef.current;
+            if (pickerEl && !pickerEl.contains(e.target as Node) && btnEl && !btnEl.contains(e.target as Node)) {
+                setShowEmojiPicker(false);
+            }
+        };
+        if (showEmojiPicker) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showEmojiPicker]);
+
+    const emojis = ["😀","😁","😂","🤣","😊","😍","😘","😎","🤔","😢","😭","😡","👍","👏","🙏","💙","🐶","🐱","🐾","✨","🔥","🎉","✅","❌", ];
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -84,19 +125,16 @@ export default function CreatePostForm() {
         <FormContainer>
             <FormHeader>
                 <ProfileAvatar avatar={account.avatar} alt={account.name} width={48} border />
-                <UserInfo>
-                    <UserName>{account.name}</UserName>
-                    <UserRole>{account.role === "institution" ? "Instituição" : "Usuário"}</UserRole>
-                </UserInfo>
             </FormHeader>
 
             <Form onSubmit={handleSubmit}>
 
                 <ContentTextarea
-                    placeholder="No que você está pensando?"
+                    placeholder="O que está acontecendo?"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    rows={4}
+                    rows={3}
+                    ref={textAreaRef}
                 />
 
                 {imagePreviews.length > 0 && (
@@ -115,8 +153,8 @@ export default function CreatePostForm() {
                     </ImagePreviewContainer>
                 )}
 
-                <FormActions>
-                    <ImageInputWrapper>
+                <ActionsBar>
+                    <IconsRow>
                         <ImageInput
                             ref={fileInputRef}
                             type="file"
@@ -124,27 +162,54 @@ export default function CreatePostForm() {
                             multiple
                             onChange={handleImageSelect}
                         />
-                        <ImageButton type="button" onClick={() => fileInputRef.current?.click()}>
+                        <IconButton type="button" aria-label="Adicionar imagens" onClick={() => fileInputRef.current?.click()}>
                             <FaImage size={18} />
-                            Adicionar Fotos
-                        </ImageButton>
-                    </ImageInputWrapper>
-
+                        </IconButton>
+                        <EmojiWrapper>
+                            <IconButton
+                                ref={emojiButtonRef}
+                                type="button"
+                                aria-label="Emoji"
+                                onClick={() => setShowEmojiPicker((v) => !v)}
+                            >
+                                <FaSmile size={18} />
+                            </IconButton>
+                            {showEmojiPicker && (
+                                <EmojiPicker ref={emojiPickerRef}>
+                                    <EmojiGrid>
+                                        {emojis.map((e, i) => (
+                                            <EmojiItem
+                                                key={`${e}-${i}`}
+                                                onClick={() => {
+                                                    insertEmojiAtCursor(e);
+                                                    setShowEmojiPicker(false);
+                                                }}
+                                            >
+                                                {e}
+                                            </EmojiItem>
+                                        ))}
+                                    </EmojiGrid>
+                                </EmojiPicker>
+                            )}
+                        </EmojiWrapper>
+                    </IconsRow>
                     <SubmitButton type="submit" disabled={isSubmitting || !content.trim()}>
-                        <FaPaperPlane size={16} />
-                        {isSubmitting ? "Publicando..." : "Publicar"}
+                        {isSubmitting ? "Postando..." : "Postar"}
                     </SubmitButton>
-                </FormActions>
+                </ActionsBar>
             </Form>
         </FormContainer>
     );
 }
 
 const FormContainer = styled.div`
+    display: flex;
+    align-items: flex-start;
     width: 100%;
-    background: linear-gradient(135deg, ${({ theme }) => theme.colors.quarternary} 0%, ${({ theme }) => theme.colors.quinary} 100%);
+    background: ${({ theme }) => theme.colors.quarternary};
     border-radius: 16px;
     padding: 1.5rem;
+    flex-direction: row;
     margin-bottom: 1.5rem;
     border: 1px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
     box-shadow: 0 4px 16px rgba(182, 72, 160, 0.2);
@@ -157,74 +222,34 @@ const FormHeader = styled.div`
     gap: 1rem;
     margin-bottom: 1.25rem;
 `;
-
-const UserInfo = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-`;
-
-const UserName = styled.span`
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
-`;
-
-const UserRole = styled.span`
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.875rem;
-`;
-
 const Form = styled.form`
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-`;
-
-const TitleInput = styled.input`
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    outline: none;
-    background-color: rgba(255, 255, 255, 0.05);
-    color: white;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-
-    &::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-    }
-
-    &:focus {
-        border-color: ${({ theme }) => theme.colors.primary || "#B648A0"};
-        box-shadow: 0 0 0 3px rgba(182, 72, 160, 0.2);
-        background-color: rgba(255, 255, 255, 0.08);
-    }
+    margin-left: 1rem;
 `;
 
 const ContentTextarea = styled.textarea`
     width: 100%;
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 4px;
+    border-radius: 8px;
+    border: none;
     outline: none;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: transparent;
     color: white;
     font-size: 1rem;
     font-family: inherit;
-    resize: vertical;
-    min-height: 120px;
+    resize: none;
+    min-height: 64px;
     transition: all 0.3s ease;
 
     &::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(255, 255, 255, 0.6);
     }
 
     &:focus {
-        border-color: ${({ theme }) => theme.colors.primary || "#B648A0"};
-        box-shadow: 0 0 0 3px rgba(182, 72, 160, 0.2);
-        background-color: rgba(255, 255, 255, 0.08);
+        background-color: transparent;
     }
 `;
 
@@ -273,59 +298,97 @@ const RemoveImageButton = styled.button`
     }
 `;
 
-const FormActions = styled.div`
+const ActionsBar = styled.div`
+width: 100%;  
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
-    padding-top: 0.5rem;
-
-    @media (max-width: 768px) {
-        flex-direction: column;
-    }
-`;
-
-const ImageInputWrapper = styled.div`
-    flex: 1;
+    gap: 0.75rem;
+    padding-top: 0.25rem;
 `;
 
 const ImageInput = styled.input`
     display: none;
 `;
 
-const ImageButton = styled.button`
-    padding: 12px 20px;
-    border-radius: 12px;
-    border: 2px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
-    background: transparent;
-    color: ${({ theme }) => theme.colors.primary || "#B648A0"};
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
+const IconsRow = styled.div`
     display: flex;
     align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
+    gap: 12px;
+    color: ${({ theme }) => theme.colors.primary || "#B648A0"};
+`;
 
-    &:hover {
-        background: ${({ theme }) => theme.colors.primary || "#B648A0"};
-        color: white;
-        transform: translateY(-2px);
+const IconButton = styled.button`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: ${({ theme }) => theme.colors.primary || "#B648A0"};
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s ease;
+
+    &:hover:not(:disabled) {
+        background: rgba(182, 72, 160, 0.15);
+        transform: translateY(-1px);
     }
 
-    @media (max-width: 768px) {
-        width: 100%;
-        justify-content: center;
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
     }
 `;
 
-const SubmitButton = styled.button`
-    padding: 12px 24px;
-    border-radius: 12px;
+const EmojiWrapper = styled.div`
+    position: relative;
+    display: inline-block;
+`;
+
+const EmojiPicker = styled.div`
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    background: rgba(20, 18, 20, 0.95);
+    border: 1px solid rgba(182, 72, 160, 0.3);
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    padding: 8px;
+    z-index: 50;
+    backdrop-filter: blur(6px);
+`;
+
+const EmojiGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(8, 28px);
+    gap: 6px;
+`;
+
+const EmojiItem = styled.button`
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
     border: none;
-    background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary || "#B648A0"} 0%, #a502b4 100%);
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    transition: 0.15s ease;
+    &:hover {
+        background: rgba(182, 72, 160, 0.15);
+        transform: translateY(-1px);
+    }
+`;
+const SubmitButton = styled.button`
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: none;
+    background: ${({ theme }) => theme.colors.primary || "#B648A0"};
     color: white;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -335,8 +398,8 @@ const SubmitButton = styled.button`
     white-space: nowrap;
 
     &:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(182, 72, 160, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(182, 72, 160, 0.35);
     }
 
     &:disabled {
@@ -345,7 +408,6 @@ const SubmitButton = styled.button`
     }
 
     @media (max-width: 768px) {
-        width: 100%;
         justify-content: center;
     }
 `;
