@@ -16,6 +16,7 @@ import backgroundPage from "@assets/images/background-page.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProfileContext } from "@contexts/ProfileContext";
 import SideBar from "@components/Sidebar";
+import StickySidebar from "@/shared/styles/StickySidebar";
 
 export default function ProfileSection() {
     const navigate = useNavigate();
@@ -90,41 +91,10 @@ const ProfileContainer = styled.div`
     width: 100%;
 `;
 
-const StickySidebar = styled.div`
-  position: sticky;
-  top: 15px;
-  align-self: flex-start;
-  height: fit-content;
-  max-height: calc(100dvh - 30px);
-  overflow-y: auto;
-  z-index: 10;
-  flex-shrink: 0;
-  
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.primary || "#B648A0"};
-    border-radius: 2px;
-  }
-  
-  @media (max-width: 1024px) {
-    position: static;
-    width: 100%;
-    max-height: none;
-    z-index: 1;
-  }
-`;
-
 const SectionContent = styled(Section)`
     display: flex;
     align-items: flex-start;
-    width: 100%;    
+    width: 100%;
     flex-direction: row;
     height: 100%;
     min-height: calc(100dvh);

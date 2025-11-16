@@ -8,6 +8,7 @@ import { PrimaryButton } from "@components/PrimaryButton";
 import { InputComponent } from "@components/InputComponent";
 import { FaHeart, FaCreditCard, FaPix, FaBarcode } from "react-icons/fa6";
 import { FaDonate } from "react-icons/fa";
+import StickySidebar from "@/shared/styles/StickySidebar";
 
 export default function DonationPage() {
   const { account } = useContext(ProfileContext);
@@ -33,7 +34,6 @@ export default function DonationPage() {
 
   return (
     <Container>
-      <BackgroundLayer />
       <SectionContent>
         <StickySidebar>
           <SideBar account={account} />
@@ -178,9 +178,6 @@ export default function DonationPage() {
             </InfoCard>
           </InfoCards>
         </MainContent>
-        <StickySidebar>
-          {/* Placeholder for potential future content */}
-        </StickySidebar>
       </SectionContent>
     </Container>
   );
@@ -232,37 +229,6 @@ const SectionContent = styled(Section)`
   @media (max-width: 768px) {
     padding: 0.75rem;
     gap: 0.75rem;
-  }
-`;
-
-const StickySidebar = styled.div`
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  height: fit-content;
-  max-height: calc(100dvh - 30px);
-  overflow-y: auto;
-  z-index: 10;
-  flex-shrink: 0;
-  
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.primary || "#B648A0"};
-    border-radius: 2px;
-  }
-  
-  @media (max-width: 1024px) {
-    position: static;
-    width: 100%;
-    max-height: none;
-    z-index: 1;
   }
 `;
 

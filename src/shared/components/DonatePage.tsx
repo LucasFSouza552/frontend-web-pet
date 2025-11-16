@@ -5,6 +5,7 @@ import { FaDonate, FaServer, FaPaw, FaUsers, FaHandHoldingHeart } from "react-ic
 import { PrimaryButton } from "@components/PrimaryButton";
 import { ProfileContext } from "@contexts/ProfileContext";
 import { accountService } from "../api/accountService";
+import StickySidebar from "../styles/StickySidebar";
 
 export default function DonatePage() {
   const { account } = useContext(ProfileContext);
@@ -93,38 +94,6 @@ export default function DonatePage() {
     </PageWrapper>
   );
 }
-
-
-const StickySidebar = styled.div`
-    position: sticky;
-    top: 0;
-    align-self: flex-start;
-    height: fit-content;
-    max-height: calc(100dvh - 30px);
-    overflow-y: auto;
-    z-index: 10;
-    flex-shrink: 0;
-    
-    &::-webkit-scrollbar {
-        width: 4px;
-    }
-    
-    &::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.colors.primary || "#B648A0"};
-        border-radius: 2px;
-    }
-    
-    @media (max-width: 1024px) {
-        position: static;
-        width: 100%;
-        max-height: none;
-        z-index: 1;
-    }
-`;
 
 const PageWrapper = styled.div`
   width: 100%;
@@ -248,7 +217,16 @@ const ImageContainer = styled.div`
   flex-shrink: 0;
   aspect-ratio: 16/9;
 
+  flex: 1;
   max-height: 350px;
+
+  @media (max-width: 1024px) {
+    max-height: 200px;
+  }
+
+  @media (max-width: 768px) {
+    max-height: 150px;
+  }
 `;
 
 const DonationImage = styled.img`

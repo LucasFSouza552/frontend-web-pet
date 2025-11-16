@@ -12,6 +12,7 @@ import PostComments from "../components/CommentsContainerList";
 
 import useManagePostController from "../controller/useManagePostController";
 import TrendingPosts from "@/features/community/components/TrendingPosts";
+import StickySidebar from "@/shared/styles/StickySidebar";
 
 export default function PostPage() {
   const { account } = useContext(ProfileContext);
@@ -155,36 +156,6 @@ const Content = styled(Section)`
   }
 `;
 
-const StickySidebar = styled.div`
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  height: fit-content;
-  max-height: calc(100dvh - 30px);
-  overflow-y: auto;
-  z-index: 10;
-  flex-shrink: 0;
-  
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.primary || "#B648A0"};
-    border-radius: 2px;
-  }
-  
-  @media (max-width: 1024px) {
-    position: static;
-    width: 100%;
-    max-height: none;
-    z-index: 1;
-  }
-`;
 
 const Main = styled.div`
   flex: 1;

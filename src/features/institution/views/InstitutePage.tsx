@@ -12,6 +12,7 @@ import { BsPatchCheckFill } from "react-icons/bs";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import animationFile from "@assets/lottie/loading.lottie?url";
 import type { IAccount } from "@models/Account";
+import StickySidebar from "@/shared/styles/StickySidebar";
 
 export default function InstitutePage() {
   const { account } = useContext(ProfileContext);
@@ -298,37 +299,6 @@ const SectionContent = styled(Section)`
   @media (max-width: 768px) {
     padding: 0.75rem;
     gap: 0.75rem;
-  }
-`;
-
-const StickySidebar = styled.div`
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  height: fit-content;
-  max-height: calc(100dvh - 30px);
-  overflow-y: auto;
-  z-index: 10;
-  flex-shrink: 0;
-  
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.primary || "#B648A0"};
-    border-radius: 2px;
-  }
-  
-  @media (max-width: 1024px) {
-    position: static;
-    width: 100%;
-    max-height: none;
-    z-index: 1;
   }
 `;
 

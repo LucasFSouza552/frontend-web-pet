@@ -8,6 +8,7 @@ import backgroundPage from "@assets/images/background-page.jpg";
 import { ProfileContext } from "@contexts/ProfileContext";
 import SideBar from "@components/Sidebar";
 import InstitutionCard from "@/features/institution/components/InstitutionCard";
+import StickySidebar from "@/shared/styles/StickySidebar";
 
 export default function InstitutionsListPage() {
     const navigate = useNavigate();
@@ -123,36 +124,6 @@ const SectionContent = styled(Section)`
     }
 `;
 
-const StickySidebar = styled.div`
-    position: sticky;
-    top: 0;
-    align-self: flex-start;
-    height: fit-content;
-    max-height: calc(100dvh - 30px);
-    overflow-y: auto;
-    z-index: 10;
-    flex-shrink: 0;
-    
-    &::-webkit-scrollbar {
-        width: 4px;
-    }
-    
-    &::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.colors.primary || "#B648A0"};
-        border-radius: 2px;
-    }
-    
-    @media (max-width: 1024px) {
-        position: static;
-        width: 100%;
-        max-height: none;
-        z-index: 1;
-    }
-`;
 
 const ContentCard = styled.div`
     border-radius: 12px;

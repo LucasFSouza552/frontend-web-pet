@@ -13,6 +13,7 @@ import { FaArrowLeft, FaCamera, FaCheckCircle, FaExclamationCircle } from "react
 import type { IAccount } from "@models/Account";
 import type IAddress from "@interfaces/IAddress";
 import { authService } from "@api/authService";
+import StickySidebar from "@/shared/styles/StickySidebar";
 
 export default function ProfileEditionPage() {
     const { account, loadProfile } = useContext(ProfileContext);
@@ -358,47 +359,35 @@ const ProfileEditionContainer = styled.div`
     width: 100%;
 `;
 
-const StickySidebar = styled.div`
-    position: sticky;
-    top: 0;
-    align-self: flex-start;
-    height: fit-content;
-    max-height: calc(100dvh - 30px);
-    overflow-y: auto;
-    z-index: 10;
-    flex-shrink: 0;
-    
-    &::-webkit-scrollbar {
-        width: 4px;
-    }
-    
-    &::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.colors.primary || "#B648A0"};
-        border-radius: 2px;
-    }
-    
-    @media (max-width: 1024px) {
-        position: static;
-        width: 100%;
-        max-height: none;
-        z-index: 1;
-    }
-`;
+
 
 const SectionContent = styled(Section)`
     display: flex;
+    align-items: flex-start;
     width: 100%;
     flex-direction: row;
+    height: 100%;
+    min-height: calc(100dvh);
     background-image: url(${backgroundPage});
     background-size: cover;
+    background-position: center;
     background-repeat: repeat;
+    background-attachment: fixed;
     padding: 1.25rem;
     gap: 1.25rem;
     box-sizing: border-box;
+
+    @media (max-width: 1024px) {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
 `;
 
 const MainContent = styled.div`
@@ -406,7 +395,6 @@ const MainContent = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    overflow-y: auto;
 `;
 
 const FormContainer = styled.div`
