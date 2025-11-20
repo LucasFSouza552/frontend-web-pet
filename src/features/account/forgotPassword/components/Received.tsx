@@ -1,12 +1,23 @@
-import { styled } from "styled-components";
+import { Link } from "react-router-dom";
+import styled, { useTheme } from "styled-components";
+import { FaCheckCircle } from "react-icons/fa";
 
 export default function ReceivedScreen() {
+    const theme = useTheme();
+
     return (
         <ContentDiv>
-            <ConfirmationTitle>Enviamos com sucesso um link!</ConfirmationTitle>
-            <p>E-mail enviado com sucesso!
-                Dê uma olhada na sua caixa de entrada e siga o link para redefinir sua senha.</p>
-            <PrevButtonStyle onClick={() => {window.location.href = "/forgot-password"}}>Voltar</PrevButtonStyle>
+            <IconCircle>
+                <FaCheckCircle size={48} color={theme.colors.primary} />
+            </IconCircle>
+            <ConfirmationTitle>Link enviado com sucesso!</ConfirmationTitle>
+            <Description>
+                Dê uma olhada na sua caixa de entrada e siga o link seguro para criar uma nova senha.
+                Essa solicitação expira em 30 minutos.
+            </Description>
+            <ActionGroup>
+                <ActionLink to="/login">Voltar ao login</ActionLink>
+            </ActionGroup>
         </ContentDiv>
     );
 }
@@ -14,29 +25,50 @@ export default function ReceivedScreen() {
 const ContentDiv = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-
-    p {
-        color: white;
-    }
+    justify-content: center;
+    gap: 18px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
 `;
 
-const PrevButtonStyle = styled.button`
-    background-color: transparent;
-    font-size: 18px;
-    font-weight: bold;
-    color: white;
-    padding: 10px;
-    margin-top: 10px;
-    &:hover {
-        color: ${({ theme }) => theme.colors.primary};
-    }
+const IconCircle = styled.div`
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 const ConfirmationTitle = styled.h2`
-    color: ${({ theme }) => theme.colors.primary};
-    font-size: 25px;
-    text-align: center;
-    padding-bottom: 20px;
+    font-size: 32px;
+    color: #fff;
+    margin: 0;
+`;
+
+const Description = styled.p`
+    font-size: 16px;
+    max-width: 320px;
+    margin: 0;
+`;
+
+const ActionGroup = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+`;
+
+const ActionLink = styled(Link)`
+    background: linear-gradient(180deg, #eeb5ff, #b648a0);
+    border: none;
+    border-radius: 14px;
+    padding: 12px 0;
+    font-weight: 700;
+    color: #120211;
+    text-decoration: none;
+    display: block;
 `;

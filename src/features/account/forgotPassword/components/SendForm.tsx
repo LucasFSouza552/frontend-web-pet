@@ -1,86 +1,127 @@
 import styled, { useTheme } from "styled-components";
-import { FaQuestion } from 'react-icons/fa';
+import { FaEnvelopeOpenText } from "react-icons/fa";
 
 interface RecoveryPassProps {
-    email: string, 
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void, 
-    handleSubmit: (e: React.FormEvent) => void
+    email: string;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleSubmit: (e: React.FormEvent) => void;
 }
 
-export default function RecoveryPasswordForm({email, handleChange, handleSubmit}: RecoveryPassProps) {
+export default function RecoveryPasswordForm({ email, handleChange, handleSubmit }: RecoveryPassProps) {
     const theme = useTheme();
 
     return (
-        <ContentDiv>
-            <FaQuestion size={50} color={theme.colors.primary} />
-            <PageHeader>Esqueci minha senha</PageHeader>
-            <DescriptionText>Sem problemas! Acontece com todo mundo.
-                Informe seu e-mail e enviaremos um link para você criar uma nova senha rapidinho.</DescriptionText>
+        <FormWrapper onSubmit={handleSubmit}>
+            <IconCircle>
+                <FaEnvelopeOpenText size={36} color={theme.colors.primary} />
+            </IconCircle>
+            <FormTitle>Recuperar acesso</FormTitle>
+            <FormDescription>
+                Receba um link de redefinição no e-mail associado à sua conta e escolha uma nova senha segura.
+            </FormDescription>
             <InputFieldContainer>
-                <label><b>E-mail ou usuário</b></label>
+                <label htmlFor="email">E-mail cadastrado</label>
                 <InputField
                     id="email"
+                    name="email"
                     type="email"
-                    placeholder="Insira um e-mail"
+                    placeholder="exemplo@email.com"
                     value={email}
-                    onChange={handleChange} />
+                    onChange={handleChange}
+                    required
+                />
             </InputFieldContainer>
-            <ButtonStyle onClick={handleSubmit}>Enviar</ButtonStyle>
-        </ContentDiv>
+            <SubmitButton type="submit">Enviar link seguro</SubmitButton>
+            <HelperText>
+                Caso não receba o e-mail, verifique a caixa de spam ou tente novamente em alguns minutos.
+            </HelperText>
+        </FormWrapper>
     );
 }
 
-const PageHeader = styled.h1`
-    color: ${({ theme }) => theme.colors.primary};
+const FormWrapper = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 12px 6px;
 `;
 
-const DescriptionText = styled.p`
-    width: 100%;
+const IconCircle = styled.div`
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+`;
+
+const FormTitle = styled.h2`
+    margin: 0;
+    color: #fff;
+    font-size: 32px;
+    text-align: center;
+`;
+
+const FormDescription = styled.p`
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    line-height: 1.5;
 `;
 
 const InputFieldContainer = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    gap: 6px;
+    label {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.9);
+    }
 `;
 
 const InputField = styled.input`
     border: none;
-    border-bottom: 1px solid white;
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    font-size: 16px;
     outline: none;
-    border-radius: 4px;
-    padding: 8px;
-    background-color: transparent;
+    transition: border 0.2s;
+
+    &:focus {
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.1);
+    }
 
     &::placeholder {
-        color: white;
+        color: rgba(255, 255, 255, 0.5);
     }
 `;
 
-const ContentDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: white;
-`;
-
-const ButtonStyle = styled.button<{ filled?: boolean }>`
-    background-color:${({ theme, filled }) => filled ? theme.colors.primary : "transparent"};
-    border: ${({ filled, theme }) =>
-        filled ? `2px solid #FFF` : `2px solid ${theme.colors.primary}`};
-    border-radius: 10px;
-    width: 100%;
-    font-size: 25px;
-    padding: 5px 10px;
-    font-weight: bolder;
-    transition: all 0.3s;
-    color: ${({ filled, theme }) => filled ? "#FFF" : theme.colors.primary};
+const SubmitButton = styled.button`
+    border: none;
+    border-radius: 16px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    background: linear-gradient(180deg, #eeb5ff, #b648a0);
+    color: #120211;
     cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+
     &:hover {
-        background-color: ${({ filled, theme }) => filled ? "transparent" : theme.colors.primary};
-        border: ${({ filled, theme }) => !filled ? "2px solid transparent" : `2px solid ${theme.colors.primary}`};
-        color: ${({ filled }) => filled ? "#FFF" : "#FFF"};
+        transform: translateY(-1px);
+        opacity: 0.95;
     }
+`;
+
+const HelperText = styled.small`
+    display: block;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
 `;

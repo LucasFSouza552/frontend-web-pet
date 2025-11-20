@@ -43,7 +43,12 @@ export default function AuthForm() {
           />
 
           <SmallText>
-            Não tem conta? <Link to="/register">Crie a sua</Link>
+            <div>
+              Não tem conta? <Link to="/register">Crie a sua</Link>
+            </div>
+            <ForgotPasswordText>
+              <Link to="/forgot-password">Esqueci minha senha</Link>
+            </ForgotPasswordText>
           </SmallText>
         </FormContainer>
 
@@ -120,6 +125,10 @@ const SmallText = styled.p`
   font-size: 14px;
   color: #ccc;
   margin-top: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-direction: column;
 
   a {
     color: #ffffff;
@@ -129,6 +138,21 @@ const SmallText = styled.p`
 
     &:hover {
       color: #eaa7e2;
+    }
+  }
+`;
+
+const ForgotPasswordText = styled.p`
+  font-size: 13px;
+  color: #ffffff;
+  
+  a {
+    color: #a2a2a2;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #ffffff;
     }
   }
 `;

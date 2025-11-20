@@ -5,6 +5,7 @@ import { ThemeProvider } from "@contexts/ThemeContext"
 // Pages
 import HomePage from "@features/home/views/HomePage"
 import LoginPage from "@features/account/auth/views/LoginPage"
+import ForgotPasswordPage from "@features/account/forgotPassword/views/forgotPasswordPage"
 import ProfilePage from "@features/account/profile/views/ProfilePage"
 import RegisterPage from "@features/account/auth/views/RegisterPage"
 import MatchPage from "./features/match/views/matchPage"
@@ -37,7 +38,7 @@ function App() {
         {/* <Route path="/community" element={<CommunityPage />} /> */}
         <Route path="/support" element={<FAQPage />} />
         <Route path="/donate-institution/:id" element={<InstitutePage />} />
-        {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} /> */}
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         {/* <Route path="/pets" element={<DesiredPetsPage />} /> */}
         <Route path="/profile-edition" element={<ProfileEditionPage />} />
       </NavigationRouter>
