@@ -49,8 +49,8 @@ export default function SearchBar({ onSearch, placeholder = "Pesquisar posts..."
                     )}
                 </SearchInputWrapper>
                 <SearchButton type="submit">
-                    <FaSearch size={16} />
-                    Pesquisar
+                    <FaSearch size={20} />
+                    <ButtonText>Pesquisar</ButtonText>
                 </SearchButton>
             </SearchForm>
         </SearchContainer>
@@ -66,16 +66,17 @@ const SearchForm = styled.form`
     display: flex;
     gap: 1rem;
     align-items: center;
+    flex-wrap: nowrap;
 
     @media (max-width: 768px) {
-        flex-direction: column;
+        flex-direction: row;
         gap: 0.75rem;
     }
 `;
 
 const SearchInputWrapper = styled.div`
     position: relative;
-    flex: 1;
+    flex: 3;
     display: flex;
     align-items: center;
 `;
@@ -109,6 +110,11 @@ const SearchInput = styled.input`
         box-shadow: 0 0 0 4px rgba(182, 72, 160, 0.2);
         background-color: ${({ theme }) => theme.colors.quinary || "rgba(74, 58, 70, 0.95)"};
     }
+
+    @media (max-width: 480px) {
+        padding: 12px 12px 12px 40px;
+        
+    }
 `;
 
 const ClearButton = styled.button`
@@ -136,6 +142,7 @@ const ClearButton = styled.button`
 `;
 
 const SearchButton = styled.button`
+    width: fit-content;
     padding: 14px 24px;
     border-radius: 12px;
     border: none;
@@ -159,9 +166,17 @@ const SearchButton = styled.button`
         transform: translateY(0);
     }
 
-    @media (max-width: 768px) {
-        width: 100%;
+    @media (max-width: 480px) {
+        width: auto;
+        min-width: 48px;
+        padding: 14px;
         justify-content: center;
+    }
+`;
+
+const ButtonText = styled.span`
+    @media (max-width:  768px) {
+        display: none;
     }
 `;
 

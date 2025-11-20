@@ -5,6 +5,7 @@ import { useForgotPasswordController } from "@features/account/auth/controllers/
 import ReceivedScreen from "@features/account/forgotPassword/components/Received";
 import RecoveryPasswordForm from "@features/account/forgotPassword/components/SendForm";
 import styled from "styled-components";
+import backgroundPage from "@assets/images/background-page.jpg";
 
 const steps = [
     {
@@ -26,6 +27,7 @@ export default function ForgotPasswordPage() {
     return (
         <SectionForgotPassword height="auto">
             <HeaderComponent />
+            <MainFlex>
             <ContentDiv>
                 <HeroPanel>
                     <Badge>Segurança em primeiro lugar</Badge>
@@ -54,53 +56,84 @@ export default function ForgotPasswordPage() {
                     {actualStep == 2 && <ReceivedScreen />}
                 </FormPanel>
             </ContentDiv>
+            </MainFlex>
         </SectionForgotPassword>
     );
 }
 
 const SectionForgotPassword = styled(Section)`
-    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 45%),
-        radial-gradient(circle at 20% 80%, rgba(230, 74, 170, 0.4), transparent 50%),
-        linear-gradient(180deg, #0e0a12 0%, #1a1120 60%, #120915 100%);
+    background-image: url(${backgroundPage});
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
     display: flex;
     align-items: center;
-    justify-content: center;
     position: relative;
     overflow: hidden;
+    min-height: 100dvh;
 `;
 
+const MainFlex = styled.div`
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
 const ContentDiv = styled.div`
     width: min(1100px, 92vw);
-    background: rgba(11, 7, 13, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
-    border-radius: 32px;
+    background-color: ${({ theme }) => theme.colors.quarternary};
+    border: 1px solid ${({ theme }) => theme.colors.primary};
+    box-shadow: 0 4px 16px rgba(182, 72, 160, 0.25);
+    border-radius: 12px;
     padding: 40px;
     display: flex;
     gap: 32px;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 6px 24px rgba(182, 72, 160, 0.35);
+    }
+
+    @media (max-width: 1024px) {
+        width: 92vw;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        padding: 1rem;
+        gap: 1rem;
+        border-radius: 8px;
+    }
 `;
 
 const HeroPanel = styled.div`
     flex: 1;
     padding: 20px;
-    border-radius: 24px;
-    background: linear-gradient(160deg, rgba(217, 144, 255, 0.12), rgba(255, 255, 255, 0.05));
+    border-radius: 12px;
+    background-color: ${({ theme }) => theme.colors.quarternary};
+    border: 1px solid ${({ theme }) => theme.colors.primary};
     display: flex;
     flex-direction: column;
     gap: 20px;
+    backdrop-filter: blur(10px);
 `;
 
 const Badge = styled.div`
     align-self: flex-start;
     padding: 6px 16px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid ${({ theme }) => theme.colors.primary};
     font-size: 12px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #f0e8ff;
+
+    color: ${({ theme }) => theme.colors.bg};
+    background-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const HeroTitle = styled.h1`
@@ -133,13 +166,13 @@ const StepItem = styled.li`
 const StepDot = styled.span`
     width: 32px;
     height: 32px;
-    background: linear-gradient(180deg, #e5a1ff, #b648a0);
+    background: ${({ theme }) => theme.colors.primary || "#B648A0"};
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    color: #1e0416;
+    color: white;
 `;
 
 const StepCopy = styled.div`
@@ -156,9 +189,11 @@ const StepCopy = styled.div`
 const FormPanel = styled.div`
     flex: 1;
     padding: 20px;
-    border-radius: 24px;
-    background: rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    background-color: ${({ theme }) => theme.colors.quarternary};
+    border: 1px solid ${({ theme }) => theme.colors.primary};
     display: flex;
     flex-direction: column;
     justify-content: center;
+    backdrop-filter: blur(10px);
 `;

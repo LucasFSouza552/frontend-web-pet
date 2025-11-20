@@ -1,38 +1,45 @@
 import styled from "styled-components";
 import backgroundPage from "@assets/images/background-page.jpg";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import Section from "@styles/SectionStyle";
 import { ProfileContext } from "@contexts/ProfileContext";
-import SideBar from "@components/Sidebar";
 import PostsFeed from "../components/PostsFeed";
 import TrendingPosts from "../components/TrendingPosts";
 import SearchBar from "../components/SearchBar";
 import CreatePostForm from "../components/CreatePostForm";
 import { useCommunityController } from "../controllers/useCommunityController";
 import StickySidebar from "@/shared/styles/StickySidebar";
+import ResponsiveSidebar, { HamburgerButton } from "@/shared/components/ResponsiveSidebar";
+import { useResponsiveSidebar } from "@/shared/hooks/useResponsiveSidebar";
+import SideBar from "@components/Sidebar";
 
 export default function CommunityPage() {
   const { account } = useContext(ProfileContext);
+  const { isMenuOpen, toggleMenu, closeMenu } = useResponsiveSidebar();
   const {
     posts,
     lastPostRef,
-    searchPosts,
     searchResults,
-    hasMoreSearchResults,
     loadingSearchResults,
     lastSearchPostRef,
     handleSearch,
     isSearching
   } = useCommunityController();
 
-
   return (
     <Container>
+      <ResponsiveSidebar 
+        account={account} 
+        isMenuOpen={isMenuOpen} 
+        onCloseMenu={closeMenu}
+      />
+
       <SectionContent>
-        <StickySidebar>
-          <SideBar account={account} />
-        </StickySidebar>
+          <StickySidebar>
+            <SideBar account={account} />
+          </StickySidebar>
         <MiddleSideContainer>
+          <HamburgerButton onClick={toggleMenu} />
           <SearchBar onSearch={handleSearch} />
           <CreatePostForm />
 
@@ -63,6 +70,10 @@ const Container = styled.div`
   min-height: 100dvh;
   width: 100%;
   overflow-x: hidden;
+  
+  @media (max-width: 480px) {
+    min-height: 100vh;
+  }
 `;
 
 const SectionContent = styled(Section)`
@@ -85,6 +96,11 @@ const SectionContent = styled(Section)`
   background-repeat: repeat;
   background-attachment: fixed;
 
+  @media (max-width: 1200px) {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
   @media (max-width: 1024px) {
     flex-direction: column;
     align-items: stretch;
@@ -96,6 +112,11 @@ const SectionContent = styled(Section)`
     padding: 0.75rem;
     gap: 0.75rem;
   }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
 `;
 
 const MiddleSideContainer = styled.div`
@@ -105,6 +126,7 @@ const MiddleSideContainer = styled.div`
     justify-content: flex-start;
     align-items: stretch;
     flex: 2;
+    min-width: 0;
     padding: 1.5rem;
     background-color: ${({ theme }) => theme.colors.quarternary};
     border: 1px solid ${({ theme }) => theme.colors.primary};
@@ -120,6 +142,10 @@ const MiddleSideContainer = styled.div`
         box-shadow: 0 6px 24px rgba(182, 72, 160, 0.35);
     }
 
+    @media (max-width: 1200px) {
+        padding: 1.25rem;
+    }
+
     @media (max-width: 1024px) {
         width: 100%;
         flex: 1;
@@ -130,6 +156,11 @@ const MiddleSideContainer = styled.div`
         padding: 0.75rem;
         border-radius: 8px;
     }
+
+    @media (max-width: 480px) {
+        padding: 0.5rem;
+        border-radius: 6px;
+    }
 `;
 
 
@@ -139,4 +170,14 @@ const LoadingMore = styled.div`
     color: ${({ theme }) => theme.colors.primary || "#B648A0"};
     font-size: 0.875rem;
     font-weight: 500;
+    
+    @media (max-width: 768px) {
+        padding: 0.75rem;
+        font-size: 0.8125rem;
+    }
+    
+    @media (max-width: 480px) {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
 `;

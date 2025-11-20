@@ -9,12 +9,15 @@ import { ProfileContext } from "@contexts/ProfileContext";
 import SideBar from "@components/Sidebar";
 import InstitutionCard from "@/features/institution/components/InstitutionCard";
 import StickySidebar from "@/shared/styles/StickySidebar";
+import ResponsiveSidebar, { HamburgerButton } from "@/shared/components/ResponsiveSidebar";
+import { useResponsiveSidebar } from "@/shared/hooks/useResponsiveSidebar";
 
 export default function InstitutionsListPage() {
     const navigate = useNavigate();
     const [institutions, setInstitutions] = useState<IAccount[]>([]);
     const [loading, setLoading] = useState(false);
     const { account } = useContext(ProfileContext);
+    const { isMenuOpen, toggleMenu, closeMenu } = useResponsiveSidebar();
 
     const handleDonate = (institutionId: string) => {
         navigate(`/donate-institution/${institutionId}`);
@@ -43,12 +46,18 @@ export default function InstitutionsListPage() {
 
     return (
         <Container>
+            <ResponsiveSidebar 
+                account={account} 
+                isMenuOpen={isMenuOpen} 
+                onCloseMenu={closeMenu}
+            />
             <BackgroundLayer />
             <SectionContent>
                 <StickySidebar>
                     <SideBar account={account} />
                 </StickySidebar>
                 <ContentCard>
+                    <HamburgerButton onClick={toggleMenu} />
                     <Header>
                         <h1>Instituições</h1>
                         <p>Conheça e apoie instituições cadastradas na plataforma.</p>

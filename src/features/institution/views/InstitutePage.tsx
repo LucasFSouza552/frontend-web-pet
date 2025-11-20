@@ -13,9 +13,12 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import animationFile from "@assets/lottie/loading.lottie?url";
 import type { IAccount } from "@models/Account";
 import StickySidebar from "@/shared/styles/StickySidebar";
+import ResponsiveSidebar, { HamburgerButton } from "@/shared/components/ResponsiveSidebar";
+import { useResponsiveSidebar } from "@/shared/hooks/useResponsiveSidebar";
 
 export default function InstitutePage() {
   const { account } = useContext(ProfileContext);
+  const { isMenuOpen, toggleMenu, closeMenu } = useResponsiveSidebar();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -118,12 +121,18 @@ export default function InstitutePage() {
 
   return (
     <Container>
+      <ResponsiveSidebar 
+        account={account} 
+        isMenuOpen={isMenuOpen} 
+        onCloseMenu={closeMenu}
+      />
       <BackgroundLayer />
       <SectionContent>
         <StickySidebar>
           <SideBar account={account} />
         </StickySidebar>
         <MiddleSideContainer>
+          <HamburgerButton onClick={toggleMenu} />
           <InstitutionHeader>
             <AvatarContainer>
               <InstitutionAvatar src={pictureService.fetchPicture(institution.avatar || "")} alt={institution.name} />

@@ -17,7 +17,8 @@ export default defineConfig({
       '@types': path.resolve(__dirname, './src/shared/types'),
       '@utils': path.resolve(__dirname, './src/shared/utils'),
       '@contexts': path.resolve(__dirname, './src/shared/contexts'),
-      '@features': path.resolve(__dirname, './src/features')
+      '@features': path.resolve(__dirname, './src/features'),
+      '@Error': path.resolve(__dirname, './src/shared/Error')
     }
   }
 })

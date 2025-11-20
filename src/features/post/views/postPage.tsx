@@ -13,9 +13,12 @@ import PostComments from "../components/CommentsContainerList";
 import useManagePostController from "../controller/useManagePostController";
 import TrendingPosts from "@/features/community/components/TrendingPosts";
 import StickySidebar from "@/shared/styles/StickySidebar";
+import ResponsiveSidebar, { HamburgerButton } from "@/shared/components/ResponsiveSidebar";
+import { useResponsiveSidebar } from "@/shared/hooks/useResponsiveSidebar";
 
 export default function PostPage() {
   const { account } = useContext(ProfileContext);
+  const { isMenuOpen, toggleMenu, closeMenu } = useResponsiveSidebar();
   const { replyComment, editComment, deleteComment } = useContext(CommentsContext);
   const { 
     post, 
@@ -41,6 +44,11 @@ export default function PostPage() {
 
   return (
     <Container>
+      <ResponsiveSidebar 
+        account={account} 
+        isMenuOpen={isMenuOpen} 
+        onCloseMenu={closeMenu}
+      />
       <Background />
       <Content>
         <StickySidebar>
@@ -48,6 +56,7 @@ export default function PostPage() {
         </StickySidebar>
 
         <Main>
+          <HamburgerButton onClick={toggleMenu} />
           <PostsContainerList account={account} posts={[post]} title="" refCallback={() => { }} />
 
           <CommentBox>

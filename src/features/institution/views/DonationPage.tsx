@@ -9,9 +9,12 @@ import { InputComponent } from "@components/InputComponent";
 import { FaHeart, FaCreditCard, FaPix, FaBarcode } from "react-icons/fa6";
 import { FaDonate } from "react-icons/fa";
 import StickySidebar from "@/shared/styles/StickySidebar";
+import ResponsiveSidebar, { HamburgerButton } from "@/shared/components/ResponsiveSidebar";
+import { useResponsiveSidebar } from "@/shared/hooks/useResponsiveSidebar";
 
 export default function DonationPage() {
   const { account } = useContext(ProfileContext);
+  const { isMenuOpen, toggleMenu, closeMenu } = useResponsiveSidebar();
   const [donationData, setDonationData] = useState({
     amount: "",
     paymentMethod: "",
@@ -34,11 +37,18 @@ export default function DonationPage() {
 
   return (
     <Container>
+      <ResponsiveSidebar 
+        account={account} 
+        isMenuOpen={isMenuOpen} 
+        onCloseMenu={closeMenu}
+      />
+
       <SectionContent>
         <StickySidebar>
           <SideBar account={account} />
         </StickySidebar>
         <MainContent>
+          <HamburgerButton onClick={toggleMenu} />
           <HeaderSection>
             <IconContainer>
               <FaDonate size={48} />

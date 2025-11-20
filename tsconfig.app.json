@@ -34,7 +34,8 @@
       "@types/*": ["shared/types/*"],
       "@utils/*": ["shared/utils/*"],
       "@contexts/*": ["shared/contexts/*"],
-      "@features/*": ["features/*"]
+      "@features/*": ["features/*"],
+      "@Error/*": ["shared/Error/*"]
     },
   },
   

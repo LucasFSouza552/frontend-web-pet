@@ -22,6 +22,7 @@ export const HeaderComponent = ({ account }: { account?: IAccount | null }) => {
                 {!account ?
                     <>
                         <PrimaryButton text="Entrar" type="button" filled={false} to="/login" />
+                        <PrimaryButton text="Cadastrar" type="button" filled={false} to="/register" />
                     </>
                     :
                     <ProfileMenu />

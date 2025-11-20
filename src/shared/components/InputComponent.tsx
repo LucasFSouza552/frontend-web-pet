@@ -6,9 +6,10 @@ interface InputProps {
     value: string;
     type: string;
     onChange: (key: string, value: string) => void;
+    disabled?: boolean;
 }
 
-export const InputComponent = ({ label, placeholder, value, onChange, type }: InputProps) => {
+export const InputComponent = ({ label, placeholder, value, onChange, type, disabled = false }: InputProps) => {
     return (
         <Input>
             {type === "textarea" ? (
@@ -16,14 +17,18 @@ export const InputComponent = ({ label, placeholder, value, onChange, type }: In
                     id={label}
                     placeholder={placeholder}
                     value={value}
-                    onChange={(e) => onChange(label, e.target.value)} />
+                    onChange={(e) => onChange(label, e.target.value)}
+                    disabled={disabled}
+                />
             ) : (
                 <input
                     id={label}
                     type={type}
                     placeholder={placeholder}
                     value={value}
-                    onChange={(e) => onChange(label, e.target.value)} />
+                    onChange={(e) => onChange(label, e.target.value)}
+                    disabled={disabled}
+                />
             )}
         </Input>
     );
@@ -52,6 +57,13 @@ const Input = styled.div`
         &:focus {
             border-color: ${({ theme }) => theme.colors.primary || "#B648A0"};
             box-shadow: 0 0 0 3px rgba(182, 72, 160, 0.2);
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: rgba(51, 38, 48, 0.5);
+            border-color: rgba(182, 72, 160, 0.3);
         }
     }
 

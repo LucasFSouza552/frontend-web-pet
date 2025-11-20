@@ -108,8 +108,8 @@ const SubmitButton = styled.button`
     padding: 14px;
     font-size: 16px;
     font-weight: 700;
-    background: linear-gradient(180deg, #eeb5ff, #b648a0);
-    color: #120211;
+    background: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.bg};
     cursor: pointer;
     transition: transform 0.2s, opacity 0.2s;
 

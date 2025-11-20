@@ -6,9 +6,12 @@ import { PrimaryButton } from "@components/PrimaryButton";
 import { ProfileContext } from "@contexts/ProfileContext";
 import { accountService } from "../api/accountService";
 import StickySidebar from "../styles/StickySidebar";
+import ResponsiveSidebar, { HamburgerButton } from "@/shared/components/ResponsiveSidebar";
+import { useResponsiveSidebar } from "@/shared/hooks/useResponsiveSidebar";
 
 export default function DonatePage() {
   const { account } = useContext(ProfileContext);
+  const { isMenuOpen, toggleMenu, closeMenu } = useResponsiveSidebar();
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
 
@@ -39,13 +42,21 @@ export default function DonatePage() {
 
   return (
     <PageWrapper>
-      <StickySidebar>
-        <SideBar account={account} />
-      </StickySidebar>
+      <ResponsiveSidebar 
+        account={account} 
+        isMenuOpen={isMenuOpen} 
+        onCloseMenu={closeMenu}
+      />
 
       <ContentWrapper>
+        <HamburgerButtonWrapper>
+          <HamburgerButton onClick={toggleMenu} />
+        </HamburgerButtonWrapper>
+          <StickySidebar>
+            <SideBar account={account} />
+          </StickySidebar>
         <Pattern />
-
+        <MainContent>
         <DonateCard>
           <IconContainer>
             <FaDonate />
@@ -90,17 +101,31 @@ export default function DonatePage() {
 
           <PrimaryButton text="Doar Agora" type="button" filled onClick={handleDonate} />
         </DonateCard>
+        </MainContent>
       </ContentWrapper>
     </PageWrapper>
   );
 }
 
-const PageWrapper = styled.div`
-  width: 100%;
-  height: 100dvh;
+const MainContent = styled.div`
+  flex: 2;
   display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 800px;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width: 100%;
+`;
+const PageWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  min-height: 100dvh; 
+  display: flex;
+  flex-direction: row;
   background-color: ${({ theme }) => theme.colors.secondary};
-  overflow: hidden;
+  overflow-x: hidden;
 `;
 
 const ContentWrapper = styled.div`
@@ -108,9 +133,23 @@ const ContentWrapper = styled.div`
   padding: 20px;
   position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: row;
   overflow: hidden;
+  gap: 1rem;
+
+
+`;
+
+const HamburgerButtonWrapper = styled.div`
+  align-self: flex-start;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+
+  @media (min-width: 1025px) {
+    display: none;
+  }
 `;
 
 const Pattern = styled.div`

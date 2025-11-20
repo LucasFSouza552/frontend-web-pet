@@ -14,9 +14,12 @@ import type { IAccount } from "@models/Account";
 import type IAddress from "@interfaces/IAddress";
 import { authService } from "@api/authService";
 import StickySidebar from "@/shared/styles/StickySidebar";
+import ResponsiveSidebar, { HamburgerButton } from "@/shared/components/ResponsiveSidebar";
+import { useResponsiveSidebar } from "@/shared/hooks/useResponsiveSidebar";
 
 export default function ProfileEditionPage() {
     const { account, loadProfile } = useContext(ProfileContext);
+    const { isMenuOpen, toggleMenu, closeMenu } = useResponsiveSidebar();
     const navigate = useNavigate();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -53,6 +56,10 @@ export default function ProfileEditionPage() {
 
     const handleInputChange = (key: string, value: string) => {
         if (!formData) return;
+
+        if (key === "email") {
+            return;
+        }
 
         if (key.startsWith("address.")) {
             const addressKey = key.split(".")[1] as keyof IAddress;
@@ -101,14 +108,12 @@ export default function ProfileEditionPage() {
 
             if (fileInputRef.current?.files?.[0]) {
                 const formDataAvatar = new FormData();
-                console.log("Chegou aqui")
                 formDataAvatar.append("avatar", fileInputRef.current.files[0]);
                 await accountService.uploadAvatar(formDataAvatar as any);
             }
 
             const updateData: Partial<IAccount> = {
                 name: formData.name,
-                email: formData.email,
                 phone_number: formData.phone_number,
                 address: address
             };
@@ -141,12 +146,18 @@ export default function ProfileEditionPage() {
     }
 
     return (
-        <ProfileEditionContainer>
+        <Container>
+            <ResponsiveSidebar 
+                account={account} 
+                isMenuOpen={isMenuOpen} 
+                onCloseMenu={closeMenu}
+            />
             <SectionContent>
                 <StickySidebar>
                     <SideBar account={account} />
                 </StickySidebar>
                 <MainContent>
+                    <HamburgerButton onClick={toggleMenu} />
                     <FormContainer>
                         <HeaderContainer>
                             <BackButton onClick={() => navigate(`/profile/${account.id}`)}>
@@ -195,6 +206,7 @@ export default function ProfileEditionPage() {
                                         value={formData.email || ""}
                                         type="email"
                                         onChange={handleInputChange}
+                                        disabled={true}
                                     />
                                 </InputWrapper>
                                 <InputWrapper>
@@ -347,47 +359,63 @@ export default function ProfileEditionPage() {
                     </FormContainer>
                 </MainContent>
             </SectionContent>
-        </ProfileEditionContainer>
+        </Container>
     );
 }
 
-const ProfileEditionContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100dvh;
-    width: 100%;
+const Container = styled.div`
+  position: relative;
+  min-height: 100dvh;
+  width: 100%;
+  overflow-x: hidden;
+  
+  @media (max-width: 480px) {
+    min-height: 100vh;
+  }
 `;
 
 
-
 const SectionContent = styled(Section)`
-    display: flex;
-    align-items: flex-start;
-    width: 100%;
-    flex-direction: row;
-    height: 100%;
-    min-height: calc(100dvh);
-    background-image: url(${backgroundPage});
-    background-size: cover;
-    background-position: center;
-    background-repeat: repeat;
-    background-attachment: fixed;
-    padding: 1.25rem;
-    gap: 1.25rem;
-    box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  min-height: calc(100dvh - var(--header-height, 80px));
+  padding: 1.25rem;
+  gap: 1.25rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
 
-    @media (max-width: 1024px) {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 1rem;
-        gap: 1rem;
-    }
+  background-image: url(${backgroundPage});
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat;
+  background-attachment: fixed;
 
-    @media (max-width: 768px) {
-        padding: 0.75rem;
-        gap: 0.75rem;
-    }
+  @media (max-width: 1200px) {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
 `;
 
 const MainContent = styled.div`

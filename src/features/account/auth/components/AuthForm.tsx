@@ -123,7 +123,7 @@ const FormContainer = styled.form`
 
 const SmallText = styled.p`
   font-size: 14px;
-  color: #ccc;
+  color: white;
   margin-top: 8px;
   display: flex;
   gap: 10px;
@@ -131,7 +131,6 @@ const SmallText = styled.p`
   flex-direction: column;
 
   a {
-    color: #ffffff;
     text-decoration: underline;
     cursor: pointer;
     transition: color 0.3s;

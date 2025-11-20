@@ -1,65 +1,95 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import { PostsContext } from "@contexts/PostContext";
 import type { IPost } from "@models/post";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import animationFile from "@assets/lottie/loading.lottie?url";
 import { useNavigate } from "react-router-dom";
+
+const REFRESH_INTERVAL = 30000;
+const MAX_POSTS_TO_SHOW = 5;
 
 export default function TrendingPosts() {
     const { topPosts } = useContext(PostsContext);
     const [posts, setPosts] = useState<IPost[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const navigate = useNavigate();
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    const fetchTopPosts = useCallback(async (showLoading = true) => {
+        try {
+            if (showLoading) {
+                setLoading(true);
+            } else {
+                setIsRefreshing(true);
+            }
+            const topPostsData = await topPosts();
+            setPosts(topPostsData || []);
+        } catch (error) {
+            console.error("Erro ao carregar posts populares:", error);
+            setPosts([]);
+        } finally {
+            setLoading(false);
+            setIsRefreshing(false);
+        }
+    }, [topPosts]);
 
     useEffect(() => {
-        const fetchTopPosts = async () => {
-            try {
-                setLoading(true);
-                const topPostsData = await topPosts();
-                setPosts(topPostsData || []);
-            } catch (error) {
-                console.error("Erro ao carregar posts populares:", error);
-                setPosts([]);
-            } finally {
-                setLoading(false);
+        fetchTopPosts(true);
+
+        intervalRef.current = setInterval(() => {
+            fetchTopPosts(false);
+        }, REFRESH_INTERVAL);
+
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
             }
         };
-
-        fetchTopPosts();
-    }, []);
+    }, [fetchTopPosts]);
 
     const handlePostClick = (postId: string) => {
         navigate(`/post/${postId}`);
     };
 
-    if (loading) {
-        return (
-            <TrendingPostsContainer>
-                <LoadingWrapper>
-                    <DotLottieReact src={animationFile} autoplay loop style={{ width: "100px" }} />
-                </LoadingWrapper>
-            </TrendingPostsContainer>
-        );
-    }
-
     return (
         <TrendingPostsContainer>
             <SectionHeader>
-                <h3>Mais Populares</h3>
-                <p>Posts em alta na comunidade</p>
+                <HeaderContent>
+                    <div>
+                        <h3>Mais Populares</h3>
+                        <p>Posts em alta na comunidade</p>
+                    </div>
+                    {(isRefreshing || loading) && (
+                        <RefreshIndicator>
+                            <RefreshDot />
+                        </RefreshIndicator>
+                    )}
+                </HeaderContent>
             </SectionHeader>
-            {posts.length === 0 ? (
+            {loading ? (
+                <PostsList>
+                    {[...Array(MAX_POSTS_TO_SHOW)].map((_, index) => (
+                        <PostItemSkeleton key={index}>
+                            <PostRankSkeleton />
+                            <PostContent>
+                                <PostTitleSkeleton />
+                                <PostTitleSkeleton />
+                                <PostMetaSkeleton />
+                            </PostContent>
+                        </PostItemSkeleton>
+                    ))}
+                </PostsList>
+            ) : posts.length === 0 ? (
                 <EmptyState>
                     <p>Nenhum post popular no momento</p>
                 </EmptyState>
             ) : (
                 <PostsList>
-                    {posts.map((post, index) => (
+                    {posts.slice(0, MAX_POSTS_TO_SHOW).map((post, index) => (
                         <PostItem key={post.id} onClick={() => handlePostClick(post.id)}>
                             <PostRank>{index + 1}</PostRank>
                             <PostContent>
-                                <PostTitle>{post.title || "Sem título"}</PostTitle>
+                                <PostTitle>{post.content || "Sem título"}</PostTitle>
                                 <PostMeta>
                                     <span>{post.likes?.length || 0} curtidas</span>
                                 </PostMeta>
@@ -79,8 +109,10 @@ const TrendingPostsContainer = styled.aside`
     gap: 1rem;
     flex: 1;
     flex-shrink: 0;
+    
     max-width: 320px;
-    height: fit-content;
+    min-width: 100px;
+    width: 320px;
     color: white;
     border: 1px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
     background-color: ${({ theme }) => theme.colors.quarternary || "rgba(54, 49, 53, 0.95)"};
@@ -112,6 +144,13 @@ const SectionHeader = styled.div`
     padding-bottom: 1rem;
     border-bottom: 1px solid ${({ theme }) => theme.colors.primary};
     margin-bottom: 1rem;
+`;
+
+const HeaderContent = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
 
     h3 {
         font-size: 1.1rem;
@@ -129,11 +168,30 @@ const SectionHeader = styled.div`
     }
 `;
 
-const LoadingWrapper = styled.div`
+const RefreshIndicator = styled.div`
     display: flex;
-    justify-content: center;
     align-items: center;
-    padding: 2rem;
+    justify-content: center;
+    padding: 0.25rem;
+`;
+
+const RefreshDot = styled.div`
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.colors.primary || "#B648A0"};
+    animation: pulse 1.5s ease-in-out infinite;
+
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.5;
+            transform: scale(0.8);
+        }
+    }
 `;
 
 const EmptyState = styled.div`
@@ -141,6 +199,10 @@ const EmptyState = styled.div`
     text-align: center;
     color: rgba(255, 255, 255, 0.6);
     font-size: 0.875rem;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const PostsList = styled.ul`
@@ -162,6 +224,8 @@ const PostItem = styled.li`
     transition: all 0.3s ease;
     cursor: pointer;
     border: 1px solid transparent;
+    min-height: 60px;
+    flex-shrink: 0;
 
     &:hover {
         background-color: ${({ theme }) => theme.colors.primary || "#B648A0"};
@@ -216,5 +280,49 @@ const PostMeta = styled.div`
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.7);
     margin-top: 0.25rem;
+`;
+
+const PostItemSkeleton = styled.li`
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.875rem;
+    border-radius: 8px;
+    background-color: rgba(44, 39, 43, 0.6);
+    border: 1px solid transparent;
+    pointer-events: none;
+    min-height: 60px;
+    flex-shrink: 0;
+`;
+
+const PostRankSkeleton = styled.div`
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(182, 72, 160, 0.3);
+    flex-shrink: 0;
+    animation: pulse 1.5s ease-in-out infinite;
+`;
+
+const PostTitleSkeleton = styled.div`
+    height: 16px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    width: 100%;
+    margin-bottom: 0.5rem;
+    animation: pulse 1.5s ease-in-out infinite;
+    
+    & + & {
+        width: 80%;
+        margin-bottom: 0.25rem;
+    }
+`;
+
+const PostMetaSkeleton = styled.div`
+    height: 12px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.08);
+    width: 60%;
+    animation: pulse 1.5s ease-in-out infinite;
 `;
 

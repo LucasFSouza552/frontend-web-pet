@@ -4,9 +4,9 @@ import { Link, NavLink as RouterNavLink } from "react-router-dom";
 import ProfileMenu from "./ProfileMenu";
 import { PrimaryButton } from "./PrimaryButton";
 
-import { FaHome, FaHandsHelping, FaHeart, FaUsers, FaDonate, FaHandHoldingHeart } from "react-icons/fa";
+import { FaHome, FaHandsHelping, FaHeart, FaDonate, FaHandHoldingHeart } from "react-icons/fa";
 import logo from "@assets/images/logo.png";
-import { useMemo, useState, type JSX } from "react";
+import { useMemo, type JSX } from "react";
 
 interface NavItem {
   label: string;
@@ -18,7 +18,6 @@ interface NavItem {
 
 export default function SideBar({ account }: { account: IAccount | null }) {
   const theme = useTheme();
-  const [menuOpen, setMenuOpen] = useState(false);
   const iconsConfig = useMemo(() => ({ color: theme.colors.primary, size: "1.5em" }), [theme.colors.primary]);
 
   const navItems: NavItem[] = [
@@ -31,27 +30,18 @@ export default function SideBar({ account }: { account: IAccount | null }) {
 
   return (
     <SidebarContainer>
-      <LogoWrapper >
+      <LogoWrapper>
         <Link to="/">
           <img src={logo} alt="Logo" />
         </Link>
-        <HamburgerButton
-          aria-label="Abrir menu"
-          onClick={() => setMenuOpen((prev) => !prev)}
-        >
-          <span />
-          <span />
-          <span />
-        </HamburgerButton>
       </LogoWrapper>
 
-      <NavLinks $open={menuOpen}>
+      <NavLinks>
         {navItems.map((item) => (
           <NavItemLink
             key={item.label}
             to={item.path}
             className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={() => setMenuOpen(false)}
           >
             <span className="icon">{item.icon}</span>
             {item.label}
@@ -86,15 +76,12 @@ const LogoWrapper = styled.div`
   }
 
   @media (max-width: 768px) {
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 20px;
   }
 `;
 const SidebarContainer = styled.aside`
-  width: 260px;
   height: 100%;
-  min-height: calc(100dvh - 30px);
+  min-height: calc(100dvh - 5dvh);
   max-height: calc(100dvh - var(--header-height, 80px) - 2rem);
   display: flex;
   flex-direction: column;
@@ -115,15 +102,14 @@ const SidebarContainer = styled.aside`
 
   @media (max-width: 900px) {
     width: 100%;
-    flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-evenly;
     padding: 10px;
     height: auto;
     max-height: none;
   }
 `;
 
-const NavLinks = styled.nav<{ $open: boolean }>`
+const NavLinks = styled.nav`
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -137,7 +123,6 @@ const NavLinks = styled.nav<{ $open: boolean }>`
   }
 
   @media (max-width: 768px) {
-    display: ${({ $open }) => ($open ? "flex" : "none")};
     flex-direction: column;
     align-items: stretch;
     gap: 6px;
@@ -191,35 +176,5 @@ const ProfileSection = styled.div`
   @media (max-width: 900px) {
     border-top: none;
     padding-top: 0;
-  }
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
-const HamburgerButton = styled.button`
-  display: none;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 8px;
-  gap: 4px;
-  cursor: pointer;
-
-  align-items: center;
-  justify-content: center;
-
-  span {
-    display: block;
-    width: 22px;
-    height: 2px;
-    background: white;
-    border-radius: 1px;
-  }
-
-  @media (max-width: 768px) {
-    display: inline-flex;
-    flex-direction: column;
   }
 `;
