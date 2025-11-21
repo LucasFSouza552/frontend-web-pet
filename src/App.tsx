@@ -1,6 +1,7 @@
 import { Route } from "react-router-dom"
 import NavigationRouter from "@utils/NavigationRouter"
 import { ThemeProvider } from "@contexts/ThemeContext"
+import ToastContainer from "@components/Toast"
 
 // Pages
 import HomePage from "@features/home/views/HomePage"
@@ -14,7 +15,6 @@ import FAQPage from "@features/support/views/FAQPage"
 import { useContext } from "react"
 import { ProfileContext } from "@contexts/ProfileContext"
 import InstitutePage from "./features/institution/views/InstitutePage"
-import DonationPage from "./features/institution/views/DonationPage"
 import PostPage from "./features/post/views/postPage"
 import ProfileEditionPage from "./features/account/profile/views/ProfileEditionPage"
 import DonatePage from "@components/DonatePage"
@@ -26,6 +26,7 @@ function App() {
 
   return (
     <ThemeProvider>
+      <ToastContainer />
       <NavigationRouter>
         <Route path="/" element={account ? <CommunityPage /> : <HomePage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -35,11 +36,9 @@ function App() {
         <Route path="/match" element={<MatchPage />} />
         <Route path="/DonatePage" element={<DonatePage />} />
         <Route path="/institutions" element={<InstitutionsListPage />} />
-        {/* <Route path="/community" element={<CommunityPage />} /> */}
         <Route path="/support" element={<FAQPage />} />
         <Route path="/donate-institution/:id" element={<InstitutePage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        {/* <Route path="/pets" element={<DesiredPetsPage />} /> */}
         <Route path="/profile-edition" element={<ProfileEditionPage />} />
       </NavigationRouter>
     </ThemeProvider>

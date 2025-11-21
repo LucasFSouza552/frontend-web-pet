@@ -1,7 +1,7 @@
 import api from "@api/http";
-import type { IPost } from "@models/post";
+import type { IPost } from "@models/Post";
 import buildQuery from "@utils/BuilderQuery";
-import { ThrowError } from "../Error/ThrowError";
+import { ThrowError } from "@Error/ThrowError";
 
 interface PostQuery {
     account?: string;

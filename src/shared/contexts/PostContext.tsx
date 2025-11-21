@@ -1,9 +1,9 @@
 import { createContext, useState, useCallback, type ReactNode, useEffect } from "react";
-import type { IPost } from "@models/post";
+import type { IPost } from "@models/Post";
 import { postService } from "@api/postService";
-import type IComment from "../models/Comments";
+import type IComment from "@models/Comments";
 import { pictureService } from "../api/pictureService";
-import { usePaginatedPosts } from "../hook/usePaginatedPosts";
+import { usePaginatedPosts } from "../hooks/usePaginatedPosts";
 
 export const PostsContext = createContext<PostsContextType>({} as PostsContextType);
 

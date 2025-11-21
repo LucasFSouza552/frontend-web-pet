@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import { PostsContext } from "@contexts/PostContext";
-import type { IPost } from "@models/post";
+import type { IPost } from "@models/Post";
 import { useNavigate } from "react-router-dom";
 
 const REFRESH_INTERVAL = 30000;

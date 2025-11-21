@@ -119,6 +119,7 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
             </LoadingContainer>
         );
     }
+
     return (
         <ContentContainer>
             <h2>{accountRole === "institution" ? "Pets desejados pelos usuários" : "Pets que deseja adotar"}</h2>
@@ -151,12 +152,12 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
             {selectedPet && (
                 <ModalRequestsContainer>
                     <ModalContent>
-                        <ModalHeader>
+                        <RequestsModalHeader>
                             <ModalRequestsTitle>Solicitações de Adoção</ModalRequestsTitle>
                             <ModalCloseButton onClick={() => { setSelectedPet(null); }}>
                                 Fechar
                             </ModalCloseButton>
-                        </ModalHeader>
+                        </RequestsModalHeader>
                         <ModalRequestsList>
                             {selectedPet?.requests?.map((request, index) => {
                                 const account = (request as any)?.account as IAccount | undefined;
@@ -217,7 +218,7 @@ const ModalContent = styled.div`
     padding: 1rem;
     color: white;
 `;
-const ModalHeader = styled.div`
+const RequestsModalHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -375,7 +376,5 @@ const PetSection = styled.div`
     flex-direction: column;
     flex-wrap: wrap;
 `;
-
-// (Removed unused styled components related to the commented Requests section)
 
 

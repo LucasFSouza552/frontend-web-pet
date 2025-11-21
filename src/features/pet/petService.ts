@@ -30,13 +30,22 @@ export const petService = {
             throw ThrowError.internal("Erro inesperado ao tentar buscar pet");
         }
     },
-    async updatePet(petId: string, data: Partial<IPet>) {
+    async adminUpdatePet(petId: string, data: Partial<IPet>) {
         try {
             const response = await api.patch(`/pet/${petId}`, data);
             return response.data;
         } catch (error) {
             if (error instanceof ThrowError) throw error;
             throw ThrowError.internal("Erro inesperado ao tentar atualizar pet");
+        }
+    },
+    async updatePet(petId: string, data: Partial<IPet>) {
+        try {
+            const response = await api.patch(`/pet/${petId}/update`, data);
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar atualizar pet da instituição");
         }
     },
     async deletePet(petId: string) {
@@ -106,7 +115,7 @@ export const petService = {
     },
     async deleteImage(petId: string, imageId: string) {
         try {
-            const response = await api.delete(`/pet/${petId}/avatar/${imageId}`);
+            const response = await api.post(`/pet/${petId}/image/delete`, { imageId });
             return response.data;
         } catch (error) {
             if (error instanceof ThrowError) throw error;
@@ -147,6 +156,15 @@ export const petService = {
         } catch (error) {
             if (error instanceof ThrowError) throw error;
             throw ThrowError.internal("Erro inesperado ao tentar buscar solicitações de adoção");
+        }
+    },
+    async softDeletePet(petId: string) {
+        try {
+            const response = await api.post(`/pet/${petId}/delete`);
+            return response.data;
+        } catch (error) {
+            if (error instanceof ThrowError) throw error;
+            throw ThrowError.internal("Erro inesperado ao tentar deletar pet");
         }
     }
 };

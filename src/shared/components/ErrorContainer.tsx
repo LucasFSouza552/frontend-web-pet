@@ -1,16 +1,19 @@
 import styled from "styled-components";
 import { ImWarning } from 'react-icons/im';
+import { useToast } from "@contexts/ToastContext";
+import { useEffect } from "react";
 
 export default function ErrorContainer({ message }: { message: string }) {
-  if (!message) return null;
-  return (
-    <ErrorCard>
-      <ImWarning color='red' />
-      <ErrorMessage>{message}</ErrorMessage>
-    </ErrorCard>
-  );
-}
+  const { showError } = useToast();
 
+  useEffect(() => {
+    if (message) {
+      showError(message);
+    }
+  }, [message, showError]);
+
+  return null;
+}
 
 export const ErrorCard = styled.div`
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,

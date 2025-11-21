@@ -1,9 +1,11 @@
 import { ProfileContext } from "@contexts/ProfileContext";
 import { useContext, useState } from "react";
 import { petService } from "../petService";
+import { useToast } from "@contexts/ToastContext";
 
 export function usePetInteractionController() {
-    const { loadFeed } = useContext(ProfileContext)
+    const { loadFeed } = useContext(ProfileContext);
+    const { showSuccess, showError } = useToast();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -12,9 +14,11 @@ export function usePetInteractionController() {
             setLoading(true);
             await petService.likePet(petId);
             setError(null);
+            showSuccess("Você curtiu este pet!");
             await loadFeed();
         } catch (err: any) {
             setError(err.message);
+            showError(err.message || "Erro ao curtir pet");
         } finally {
             setLoading(false);
         }
@@ -25,37 +29,15 @@ export function usePetInteractionController() {
             setLoading(true);
             await petService.dislikePet(petId);
             setError(null);
+            showSuccess("Você não curtiu este pet!");
             await loadFeed();
         } catch (err: any) {
             setError(err.message);
+            showError(err.message || "Erro ao descurtir pet");
         } finally {
             setLoading(false);
         }
     }
-
-    // TODO: Implement sponsor pet
-    // async function handleSponsor(petId: string, amount: number) {
-    //     try {
-    //         setLoading(true);
-    //         const response = await petService.sponsorPet(petId, amount);
-    //         setError(null);
-    //         const width = 1000;
-    //         const height = 1100;
-    //         const left = (window.innerWidth - width) / 2;
-    //         const top = (window.innerHeight - height) / 2;
-
-    //         window.open(
-    //             response.url,
-    //             "MercadoPago",
-    //             `width=${width},height=${height},top=${top},left=${left}`
-    //         );
-
-    //     } catch (err: any) {
-    //         setError(err.message);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // }
 
     return { handleLikePet, handleDislikePet, loading, error };
 }

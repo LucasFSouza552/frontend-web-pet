@@ -1,8 +1,9 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { PostsContext } from "@contexts/PostContext";
 import { useNavigate, useParams } from "react-router-dom";
-import type { IPost } from "@models/post";
+import type { IPost } from "@models/Post";
 import { CommentsContext } from "@contexts/CommentContext";
+import { useErrorHandler } from "@/shared/hooks/useErrorHandler";
 
 export default function useManagePostController() {
     const { id } = useParams<{ id: string }>();
@@ -21,6 +22,7 @@ export default function useManagePostController() {
 
     const { archivePost, currentPostDetails, posts, userPosts } = useContext(PostsContext);
     const { createComment, loadCommentsByPostId } = useContext(CommentsContext);
+    const { handleError, showSuccess } = useErrorHandler();
 
 
     useEffect(() => {
@@ -133,9 +135,11 @@ export default function useManagePostController() {
     const handleDeletePost = async (postId: string) => {
         try {
             await archivePost(postId);
+            showSuccess("Post excluído com sucesso!");
             navigate('/');
             setError("");
         } catch (error) {
+            handleError(error);
             if (error instanceof Error) {
                 setError(error.message);
             } else {

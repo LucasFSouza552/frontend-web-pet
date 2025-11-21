@@ -2,10 +2,12 @@ import { AuthContext } from "@contexts/AuthContext";
 import { ProfileContext } from "@contexts/ProfileContext";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useErrorHandler } from "@/shared/hooks/useErrorHandler";
 
 export default function useLoginController() {
     const { login } = useContext(AuthContext);
     const { loadProfile } = useContext(ProfileContext);
+    const { handleError, showSuccess } = useErrorHandler();
 
     const navigate = useNavigate();
     
@@ -18,6 +20,7 @@ export default function useLoginController() {
 
     const handleChange = (key: string, value: string) => {
         setCredentials(prev => ({ ...prev, [key]: value }));
+        setError("");
     };
 
 
@@ -26,11 +29,13 @@ export default function useLoginController() {
         try {
             const accountId = await login(credentials.email, credentials.password);
             setError("");
+            showSuccess("Login realizado com sucesso!");
             
             await loadProfile();
             navigate(`/profile/${accountId}`);
         } catch (error: unknown) {
             console.log(error);
+            handleError(error);
             if (error instanceof Error) {
                 setError(error.message);
             } else {

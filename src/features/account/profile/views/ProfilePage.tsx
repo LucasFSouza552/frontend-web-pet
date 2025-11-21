@@ -45,7 +45,10 @@ export default function ProfileSection() {
         if (loadingViewedAccount) {
             return (
                 <LoadingContainer>
-                    <DotLottieReact src={animationFile} autoplay loop style={{ width: "500px" }} />
+                    <LoadingCard>
+                        <DotLottieReact src={animationFile} autoplay loop style={{ width: "300px", height: "300px" }} />
+                        <LoadingText>Carregando perfil...</LoadingText>
+                    </LoadingCard>
                 </LoadingContainer>
             );
         }
@@ -160,5 +163,60 @@ const LoadingContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 4rem 2rem;
+    min-height: 400px;
+`;
+
+const LoadingCard = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
     padding: 3rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease-in;
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 2rem 1.5rem;
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+        padding: 1.5rem 1rem;
+        gap: 1rem;
+        border-radius: 16px;
+    }
+`;
+
+const LoadingText = styled.p`
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0;
+    text-align: center;
+    letter-spacing: 0.5px;
+
+    @media (max-width: 768px) {
+        font-size: 1rem;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 0.9rem;
+    }
 `;

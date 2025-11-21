@@ -4,14 +4,10 @@ import Section from "@styles/SectionStyle";
 import backgroundPage from "@assets/images/background-page.jpg";
 import { useContext } from "react";
 import MatchCard from "../../match/components/MatchCard";
-import { AuthContext } from "@/features/account/auth/AuthContext";
 import { ProfileContext } from "@contexts/ProfileContext";
 
 export default function DesiredPetsPage() {
-    const { account } = useContext(AuthContext);
-    const { petFeed } = useContext(ProfileContext);
-
-    const desiredPets = petFeed; 
+    const { petFeed, account } = useContext(ProfileContext);
 
     return (
         <Container>
@@ -19,14 +15,14 @@ export default function DesiredPetsPage() {
             <SectionContent>
                 <ContentWrapper>
                     <Title>Pets que você quer adotar</Title>
-                    {desiredPets.length === 0 ? (
+                    {petFeed.length === 0 ? (
                         <EmptyState>
                             <h3>Nenhum pet marcado ainda</h3>
                             <p>Quando você demonstrar interesse em um pet, ele aparecerá aqui.</p>
                         </EmptyState>
                     ) : (
                         <CardsGrid>
-                            {desiredPets.map((pet, index) => (
+                            {petFeed.map((pet, index) => (
                                 <MatchCard key={`${pet.id}-${index}`} Pet={pet} />
                             ))}
                         </CardsGrid>
