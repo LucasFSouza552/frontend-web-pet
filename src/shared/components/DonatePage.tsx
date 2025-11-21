@@ -62,32 +62,42 @@ export default function DonatePage() {
             <FaDonate />
           </IconContainer>
 
-          <Title>Faça uma Doação</Title>
+          <Title>Ajude a Manter o Site Funcionando</Title>
+
+          <Subtitle>Doação para a Plataforma</Subtitle>
 
           <ImageContainer>
             <DonationImage src="/donation-img1.jpg" alt="Doação para animais" />
           </ImageContainer>
 
-          <Text>Sua doação mantém a plataforma no ar e acelera melhorias.</Text>
+          <Text>
+            <strong>Sua doação é essencial para manter o site no ar.</strong> 
+            <br />
+            Ela cobre os custos de servidores, hospedagem e infraestrutura necessária
+            para que a plataforma continue funcionando e conectando adotantes aos pets.
+          </Text>
 
-          <IconGrid>
-            <IconBenefit>
-              <IconCircle><FaServer /></IconCircle>
-              <BenefitLabel>Manter o site ativo</BenefitLabel>
-            </IconBenefit>
-            <IconBenefit>
-              <IconCircle><FaUsers /></IconCircle>
-              <BenefitLabel>Aproximar adotantes e pets</BenefitLabel>
-            </IconBenefit>
-            <IconBenefit>
-              <IconCircle><FaPaw /></IconCircle>
-              <BenefitLabel>Dar visibilidade aos resgates</BenefitLabel>
-            </IconBenefit>
-            <IconBenefit>
-              <IconCircle><FaHandHoldingHeart /></IconCircle>
-              <BenefitLabel>Apoiar instituições</BenefitLabel>
-            </IconBenefit>
-          </IconGrid>
+          <PurposeSection>
+            <PurposeTitle>Para que sua doação é usada:</PurposeTitle>
+            <IconGrid>
+              <IconBenefit>
+                <IconCircle><FaServer /></IconCircle>
+                <BenefitLabel>Manter servidores e hospedagem ativos</BenefitLabel>
+              </IconBenefit>
+              <IconBenefit>
+                <IconCircle><FaUsers /></IconCircle>
+                <BenefitLabel>Garantir que o site continue funcionando</BenefitLabel>
+              </IconBenefit>
+              <IconBenefit>
+                <IconCircle><FaPaw /></IconCircle>
+                <BenefitLabel>Manter a plataforma conectando adotantes e pets</BenefitLabel>
+              </IconBenefit>
+              <IconBenefit>
+                <IconCircle><FaHandHoldingHeart /></IconCircle>
+                <BenefitLabel>Suportar melhorias e atualizações do sistema</BenefitLabel>
+              </IconBenefit>
+            </IconGrid>
+          </PurposeSection>
 
           <Input
             type="number"
@@ -202,21 +212,38 @@ const IconContainer = styled.div`
 
 const Title = styled.h1`
   color: #fff;
-  font-size: 1.6rem;
-  text-transform: uppercase;
+  font-size: 1.5rem;
+  text-align: center;
   font-weight: 700;
-  letter-spacing: 1px;
-  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
   flex-shrink: 0;
+  line-height: 1.3;
+`;
+
+const Subtitle = styled.h2`
+  color: ${({ theme }) => theme.colors.primary || "#B648A0"};
+  font-size: 1rem;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
 const Text = styled.p`
   color: #d8d8d8;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   text-align: center;
-  margin-bottom: 10px;
-  line-height: 1.3;
+  margin-bottom: 16px;
+  line-height: 1.5;
   flex-shrink: 0;
+  
+  strong {
+    color: #fff;
+    font-weight: 600;
+  }
 `;
 
 const Input = styled.input`
@@ -276,12 +303,26 @@ const DonationImage = styled.img`
 
 `;
 
+const PurposeSection = styled.div`
+  width: 100%;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+`;
+
+const PurposeTitle = styled.h3`
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+`;
+
 const IconGrid = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  margin: 10px 0 12px 0;
+  margin: 0;
 `;
 
 const IconBenefit = styled.div`
