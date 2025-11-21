@@ -141,7 +141,10 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
                     {desiredPets.map((pet, index) => (
                         <PetSection className="pet-section" key={`${pet.id}-${index}`}>
                             <PetDetailCard
-                                handleModalRequests={() => setSelectedPet(pet)}
+                                handleModalRequests={(e) => {
+                                    e?.stopPropagation();
+                                    setSelectedPet(pet);
+                                }}
                                 pet={pet}
                                 adoptionRequestsCount={pet.requestsCount}
                             />

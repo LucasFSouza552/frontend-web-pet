@@ -1,21 +1,23 @@
 import styled from "styled-components";
 import backgroundPage from "@assets/images/background-page.jpg";
-import { useContext } from "react";
+import { useContext, useState, useMemo } from "react";
 import Section from "@styles/SectionStyle";
 import { ProfileContext } from "@contexts/ProfileContext";
 import PostsFeed from "../components/PostsFeed";
 import TrendingPosts from "../components/TrendingPosts";
-import SearchBar from "../components/SearchBar";
+import SearchBar, { type AccountTypeFilter } from "../components/SearchBar";
 import CreatePostForm from "../components/CreatePostForm";
 import { useCommunityController } from "../controllers/useCommunityController";
 import StickySidebar from "@/shared/styles/StickySidebar";
 import ResponsiveSidebar, { HamburgerButton } from "@/shared/components/ResponsiveSidebar";
 import { useResponsiveSidebar } from "@/shared/hooks/useResponsiveSidebar";
 import SideBar from "@components/Sidebar";
+import type { IPost } from "@models/Post";
 
 export default function CommunityPage() {
   const { account } = useContext(ProfileContext);
   const { isMenuOpen, toggleMenu, closeMenu } = useResponsiveSidebar();
+  const [accountTypeFilter, setAccountTypeFilter] = useState<AccountTypeFilter>("all");
   const {
     posts,
     lastPostRef,
@@ -25,6 +27,16 @@ export default function CommunityPage() {
     handleSearch,
     isSearching
   } = useCommunityController();
+
+  const filterPostsByAccountType = (postsToFilter: IPost[]): IPost[] => {
+    if (accountTypeFilter === "all") {
+      return postsToFilter;
+    }
+    return postsToFilter.filter(post => post.account?.role === accountTypeFilter);
+  };
+
+  const filteredPosts = useMemo(() => filterPostsByAccountType(posts), [posts, accountTypeFilter]);
+  const filteredSearchResults = useMemo(() => filterPostsByAccountType(searchResults), [searchResults, accountTypeFilter]);
 
   return (
     <Container>
@@ -40,16 +52,25 @@ export default function CommunityPage() {
           </StickySidebar>
         <MiddleSideContainer>
           <HamburgerButton onClick={toggleMenu} />
-          <SearchBar onSearch={handleSearch} />
+          <SearchBar 
+            onSearch={handleSearch} 
+            accountTypeFilter={accountTypeFilter}
+            onAccountTypeFilterChange={setAccountTypeFilter}
+          />
           <CreatePostForm />
 
-          {!isSearching && <PostsFeed posts={posts} refCallback={lastPostRef} />}
+          {!isSearching && <PostsFeed posts={filteredPosts} refCallback={lastPostRef} />}
           {isSearching && (
             <>
-              {searchResults.length > 0 && (
-                <PostsFeed posts={searchResults} refCallback={lastSearchPostRef} />
+              {filteredSearchResults.length > 0 && (
+                <PostsFeed posts={filteredSearchResults} refCallback={lastSearchPostRef} />
               )}
-              {loadingSearchResults && searchResults.length > 0 && (
+              {filteredSearchResults.length === 0 && !loadingSearchResults && (
+                <NoResults>
+                  Nenhum resultado encontrado.
+                </NoResults>
+              )}
+              {loadingSearchResults && filteredSearchResults.length > 0 && (
                 <LoadingMore>
                   Carregando mais resultados...
                 </LoadingMore>
@@ -179,5 +200,23 @@ const LoadingMore = styled.div`
     @media (max-width: 480px) {
         padding: 0.5rem;
         font-size: 0.75rem;
+    }
+`;
+
+const NoResults = styled.div`
+    padding: 2rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    font-weight: 500;
+    
+    @media (max-width: 768px) {
+        padding: 1.5rem;
+        font-size: 0.9375rem;
+    }
+    
+    @media (max-width: 480px) {
+        padding: 1rem;
+        font-size: 0.875rem;
     }
 `;

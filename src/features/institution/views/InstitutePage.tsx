@@ -72,7 +72,7 @@ export default function InstitutePage() {
     try {
       setDonating(true);
       setDonationError("");
-      const response = await accountService.sponsorPet(id, amount);
+      const response = await accountService.sponsorInstitution(id, amount);
 
       if (response.url) {
         const width = 1000;

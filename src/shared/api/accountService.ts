@@ -147,9 +147,9 @@ export const accountService = {
             throw ThrowError.internal("Erro inesperado ao tentar doar para o pet");
         }
     },
-    async sponsorPet(petId: string, amount: number) {
+    async sponsorInstitution(institutionId: string, amount: number) {
         try {
-            const response = await api.post(`/account/pets/${petId}/sponsor`, { amount });
+            const response = await api.post(`/account/sponsor/${institutionId}`, { amount });
             return response.data;
         } catch (error) {
             if (error instanceof ThrowError) {

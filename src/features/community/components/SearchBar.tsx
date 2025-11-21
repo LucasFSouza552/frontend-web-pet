@@ -1,13 +1,22 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaChevronDown } from "react-icons/fa";
+
+export type AccountTypeFilter = "all" | "institution" | "user" | "admin";
 
 interface SearchBarProps {
     onSearch: (query: string) => void;
     placeholder?: string;
+    accountTypeFilter?: AccountTypeFilter;
+    onAccountTypeFilterChange?: (filter: AccountTypeFilter) => void;
 }
 
-export default function SearchBar({ onSearch, placeholder = "Pesquisar posts..." }: SearchBarProps) {
+export default function SearchBar({ 
+    onSearch, 
+    placeholder = "Pesquisar posts...",
+    accountTypeFilter = "all",
+    onAccountTypeFilterChange
+}: SearchBarProps) {
     const [searchQuery, setSearchQuery] = useState("");
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -20,6 +29,12 @@ export default function SearchBar({ onSearch, placeholder = "Pesquisar posts..."
         setSearchQuery(value);
         if (value === "") {
             onSearch("");
+        }
+    };
+
+    const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        if (onAccountTypeFilterChange) {
+            onAccountTypeFilterChange(e.target.value as AccountTypeFilter);
         }
     };
 
@@ -48,6 +63,22 @@ export default function SearchBar({ onSearch, placeholder = "Pesquisar posts..."
                         </ClearButton>
                     )}
                 </SearchInputWrapper>
+                {onAccountTypeFilterChange && (
+                    <FilterDropdownWrapper>
+                        <FilterDropdown
+                            value={accountTypeFilter}
+                            onChange={handleFilterChange}
+                        >
+                            <option value="all">Todos</option>
+                            <option value="institution">Instituições</option>
+                            <option value="user">Usuários</option>
+                            <option value="admin">Administradores</option>
+                        </FilterDropdown>
+                        <FilterDropdownIcon>
+                            <FaChevronDown size={12} />
+                        </FilterDropdownIcon>
+                    </FilterDropdownWrapper>
+                )}
                 <SearchButton type="submit">
                     <FaSearch size={20} />
                     <ButtonText>Pesquisar</ButtonText>
@@ -178,5 +209,64 @@ const ButtonText = styled.span`
     @media (max-width:  768px) {
         display: none;
     }
+`;
+
+const FilterDropdownWrapper = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 160px;
+
+    @media (max-width: 768px) {
+        min-width: 140px;
+    }
+
+    @media (max-width: 480px) {
+        min-width: 120px;
+    }
+`;
+
+const FilterDropdown = styled.select`
+    width: 100%;
+    padding: 14px 40px 14px 16px;
+    border-radius: 12px;
+    border: 2px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
+    outline: none;
+    background-color: ${({ theme }) => theme.colors.quarternary || "rgba(51, 38, 48, 0.95)"};
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    &:focus {
+        border-color: ${({ theme }) => theme.colors.primary || "#B648A0"};
+        box-shadow: 0 0 0 4px rgba(182, 72, 160, 0.2);
+        background-color: ${({ theme }) => theme.colors.quinary || "rgba(74, 58, 70, 0.95)"};
+    }
+
+    option {
+        background-color: ${({ theme }) => theme.colors.quarternary || "#332630"};
+        color: white;
+        padding: 0.5rem;
+    }
+
+    @media (max-width: 480px) {
+        padding: 12px 36px 12px 12px;
+        font-size: 0.875rem;
+    }
+`;
+
+const FilterDropdownIcon = styled.div`
+    position: absolute;
+    right: 12px;
+    color: ${({ theme }) => theme.colors.primary || "#B648A0"};
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 

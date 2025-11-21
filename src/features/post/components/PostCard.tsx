@@ -1,20 +1,16 @@
 import styled, { css, keyframes } from "styled-components"
 import ProfileAvatar from "@components/ProfileAvatar"
-import type { IPost } from "@models/post";
+import type { IPost } from "@models/Post";
 
-import { FaHeart, FaShareAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaHeart, FaShareAlt } from "react-icons/fa";
 import { BsChatFill } from "react-icons/bs";
-import { PostsContext } from "@contexts/PostContext";
-import { useContext, useState } from "react";
-
-import AvatarDefault from "@assets/images/avatar-default.png";
-import { useNavigate } from "react-router-dom";
 import { HiDotsVertical } from "react-icons/hi";
 import SmallProfile from "@components/SmallProfile";
 import type { IAccount } from "@models/Account";
 import PostModal from "./PostModal";
-
-const apiUrl = import.meta.env.VITE_API_URL;
+import PostPictureContainer from "./PostPictureContainer";
+import { formatRelativeDate } from "@utils/dateUtils";
+import { usePostCardController } from "../controller/usePostCardController";
 
 interface PostCardProps {
     post: IPost;
@@ -25,211 +21,28 @@ interface PostCardProps {
     postOptions: string;
 }
 
-const PostPictureContainer = ({ images }: { images: string[] }) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [touchStartX, setTouchStartX] = useState<number | null>(null);
-    if (!images || images.length === 0) return null;
-
-    const goPrev = () => {
-        setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
-    };
-
-    const goNext = () => {
-        setCurrentIndex((prev) => (prev + 1) % images.length);
-    };
-
-    const goTo = (index: number) => setCurrentIndex(index);
-
-    const currentImage = images[currentIndex];
-
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (images.length <= 1) return;
-        if (e.key === "ArrowLeft") goPrev();
-        if (e.key === "ArrowRight") goNext();
-    };
-
-    const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-        setTouchStartX(e.touches[0].clientX);
-    };
-
-    const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-        if (touchStartX === null) return;
-        const diff = e.changedTouches[0].clientX - touchStartX;
-        const threshold = 40;
-        if (diff > threshold) goPrev();
-        if (diff < -threshold) goNext();
-        setTouchStartX(null);
-    };
-
-    return (
-        <PictureContainer
-            tabIndex={0}
-            role="region"
-            aria-label="Carrossel de imagens do post"
-            onKeyDown={handleKeyDown}
-            onTouchStart={onTouchStart}
-            onTouchEnd={onTouchEnd}
-        >
-            <PostPicture key={currentImage}>
-                <img
-                    src={`${apiUrl}/picture/${currentImage}`}
-                    alt={currentImage || `post-image-${currentIndex + 1}`}
-                    loading="lazy"
-                    draggable={false}
-                    onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = AvatarDefault;
-                    }}
-                />
-            </PostPicture>
-            {images.length > 1 && (
-                <>
-                    <CarouselButtonLeft onClick={goPrev} aria-label="Imagem anterior">
-                        <FaChevronLeft />
-                    </CarouselButtonLeft>
-                    <CarouselButtonRight onClick={goNext} aria-label="Próxima imagem">
-                        <FaChevronRight />
-                    </CarouselButtonRight>
-                    <ImageCounter>{currentIndex + 1}/{images.length}</ImageCounter>
-                    <DotsContainer>
-                        {images.map((_, i) => (
-                            <Dot
-                                key={`dot-${i}`}
-                                $active={i === currentIndex}
-                                onClick={() => goTo(i)}
-                                aria-label={`Ir para imagem ${i + 1}`}
-                            />
-                        ))}
-                    </DotsContainer>
-                </>
-            )}
-        </PictureContainer>
-    )
-}
 
 const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions, handleAbout, postOptions }) => {
-    const navigate = useNavigate();
     if (!post) return null;
 
-    const { likePost, updatePostContent } = useContext(PostsContext);
-    const [animateLike, setAnimateLike] = useState(false);
-    const [showSmallProfile, setShowSmallProfile] = useState(false);
-    const [showShareMessage, setShowShareMessage] = useState(false);
-    const [isEditingContent, setIsEditingContent] = useState(false);
-    const [editedContent, setEditedContent] = useState(post.content || "");
-    const [savingContent, setSavingContent] = useState(false);
-    const [contentError, setContentError] = useState("");
-
-    const handleLike = () => {
-        setAnimateLike(true);
-        if (!post.id) return console.error("Post id not found");
-        if (!accountId) return;
-        likePost(post.id);
-
-        setTimeout(() => setAnimateLike(false), 400);
-    }
-
-    const handleComments = (postId: string) => {
-        if (!accountId) return;
-        navigate(`/post/${postId}`);
-    }
-
-    const handleProfile = (accountId: string) => {
-        navigate(`/profile/${accountId}`);
-    }
-
-    const handleSmallProfile = () => {
-        setShowSmallProfile(!showSmallProfile);
-    }
-
-    const handleShare = async () => {
-        const postUrl = `${window.location.origin}/post/${post.id}`;
-        const shareData = {
-            title: `Post de ${post.account.name}`,
-            text: post.content ? `${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}` : `Confira este post de ${post.account.name}!`,
-            url: postUrl
-        };
-
-        try {
-            handleOptions("");
-            if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
-                await navigator.share(shareData);
-            } else {
-                await navigator.clipboard.writeText(postUrl);
-                setShowShareMessage(true);
-                setTimeout(() => {
-                    setShowShareMessage(false);
-                }, 2000);
-            }
-        } catch (error) {
-            if (error instanceof Error && error.name !== 'AbortError') {
-                try {
-                    await navigator.clipboard.writeText(postUrl);
-                    setShowShareMessage(true);
-                    setTimeout(() => {
-                        setShowShareMessage(false);
-                    }, 2000);
-                } catch (clipboardError) {
-                    console.error('Erro ao copiar link:', clipboardError);
-                }
-            }
-        }
-    }
-
-    const handleStartEditPost = () => {
-        setEditedContent(post.content || "");
-        setIsEditingContent(true);
-        setContentError("");
-    }
-
-    const handleCancelEditContent = () => {
-        setIsEditingContent(false);
-        setEditedContent(post.content || "");
-        setContentError("");
-    }
-
-    const handleSaveContent = async () => {
-        const newContent = editedContent.trim();
-        if (!newContent) {
-            setContentError("O conteúdo não pode estar vazio.");
-            return;
-        }
-        try {
-            setSavingContent(true);
-            await updatePostContent(post.id, newContent);
-            setSavingContent(false);
-            setIsEditingContent(false);
-        } catch (e) {
-            setSavingContent(false);
-            setContentError("Erro ao salvar o conteúdo. Tente novamente.");
-        }
-    }
-
-    const formatDate = (dateString: string) => {
-        if (!dateString) return "";
-
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-        if (diffInSeconds < 60) {
-            return "agora";
-        } else if (diffInSeconds < 3600) {
-            const minutes = Math.floor(diffInSeconds / 60);
-            return `há ${minutes} ${minutes === 1 ? 'minuto' : 'minutos'}`;
-        } else if (diffInSeconds < 86400) {
-            const hours = Math.floor(diffInSeconds / 3600);
-            return `há ${hours} ${hours === 1 ? 'hora' : 'horas'}`;
-        } else if (diffInSeconds < 604800) {
-            const days = Math.floor(diffInSeconds / 86400);
-            return `há ${days} ${days === 1 ? 'dia' : 'dias'}`;
-        } else {
-            return date.toLocaleDateString('pt-BR', {
-                day: '2-digit',
-                month: 'short',
-                year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-            });
-        }
-    }
+    const {
+        animateLike,
+        showSmallProfile,
+        showShareMessage,
+        isEditingContent,
+        editedContent,
+        savingContent,
+        contentError,
+        setEditedContent,
+        handleLike,
+        handleComments,
+        handleProfile,
+        handleSmallProfile,
+        handleShare,
+        handleStartEditPost,
+        handleCancelEditContent,
+        handleSaveContent
+    } = usePostCardController({ post, accountId, handleOptions });
 
     return (
             <PostContainer>
@@ -239,15 +52,13 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions, han
                             <ProfileAvatar avatar={post.account.avatar} alt={post.account.name} />
                             <ProfileInfo>
                                 <ProfileName>{post.account.name || "Unknown"}</ProfileName>
-                                <PostDate>{formatDate(post.createdAt || post.date)}</PostDate>
+                                <PostDate>{formatRelativeDate(post.createdAt || post.date)}</PostDate>
                             </ProfileInfo>
                             {showSmallProfile && post.account && <SmallProfile account={post.account as IAccount} />}
                         </PostProfileContainer>
                         <PostOptions onClick={() => handleOptions(post.id)}>
                             <HiDotsVertical size={25} />
                         </PostOptions>
-
-
 
                         {postOptions === post.id && <PostModal postId={post.id} initialContent={post.content || ""} moreOptions={post.account.id === accountId} closeModal={handleOptions} handleAbout={handleAbout} handleShare={handleShare} onEditPost={handleStartEditPost} />}
 
@@ -410,103 +221,6 @@ const PostContent = styled.div`
     
 `;
 
-const PictureContainer = styled.div`
-    position: relative;
-    display: flex;
-    overflow: hidden;
-    inline-size: 100%;
-    aspect-ratio: 16 / 9;
-    max-block-size: 60vh;
-    min-block-size: 220px;
-    border-radius: 8px;
-    outline: none;
-
-    @media (max-width: 600px) {
-        aspect-ratio: 4 / 3;
-    }
-`;
-
-const PostPicture = styled.div`
-    inline-size: 100%;
-    block-size: 100%;
-    
-    img {
-        inline-size: 100%;
-        block-size: 100%;
-        object-fit: cover;
-        object-position: center;
-        display: block;
-        border-radius: 8px;
-        user-select: none;
-    }
-`;
-
-const CarouselButtonBase = styled.button`
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #fff;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.1s ease;
-    z-index: 5;
-
-    &:hover {
-        background: rgba(0, 0, 0, 0.5);
-    }
-`;
-
-const CarouselButtonLeft = styled(CarouselButtonBase)`
-    left: 8px;
-`;
-
-const CarouselButtonRight = styled(CarouselButtonBase)`
-    right: 8px;
-`;
-
-const DotsContainer = styled.div`
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 6px;
-    z-index: 5;
-`;
-
-const Dot = styled.button<{ $active: boolean }>`
-    width: 8px;
-    height: 8px;
-    background: ${({ $active, theme }) => ($active ? theme.colors.primary : 'rgba(255,255,255,0.5)')};
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    padding: 0;
-    transition: transform 0.2s ease, background 0.2s ease;
-
-    &:hover {
-        transform: scale(1.1);
-    }
-`;
-
-const ImageCounter = styled.span`
-    position: absolute;
-    top: 8px;
-    right: 10px;
-    padding: 4px 8px;
-    border-radius: 12px;
-    background: rgba(0, 0, 0, 0.45);
-    color: #fff;
-    font-size: 12px;
-    z-index: 6;
-`;
 
 const PostContainer = styled.div`
     block-size: auto;

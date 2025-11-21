@@ -2,13 +2,14 @@ import { styled } from "styled-components";
 import type { IAccount } from "../models/Account";
 import type { IAccountStatus } from "../models/AccountStatus";
 import ProfileDetails from "@/features/account/profile/components/ProfileDetails";
+import { pictureService } from "../api/pictureService";
 
 export default function SmallProfile({ account, top, left }: { account: IAccount, top?: number, left?: number }) {
 
     if (!account) return null;
     return (
         <ProfileContainer style={{ top: `${top}px`, left: `${left}px` }}>
-            <Avatar src={account.avatar} alt={account.name} />
+            <Avatar src={pictureService.fetchPicture(account.avatar || "")  } alt={account.name} />
             <ProfileDetails account={account} accountStatus={{ achievements: account.achievements, postCount: account.postCount } as unknown as IAccountStatus} />
         </ProfileContainer>
     )

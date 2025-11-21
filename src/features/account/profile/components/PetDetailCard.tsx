@@ -21,7 +21,7 @@ import { FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 interface PetDetailCardProps {
     pet: IPet;
     adoptionRequestsCount?: number;
-    handleModalRequests?: () => void;
+    handleModalRequests?: (e?: React.MouseEvent) => void;
 }
 
 export default function PetDetailCard({ pet, adoptionRequestsCount, handleModalRequests = () => {} }: PetDetailCardProps) {
@@ -181,7 +181,10 @@ export default function PetDetailCard({ pet, adoptionRequestsCount, handleModalR
                     )}
 
                     {adoptionRequestsCount !== undefined && adoptionRequestsCount > 0 && (
-                        <DetailItem onClick={() => handleModalRequests()}>
+                        <DetailItem onClick={(e) => {
+                            e.stopPropagation();
+                            handleModalRequests(e);
+                        }}>
                             <DetailIcon>
                                 <FaUsers size={18} />
                             </DetailIcon>
@@ -368,7 +371,7 @@ const CardContainer = styled.div`
     max-width: 500px;
     width: 500;
     min-width: 450px;
-    height: 750px;
+    
     background: linear-gradient(135deg, ${({ theme }) => theme.colors.quarternary} 0%, ${({ theme }) => theme.colors.quinary} 100%);
     border-radius: 24px;
     overflow: hidden;
