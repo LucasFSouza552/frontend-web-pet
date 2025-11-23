@@ -350,7 +350,7 @@ interface PetFormModalProps {
         gender: string;
         weight: string;
         description: string;
-        images: File[];
+        images: File[] | string[];
     };
     imagePreviews: string[];
     creatingPet: boolean;

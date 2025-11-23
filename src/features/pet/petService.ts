@@ -104,6 +104,7 @@ export const petService = {
     },
     async updateImages(petId: string, formData: FormData) {
         try {
+            console.log(formData);
             const response = await api.post(`/pet/${petId}/avatar`, formData, {
                 headers: { "Content-Type": "multipart/form-data" }
             });

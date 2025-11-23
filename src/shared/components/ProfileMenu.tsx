@@ -32,7 +32,7 @@ const ProfileMenuContainer = styled.div`
 
   &:hover {
     background-color:  #dfdfdf;
-  }
+}
 `;
 
 export default function ProfileMenu() {
