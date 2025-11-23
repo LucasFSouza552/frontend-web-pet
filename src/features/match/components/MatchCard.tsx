@@ -32,7 +32,6 @@ export default function MatchCard({ Pet }: { Pet: IPet }) {
     return (
         <CardContainer>
             <CardDetails>
-
                 <PetPictureContainer onClick={handleClick}>
                     <PetImageSection>{Pet.images.map((_, index) => {
                         return <span className={imagePage === index ? "active" : ""}></span>

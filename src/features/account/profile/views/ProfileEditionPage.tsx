@@ -525,7 +525,6 @@ const AvatarImage = styled.img`
     height: 100%;
     object-fit: cover;
     background-color: white;
-    padding: 10px;
 `;
 
 const AvatarOverlay = styled.div`
