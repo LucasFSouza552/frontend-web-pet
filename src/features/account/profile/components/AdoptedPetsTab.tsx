@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import type IPet from "@models/Pet";
+import type { IAccount } from "@models/Account";
 import animationFile from "@assets/lottie/loading.lottie?url";
 import PetDetailCard from "./PetDetailCard";
 import { FaPlus, FaEdit } from "react-icons/fa";
@@ -15,9 +16,17 @@ import DeletePetModal from "./AdoptedPetsTab/components/DeletePetModal";
 interface AdoptedPetsTabProps {
     accountId?: string;
     accountRole?: "user" | "admin" | "institution";
+    currentAccount?: IAccount | null;
 }
 
-export default function AdoptedPetsTab({ accountId, accountRole }: AdoptedPetsTabProps) {
+export default function AdoptedPetsTab({ accountId, accountRole, currentAccount }: AdoptedPetsTabProps) {
+    const isOwner = Boolean(
+        currentAccount?.id && 
+        accountId && 
+        String(currentAccount.id) === String(accountId) && 
+        accountRole === "institution" &&
+        currentAccount.role === "institution"
+    );
     const [showAddPetModal, setShowAddPetModal] = useState(false);
     const [showEditPetModal, setShowEditPetModal] = useState(false);
     const [editingPet, setEditingPet] = useState<IPet | null>(null);
@@ -106,7 +115,7 @@ export default function AdoptedPetsTab({ accountId, accountRole }: AdoptedPetsTa
         <ContentContainer>
             <HeaderContainer>
                 <h2>{accountRole === "institution" ? "Pets na instituição" : "Pets Adotados"}</h2>
-                {accountRole === "institution" && (
+                {isOwner && (
                     <AddPetButton onClick={() => setShowAddPetModal(true)}>
                         <FaPlus size={16} />
                         Adicionar Pet
@@ -122,10 +131,13 @@ export default function AdoptedPetsTab({ accountId, accountRole }: AdoptedPetsTa
                 <PetsGrid>
                     {adoptedPets.map((pet, index) => (
                         <PetCardWrapper key={index}>
-                            {accountRole === "institution" && (
-                                <EditPetIconButton onClick={() => handleEditPet(pet)}>
-                                    <FaEdit size={18} />
-                                </EditPetIconButton>
+                            {isOwner && (
+                                <PetActionsBar>
+                                    <EditPetButton onClick={() => handleEditPet(pet)}>
+                                        <FaEdit size={16} />
+                                        Editar
+                                    </EditPetButton>
+                                </PetActionsBar>
                             )}
                             <PetDetailCard pet={pet} adoptionRequestsCount={0} />
                         </PetCardWrapper>
@@ -216,40 +228,41 @@ const AddPetButton = styled.button`
 `;
 
 const PetCardWrapper = styled.div`
-    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
 `;
 
-const EditPetIconButton = styled.button`
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    width: 44px;
-    height: 44px;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    color: white;
+const PetActionsBar = styled.div`
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    padding: 0.5rem 0;
+`;
+
+const EditPetButton = styled.button`
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background-color: ${({ theme }) => theme.colors.primary || "#B648A0"};
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 15;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(182, 72, 160, 0.3);
 
     &:hover {
-        background: ${({ theme }) => theme.colors.primary || "#B648A0"};
-        border-color: ${({ theme }) => theme.colors.primary || "#B648A0"};
-        transform: scale(1.1);
-        box-shadow: 0 6px 20px rgba(182, 72, 160, 0.4);
+        background-color: rgba(182, 72, 160, 0.9);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(182, 72, 160, 0.4);
     }
 
     &:active {
-        transform: scale(1.05);
+        transform: translateY(0);
     }
 `;
 

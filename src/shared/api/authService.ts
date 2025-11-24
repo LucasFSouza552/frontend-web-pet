@@ -44,9 +44,9 @@ export const authService = {
         }
     },
 
-    async resetPassword(token: string) {
+    async resetPassword(token: string, password: string) {
         try {
-            const response = await api.post("/auth/reset-password", { token });
+            const response = await api.post("/auth/reset-password", { token, password });
             return response.data;
         } catch (error) {
             if (error instanceof ThrowError) {

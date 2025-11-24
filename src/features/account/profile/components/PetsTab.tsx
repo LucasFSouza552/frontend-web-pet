@@ -8,7 +8,6 @@ import type IPet from "@models/Pet";
 import type { IAccount } from "@models/Account";
 import PetDetailCard from "./PetDetailCard";
 import animationFile from "@assets/lottie/loading.lottie?url";
-import { FaCheck, FaTimes } from "react-icons/fa";
 
 interface AdoptionRequest {
     account: IAccount;
@@ -26,13 +25,20 @@ interface PetWithRequests extends IPet {
 interface PetsTabProps {
     accountId?: string;
     accountRole?: "user" | "admin" | "institution";
+    currentAccount?: IAccount | null;
 }
 
-export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
+export default function PetsTab({ accountId, accountRole, currentAccount }: PetsTabProps) {
+    const isOwner = Boolean(
+        currentAccount?.id && 
+        accountId && 
+        String(currentAccount.id) === String(accountId) && 
+        accountRole === "institution" &&
+        currentAccount.role === "institution"
+    );
     const [desiredPets, setDesiredPets] = useState<PetWithRequests[]>([]);
     const [loadingPets, setLoadingPets] = useState(false);
     const [processingRequest, setProcessingRequest] = useState<string | null>(null);
-    const [selectedPet, setSelectedPet] = useState<PetWithRequests | null>(null);
 
     const loadDesiredPets = useCallback(async () => {
         if (!accountId) return;
@@ -87,9 +93,7 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
             setProcessingRequest(`${petId}-${adopterAccountId}`);
             await petService.acceptPetAdoption(petId, adopterAccountId);
             await loadDesiredPets();
-            setSelectedPet(null);
         } catch (error) {
-            console.error("Erro ao aceitar adoção:", error);
         } finally {
             setProcessingRequest(null);
         }
@@ -100,9 +104,7 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
             setProcessingRequest(`${petId}-${adopterAccountId}`);
             await petService.rejectPetAdoption(petId, adopterAccountId);
             await loadDesiredPets();
-            setSelectedPet(null);
         } catch (error) {
-            console.error("Erro ao rejeitar adoção:", error);
         } finally {
             setProcessingRequest(null);
         }
@@ -139,175 +141,24 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
             ) : (
                 <PetsContainer>
                     {desiredPets.map((pet, index) => (
-                        <PetSection className="pet-section" key={`${pet.id}-${index}`}>
+                        <PetSection className="pet-section" key={pet.id || `pet-${index}`}>
                             <PetDetailCard
-                                handleModalRequests={(e) => {
-                                    e?.stopPropagation();
-                                    setSelectedPet(pet);
-                                }}
                                 pet={pet}
                                 adoptionRequestsCount={pet.requestsCount}
+                                adoptionRequests={pet.requests}
+                                isOwner={isOwner}
+                                onAcceptAdoption={isOwner ? handleAcceptAdoption : undefined}
+                                onRejectAdoption={isOwner ? handleRejectAdoption : undefined}
+                                processingRequest={processingRequest}
                             />
                         </PetSection>
                     ))}
                 </PetsContainer>
             )}
-            {selectedPet && (
-                <ModalRequestsContainer>
-                    <ModalContent>
-                        <RequestsModalHeader>
-                            <ModalRequestsTitle>Solicitações de Adoção</ModalRequestsTitle>
-                            <ModalCloseButton onClick={() => { setSelectedPet(null); }}>
-                                Fechar
-                            </ModalCloseButton>
-                        </RequestsModalHeader>
-                        <ModalRequestsList>
-                            {selectedPet?.requests?.map((request, index) => {
-                                const account = (request as any)?.account as IAccount | undefined;
-                                const reqId = `${selectedPet.id}-${account?.id || index}`;
-                                const isProcessing = processingRequest === reqId;
-                                return (
-                                    <ModalRequestCard key={request.id || index}>
-                                        <h3>{account?.name || "Usuário"}</h3>
-                                        {account?.email && <span>{account.email}</span>}
-                                        {request.createdAt && (
-                                            <small>Solicitado em: {new Date(request.createdAt).toLocaleDateString("pt-BR")}</small>
-                                        )}
-                                        <ModalActions>
-                                            <ModalAcceptButton
-                                                onClick={() => account?.id && handleAcceptAdoption(selectedPet.id, account.id)}
-                                                disabled={isProcessing || !account?.id}
-                                            >
-                                                <FaCheck size={14} />
-                                                Aceitar
-                                            </ModalAcceptButton>
-                                            <ModalRejectButton
-                                                onClick={() => account?.id && handleRejectAdoption(selectedPet.id, account.id)}
-                                                disabled={isProcessing || !account?.id}
-                                            >
-                                                <FaTimes size={14} />
-                                                Negar
-                                            </ModalRejectButton>
-                                        </ModalActions>
-                                    </ModalRequestCard>
-                                );
-                            })}
-                        </ModalRequestsList>
-                    </ModalContent>
-                </ModalRequestsContainer>
-            )}
         </ContentContainer>
     );
 }
 
-const ModalRequestsContainer = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 20;
-`;
-const ModalContent = styled.div`
-    width: 90%;
-    max-width: 640px;
-    background: ${({ theme }) => theme.colors.quarternary || "rgba(0, 0, 0, 0.9)"};
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 1rem;
-    color: white;
-`;
-const RequestsModalHeader = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-`;
-const ModalRequestsTitle = styled.h3`
-    margin: 0;
-    font-size: 1.25rem;
-`;
-const ModalCloseButton = styled.button`
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    border-radius: 8px;
-    padding: 0.5rem 0.75rem;
-    cursor: pointer;
-`;
-const ModalRequestsList = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-`;
-const ModalRequestCard = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    h3 {
-        margin: 0;
-        font-size: 1rem;
-    }
-    span {
-        font-size: 0.875rem;
-        opacity: 0.8;
-    }
-    small {
-        font-size: 0.75rem;
-        opacity: 0.6;
-    }
-`;
-const ModalActions = styled.div`
-    margin-top: 0.5rem;
-    display: flex;
-    gap: 0.5rem;
-`;
-const baseModalBtn = `
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 0.75rem;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.875rem;
-`;
-const ModalAcceptButton = styled.button`
-    ${baseModalBtn}
-    background-color: #10b981;
-    color: white;
-    &:hover:not(:disabled) {
-        background-color: #059669;
-        transform: translateY(-1px);
-    }
-    &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-`;
-const ModalRejectButton = styled.button`
-    ${baseModalBtn}
-    background-color: #ef4444;
-    color: white;
-    &:hover:not(:disabled) {
-        background-color: #dc2626;
-        transform: translateY(-1px);
-    }
-    &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-`;
 const ContentContainer = styled.div`
     width: 100%;
     display: flex;

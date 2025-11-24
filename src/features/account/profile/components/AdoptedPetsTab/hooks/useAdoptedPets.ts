@@ -18,7 +18,6 @@ export function useAdoptedPets(accountId?: string, accountRole?: "user" | "admin
                 setAdoptedPets(pets);
             }
         } catch (error) {
-            console.error("Erro ao carregar pets:", error);
             setAdoptedPets([]);
         } finally {
             setLoadingPets(false);

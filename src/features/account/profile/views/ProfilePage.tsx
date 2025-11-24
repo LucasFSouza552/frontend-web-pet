@@ -56,9 +56,9 @@ export default function ProfileSection() {
             case "posts":
                 return <PostsTab account={viewedAccount} profileAccountId={profileAccountId} />;
             case "pets":
-                return <PetsTab accountId={viewedAccount?.id} accountRole={viewedAccount?.role} />;
+                return <PetsTab accountId={viewedAccount?.id} accountRole={viewedAccount?.role} currentAccount={account} />;
             case "adopted":
-                return <AdoptedPetsTab accountId={viewedAccount?.id} accountRole={viewedAccount?.role} />;
+                return <AdoptedPetsTab accountId={viewedAccount?.id} accountRole={viewedAccount?.role} currentAccount={account} />;
             case "history":
                 return <HistoryTab />;
             default:

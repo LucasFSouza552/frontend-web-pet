@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import useManagePostController from "../controller/useManagePostController";
-import { FaArrowRight, FaShareAlt, FaUser, FaTrash, FaTimes, FaEdit } from "react-icons/fa";
+import { FaArrowRight, FaShareAlt, FaUser, FaTrash, FaTimes, FaEdit, FaCheck } from "react-icons/fa";
 import { useState } from "react";
 
 interface PostModalProps {
@@ -19,57 +19,96 @@ export default function PostModal({ postId, moreOptions = false, closeModal, han
 
     const { handleDeletePost } = useManagePostController();
 
-    const [/*unused*/_] = useState(initialContent || "");
+    const [_] = useState(initialContent || "");
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [deletingPost, setDeletingPost] = useState(false);
 
     const goToPost = () => {
         navigate(`/post/${postId}`);
     }
 
+    const handleDeleteClick = () => {
+        setShowDeleteConfirm(true);
+    }
+
+    const handleConfirmDelete = async () => {
+        setDeletingPost(true);
+        try {
+            await handleDeletePost(postId);
+            setShowDeleteConfirm(false);
+            closeModal("");
+        } catch (error) {
+        } finally {
+            setDeletingPost(false);
+        }
+    }
+
+    const handleCancelDelete = () => {
+        setShowDeleteConfirm(false);
+    }
+
     return (
-        <PostModalContainer>
-            <CloseButton onClick={() => closeModal("")} aria-label="Fechar">
-                <FaTimes />
-            </CloseButton>
-            <ModalContent>
-                <ModalButton onClick={goToPost}>
-                    <FaArrowRight />
-                    <span>Ir para o post</span>
-                </ModalButton>
-                <Separator />
-                <ModalButton onClick={handleShare}>
-                    <FaShareAlt />
-                    <span>Compartilhar</span>
-                </ModalButton>
-                <Separator />
-                <ModalButton onClick={() => handleAbout(postId)}>
-                    <FaUser />
-                    <span>Sobre a conta</span>
-                </ModalButton>
-                {moreOptions && (
-                    <>
-                        <Separator />
-                        <ModalButton onClick={() => { onEditPost && onEditPost(postId); closeModal(""); }}>
-                            <FaEdit />
-                            <span>Editar post</span>
-                        </ModalButton>
-                        <Separator />
-                        <ModalButton $danger onClick={() => handleDeletePost(postId)}>
-                            <FaTrash />
-                            <span>Excluir</span>
-                        </ModalButton>
-                    </>
-                )}
-                <CancelButton onClick={() => closeModal("")}>
-                    Cancelar
-                </CancelButton>
-            </ModalContent>
-        </PostModalContainer>
+        <>
+            <PostModalContainer>
+                <CloseButton onClick={() => closeModal("")} aria-label="Fechar">
+                    <FaTimes />
+                </CloseButton>
+                <ModalContent>
+                    <ModalButton onClick={goToPost}>
+                        <FaArrowRight />
+                        <span>Ir para o post</span>
+                    </ModalButton>
+                    <Separator />
+                    <ModalButton onClick={handleShare}>
+                        <FaShareAlt />
+                        <span>Compartilhar</span>
+                    </ModalButton>
+                    <Separator />
+                    <ModalButton onClick={() => handleAbout(postId)}>
+                        <FaUser />
+                        <span>Sobre a conta</span>
+                    </ModalButton>
+                    {moreOptions && (
+                        <>
+                            <Separator />
+                            <ModalButton onClick={() => { onEditPost && onEditPost(postId); closeModal(""); }}>
+                                <FaEdit />
+                                <span>Editar post</span>
+                            </ModalButton>
+                            <Separator />
+                            {!showDeleteConfirm ? (
+                                <ModalButton $danger onClick={handleDeleteClick}>
+                                    <FaTrash />
+                                    <span>Excluir</span>
+                                </ModalButton>
+                            ) : (
+                                <DeleteConfirmContainer>
+                                    <DeleteConfirmText>Tem certeza?</DeleteConfirmText>
+                                    <DeleteConfirmActions>
+                                        <DeleteConfirmButton onClick={handleConfirmDelete} disabled={deletingPost}>
+                                            <FaCheck size={14} />
+                                            {deletingPost ? "Excluindo..." : "Confirmar"}
+                                        </DeleteConfirmButton>
+                                        <DeleteCancelButton onClick={handleCancelDelete} disabled={deletingPost}>
+                                            <FaTimes size={14} />
+                                            Cancelar
+                                        </DeleteCancelButton>
+                                    </DeleteConfirmActions>
+                                </DeleteConfirmContainer>
+                            )}
+                        </>
+                    )}
+                    <CancelButton onClick={() => closeModal("")}>
+                        Cancelar
+                    </CancelButton>
+                </ModalContent>
+            </PostModalContainer>
+        </>
     );
 }
 
 const PostModalContainer = styled.div`
     position: absolute;
-
     right: -1%;
     top: 0px;
     z-index: 30;
@@ -222,5 +261,79 @@ const CancelButton = styled.button`
 
     &:active {
         transform: translateY(0);
+    }
+`;
+
+const DeleteConfirmContainer = styled.div`
+    padding: 12px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 10px;
+    margin: 4px 0;
+`;
+
+const DeleteConfirmText = styled.p`
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #ef4444;
+    font-weight: 600;
+    text-align: center;
+`;
+
+const DeleteConfirmActions = styled.div`
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+`;
+
+const DeleteConfirmButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #ef4444;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+        background: #dc2626;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+`;
+
+const DeleteCancelButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
     }
 `;
