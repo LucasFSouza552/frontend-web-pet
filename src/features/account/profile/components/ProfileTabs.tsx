@@ -29,12 +29,14 @@ export default function ProfileTabs({ activeTab, onTabChange, accountRole }: Pro
             >
                 {accountRole === "institution" ? "Pets na instituição" : "Pets Adotados"}
             </TabButton>
-            <TabButton 
-                active={activeTab === "history"} 
-                onClick={() => onTabChange("history")}
-            >
-                Histórico
-            </TabButton>
+            {accountRole !== "institution" && (
+                <TabButton 
+                    active={activeTab === "history"} 
+                    onClick={() => onTabChange("history")}
+                >
+                    Histórico
+                </TabButton>
+            )}
         </TabsContainer>
     );
 }

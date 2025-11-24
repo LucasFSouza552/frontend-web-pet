@@ -8,7 +8,8 @@ import type IPet from "@models/Pet";
 import type { IAccount } from "@models/Account";
 import PetDetailCard from "./PetDetailCard";
 import animationFile from "@assets/lottie/loading.lottie?url";
-import { FaCheck, FaTimes } from "react-icons/fa";
+import { FaCheck, FaTimes, FaUser, FaEnvelope, FaPhone, FaCalendar, FaMapMarkerAlt } from "react-icons/fa";
+import { pictureService } from "@api/pictureService";
 
 interface AdoptionRequest {
     account: IAccount;
@@ -26,9 +27,17 @@ interface PetWithRequests extends IPet {
 interface PetsTabProps {
     accountId?: string;
     accountRole?: "user" | "admin" | "institution";
+    currentAccount?: IAccount | null;
 }
 
-export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
+export default function PetsTab({ accountId, accountRole, currentAccount }: PetsTabProps) {
+    const isOwner = Boolean(
+        currentAccount?.id && 
+        accountId && 
+        String(currentAccount.id) === String(accountId) && 
+        accountRole === "institution" &&
+        currentAccount.role === "institution"
+    );
     const [desiredPets, setDesiredPets] = useState<PetWithRequests[]>([]);
     const [loadingPets, setLoadingPets] = useState(false);
     const [processingRequest, setProcessingRequest] = useState<string | null>(null);
@@ -89,7 +98,6 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
             await loadDesiredPets();
             setSelectedPet(null);
         } catch (error) {
-            console.error("Erro ao aceitar adoção:", error);
         } finally {
             setProcessingRequest(null);
         }
@@ -102,7 +110,6 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
             await loadDesiredPets();
             setSelectedPet(null);
         } catch (error) {
-            console.error("Erro ao rejeitar adoção:", error);
         } finally {
             setProcessingRequest(null);
         }
@@ -141,10 +148,10 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
                     {desiredPets.map((pet, index) => (
                         <PetSection className="pet-section" key={`${pet.id}-${index}`}>
                             <PetDetailCard
-                                handleModalRequests={(e) => {
+                                handleModalRequests={isOwner ? (e) => {
                                     e?.stopPropagation();
                                     setSelectedPet(pet);
-                                }}
+                                } : undefined}
                                 pet={pet}
                                 adoptionRequestsCount={pet.requestsCount}
                             />
@@ -152,46 +159,115 @@ export default function PetsTab({ accountId, accountRole }: PetsTabProps) {
                     ))}
                 </PetsContainer>
             )}
-            {selectedPet && (
-                <ModalRequestsContainer>
-                    <ModalContent>
+            {selectedPet && isOwner && (
+                <ModalRequestsContainer onClick={() => setSelectedPet(null)}>
+                    <ModalContent onClick={(e) => e.stopPropagation()}>
                         <RequestsModalHeader>
-                            <ModalRequestsTitle>Solicitações de Adoção</ModalRequestsTitle>
+                            <ModalHeaderInfo>
+                                <ModalRequestsTitle>Interessados em {selectedPet.name}</ModalRequestsTitle>
+                                <ModalRequestsSubtitle>
+                                    {selectedPet.requests?.length || 0} {selectedPet.requests?.length === 1 ? "pessoa interessada" : "pessoas interessadas"}
+                                </ModalRequestsSubtitle>
+                            </ModalHeaderInfo>
                             <ModalCloseButton onClick={() => { setSelectedPet(null); }}>
-                                Fechar
+                                <FaTimes size={16} />
                             </ModalCloseButton>
                         </RequestsModalHeader>
                         <ModalRequestsList>
-                            {selectedPet?.requests?.map((request, index) => {
-                                const account = (request as any)?.account as IAccount | undefined;
-                                const reqId = `${selectedPet.id}-${account?.id || index}`;
-                                const isProcessing = processingRequest === reqId;
-                                return (
-                                    <ModalRequestCard key={request.id || index}>
-                                        <h3>{account?.name || "Usuário"}</h3>
-                                        {account?.email && <span>{account.email}</span>}
-                                        {request.createdAt && (
-                                            <small>Solicitado em: {new Date(request.createdAt).toLocaleDateString("pt-BR")}</small>
-                                        )}
-                                        <ModalActions>
-                                            <ModalAcceptButton
-                                                onClick={() => account?.id && handleAcceptAdoption(selectedPet.id, account.id)}
-                                                disabled={isProcessing || !account?.id}
-                                            >
-                                                <FaCheck size={14} />
-                                                Aceitar
-                                            </ModalAcceptButton>
-                                            <ModalRejectButton
-                                                onClick={() => account?.id && handleRejectAdoption(selectedPet.id, account.id)}
-                                                disabled={isProcessing || !account?.id}
-                                            >
-                                                <FaTimes size={14} />
-                                                Negar
-                                            </ModalRejectButton>
-                                        </ModalActions>
-                                    </ModalRequestCard>
-                                );
-                            })}
+                            {selectedPet?.requests && selectedPet.requests.length > 0 ? (
+                                selectedPet.requests.map((request, index) => {
+                                    const account = (request as any)?.account as IAccount | undefined;
+                                    const reqId = `${selectedPet.id}-${account?.id || index}`;
+                                    const isProcessing = processingRequest === reqId;
+                                    const avatarUrl = account?.avatar ? pictureService.fetchPicture(account.avatar) : null;
+                                    
+                                    return (
+                                        <ModalRequestCard key={request.id || index}>
+                                            <RequestCardHeader>
+                                                <UserAvatarContainer>
+                                                    {avatarUrl ? (
+                                                        <UserAvatar src={avatarUrl} alt={account?.name || "Usuário"} />
+                                                    ) : (
+                                                        <UserAvatarPlaceholder>
+                                                            <FaUser size={24} />
+                                                        </UserAvatarPlaceholder>
+                                                    )}
+                                                </UserAvatarContainer>
+                                                <UserInfo>
+                                                    <UserName>{account?.name || "Usuário"}</UserName>
+                                                    {account?.email && (
+                                                        <UserDetail>
+                                                            <FaEnvelope size={12} />
+                                                            {account.email}
+                                                        </UserDetail>
+                                                    )}
+                                                </UserInfo>
+                                            </RequestCardHeader>
+                                            
+                                            <RequestCardDetails>
+                                                {account?.phone_number && (
+                                                    <DetailRow>
+                                                        <DetailIcon>
+                                                            <FaPhone size={14} />
+                                                        </DetailIcon>
+                                                        <DetailText>{account.phone_number}</DetailText>
+                                                    </DetailRow>
+                                                )}
+                                                {account?.address && (
+                                                    <DetailRow>
+                                                        <DetailIcon>
+                                                            <FaMapMarkerAlt size={14} />
+                                                        </DetailIcon>
+                                                        <DetailText>
+                                                            {[
+                                                                account.address.city,
+                                                                account.address.state
+                                                            ].filter(Boolean).join(", ") || "Localização não informada"}
+                                                        </DetailText>
+                                                    </DetailRow>
+                                                )}
+                                                {request.createdAt && (
+                                                    <DetailRow>
+                                                        <DetailIcon>
+                                                            <FaCalendar size={14} />
+                                                        </DetailIcon>
+                                                        <DetailText>
+                                                            Solicitado em {new Date(request.createdAt).toLocaleDateString("pt-BR", {
+                                                                day: "2-digit",
+                                                                month: "long",
+                                                                year: "numeric"
+                                                            })}
+                                                        </DetailText>
+                                                    </DetailRow>
+                                                )}
+                                            </RequestCardDetails>
+                                            
+                                            {isOwner && (
+                                                <ModalActions>
+                                                    <ModalAcceptButton
+                                                        onClick={() => account?.id && handleAcceptAdoption(selectedPet.id, account.id)}
+                                                        disabled={isProcessing || !account?.id}
+                                                    >
+                                                        <FaCheck size={14} />
+                                                        {isProcessing ? "Processando..." : "Aceitar"}
+                                                    </ModalAcceptButton>
+                                                    <ModalRejectButton
+                                                        onClick={() => account?.id && handleRejectAdoption(selectedPet.id, account.id)}
+                                                        disabled={isProcessing || !account?.id}
+                                                    >
+                                                        <FaTimes size={14} />
+                                                        {isProcessing ? "Processando..." : "Recusar"}
+                                                    </ModalRejectButton>
+                                                </ModalActions>
+                                            )}
+                                        </ModalRequestCard>
+                                    );
+                                })
+                            ) : (
+                                <EmptyRequestsMessage>
+                                    Nenhuma solicitação de adoção encontrada para este pet.
+                                </EmptyRequestsMessage>
+                            )}
                         </ModalRequestsList>
                     </ModalContent>
                 </ModalRequestsContainer>
@@ -206,69 +282,208 @@ const ModalRequestsContainer = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 20;
-`;
-const ModalContent = styled.div`
-    width: 90%;
-    max-width: 640px;
-    background: ${({ theme }) => theme.colors.quarternary || "rgba(0, 0, 0, 0.9)"};
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    z-index: 1000;
     padding: 1rem;
-    color: white;
+    overflow-y: auto;
+    backdrop-filter: blur(5px);
 `;
+
+const ModalContent = styled.div`
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    background: ${({ theme }) => theme.colors.quarternary || "rgba(0, 0, 0, 0.95)"};
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    color: white;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+    
+    @media (max-width: 768px) {
+        padding: 1rem;
+        max-height: 95vh;
+    }
+`;
+
 const RequestsModalHeader = styled.div`
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 `;
+
+const ModalHeaderInfo = styled.div`
+    flex: 1;
+`;
+
 const ModalRequestsTitle = styled.h3`
-    margin: 0;
-    font-size: 1.25rem;
+    margin: 0 0 0.25rem 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
 `;
+
+const ModalRequestsSubtitle = styled.p`
+    margin: 0;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+`;
+
 const ModalCloseButton = styled.button`
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
     color: white;
     border-radius: 8px;
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    width: 36px;
+    height: 36px;
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
+    }
 `;
+
 const ModalRequestsList = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
 `;
+
 const ModalRequestCard = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    background: rgba(0, 0, 0, 0.3);
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    h3 {
-        margin: 0;
-        font-size: 1rem;
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
-    span {
-        font-size: 0.875rem;
-        opacity: 0.8;
-    }
-    small {
-        font-size: 0.75rem;
+`;
+
+const RequestCardHeader = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+`;
+
+const UserAvatarContainer = styled.div`
+    flex-shrink: 0;
+`;
+
+const UserAvatar = styled.img`
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
+`;
+
+const UserAvatarPlaceholder = styled.div`
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.colors.primary || "#B648A0"};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border: 2px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
+`;
+
+const UserInfo = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+`;
+
+const UserName = styled.h4`
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: white;
+`;
+
+const UserDetail = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    
+    svg {
         opacity: 0.6;
     }
 `;
-const ModalActions = styled.div`
-    margin-top: 0.5rem;
+
+const RequestCardDetails = styled.div`
     display: flex;
-    gap: 0.5rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+`;
+
+const DetailRow = styled.div`
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+`;
+
+const DetailIcon = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: ${({ theme }) => theme.colors.primary || "#B648A0"};
+    flex-shrink: 0;
+    margin-top: 2px;
+`;
+
+const DetailText = styled.span`
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+    flex: 1;
+`;
+
+const ModalActions = styled.div`
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    
+    @media (max-width: 480px) {
+        flex-direction: column;
+    }
+`;
+
+const EmptyRequestsMessage = styled.div`
+    text-align: center;
+    padding: 3rem 2rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1rem;
 `;
 const baseModalBtn = `
     display: inline-flex;
