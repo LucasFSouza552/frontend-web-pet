@@ -79,7 +79,7 @@ export const postService = {
     },
     async searchPosts(query: string, page: number = 1, limit: number = 10) {
         try {
-            const response = await api.get(`/post/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
+            const response = await api.get(`/post/search?content=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
             return response.data;
         } catch (error) {
             if (error instanceof ThrowError) {
