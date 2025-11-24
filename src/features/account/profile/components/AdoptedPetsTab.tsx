@@ -5,7 +5,7 @@ import type IPet from "@models/Pet";
 import type { IAccount } from "@models/Account";
 import animationFile from "@assets/lottie/loading.lottie?url";
 import PetDetailCard from "./PetDetailCard";
-import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import { FaPlus, FaEdit } from "react-icons/fa";
 import { useToast } from "@contexts/ToastContext";
 import { petService } from "@/features/pet/petService";
 import { useAdoptedPets } from "./AdoptedPetsTab/hooks/useAdoptedPets";
@@ -137,10 +137,6 @@ export default function AdoptedPetsTab({ accountId, accountRole, currentAccount 
                                         <FaEdit size={16} />
                                         Editar
                                     </EditPetButton>
-                                    <DeletePetButton onClick={() => handleDeletePet(pet)}>
-                                        <FaTrash size={16} />
-                                        Deletar
-                                    </DeletePetButton>
                                 </PetActionsBar>
                             )}
                             <PetDetailCard pet={pet} adoptionRequestsCount={0} />
@@ -263,32 +259,6 @@ const EditPetButton = styled.button`
         background-color: rgba(182, 72, 160, 0.9);
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(182, 72, 160, 0.4);
-    }
-
-    &:active {
-        transform: translateY(0);
-    }
-`;
-
-const DeletePetButton = styled.button`
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1.25rem;
-    background-color: #ef4444;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-
-    &:hover {
-        background-color: #dc2626;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
     }
 
     &:active {

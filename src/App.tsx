@@ -7,6 +7,8 @@ import ToastContainer from "@components/Toast"
 import HomePage from "@features/home/views/HomePage"
 import LoginPage from "@features/account/auth/views/LoginPage"
 import ForgotPasswordPage from "@features/account/forgotPassword/views/forgotPasswordPage"
+import ResetPasswordPage from "@features/account/forgotPassword/views/ResetPasswordPage"
+import ValidateEmailPage from "@features/account/auth/views/ValidateEmailPage"
 import ProfilePage from "@features/account/profile/views/ProfilePage"
 import RegisterPage from "@features/account/auth/views/RegisterPage"
 import MatchPage from "./features/match/views/matchPage"
@@ -40,6 +42,8 @@ function App() {
         <Route path="/donate-institution/:id" element={<InstitutePage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/profile-edition" element={<ProfileEditionPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/validate-email" element={<ValidateEmailPage />} />
       </NavigationRouter>
     </ThemeProvider>
   )
