@@ -52,8 +52,6 @@ export default function PetDetailCard({
     const [localAdoptionRequests, setLocalAdoptionRequests] = useState<AdoptionRequest[]>(adoptionRequests);
 
     useEffect(() => {
-        // Só atualiza os requests locais se o modal estiver fechado
-        // Isso evita que o modal feche quando os dados são recarregados
         if (!showDetailsModal) {
             setLocalAdoptionRequests(adoptionRequests);
         }
@@ -67,7 +65,6 @@ export default function PetDetailCard({
     const handleCardClick = () => {
         setShowDetailsModal(true);
         setModalImageIndex(0);
-        // Garante que os requests locais estão atualizados quando o modal abre
         setLocalAdoptionRequests(adoptionRequests);
     };
 
@@ -122,20 +119,14 @@ export default function PetDetailCard({
 
     const handleLocalAcceptAdoption = async (petId: string, adopterAccountId: string) => {
         if (onAcceptAdoption) {
-            // Remove o request da lista local primeiro para feedback imediato
             setLocalAdoptionRequests(prev => prev.filter(req => req.account?.id !== adopterAccountId));
-            // Depois chama a função original (que recarrega a lista)
             await onAcceptAdoption(petId, adopterAccountId);
         }
     };
 
     const handleLocalRejectAdoption = async (petId: string, adopterAccountId: string) => {
         if (onRejectAdoption) {
-            // Remove o request da lista local primeiro para feedback imediato
-            // Isso mantém o modal aberto mesmo quando a lista é recarregada
             setLocalAdoptionRequests(prev => prev.filter(req => req.account?.id !== adopterAccountId));
-            // Depois chama a função original (que recarrega a lista)
-            // O modal permanece aberto porque o estado showDetailsModal não é afetado
             await onRejectAdoption(petId, adopterAccountId);
         }
     };
@@ -158,9 +149,9 @@ export default function PetDetailCard({
                                 ))}
                             </ImageIndicator>
                         )}
-                        <ImageOverlay>
+                       {pet.images.length > 1 && <ImageOverlay>
                             <ImageCounter>{imagePage + 1} / {pet.images.length}</ImageCounter>
-                        </ImageOverlay>
+                        </ImageOverlay>}
                     </>
                 )}
                 {pet.adopted && (
@@ -188,12 +179,6 @@ export default function PetDetailCard({
                         )}
                     </GenderIcon>
                 </HeaderSection>
-
-                {pet.description && (
-                    <DescriptionSection>
-                        <DescriptionText>{pet.description}</DescriptionText>
-                    </DescriptionSection>
-                )}
 
                 <DetailsGrid>
                     {pet.weight && (
@@ -320,13 +305,6 @@ export default function PetDetailCard({
                                     )}
                                 </ModalGenderIcon>
                             </ModalPetHeader>
-
-                            {pet.description && (
-                                <ModalDescription>
-                                    <ModalDescriptionTitle>Descrição</ModalDescriptionTitle>
-                                    <ModalDescriptionText>{pet.description}</ModalDescriptionText>
-                                </ModalDescription>
-                            )}
 
                             <ModalDetailsGrid>
                                 {pet.weight && (
@@ -520,10 +498,10 @@ export default function PetDetailCard({
 }
 
 const CardContainer = styled.div`
-    width: 100%;
-    max-width: 500px;
-    width: 500;
+    width: 450px;
+    max-width: 450px;
     min-width: 450px;
+    height: fit-content;
     
     background: linear-gradient(135deg, ${({ theme }) => theme.colors.quarternary} 0%, ${({ theme }) => theme.colors.quinary} 100%);
     border-radius: 24px;
@@ -540,6 +518,12 @@ const CardContainer = styled.div`
         transform: translateY(-8px);
         box-shadow: 0 12px 48px rgba(182, 72, 160, 0.3);
         z-index: 10;
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
+        max-width: 100%;
+        min-width: unset;
     }
 `;
 
@@ -675,20 +659,6 @@ const GenderIcon = styled.div`
     border-radius: 12px;
     padding: 12px;
     backdrop-filter: blur(10px);
-`;
-
-const DescriptionSection = styled.div`
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    border-left: 3px solid ${({ theme }) => theme.colors.primary};
-`;
-
-const DescriptionText = styled.p`
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin: 0;
 `;
 
 const DetailsGrid = styled.div`
@@ -1020,27 +990,6 @@ const ModalGenderIcon = styled.div`
     border-radius: 12px;
     padding: 12px;
     backdrop-filter: blur(10px);
-`;
-
-const ModalDescription = styled.div`
-    padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    border-left: 4px solid ${({ theme }) => theme.colors.primary};
-`;
-
-const ModalDescriptionTitle = styled.h3`
-    color: ${({ theme }) => theme.colors.primary};
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0 0 0.75rem 0;
-`;
-
-const ModalDescriptionText = styled.p`
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1rem;
-    line-height: 1.6;
-    margin: 0;
 `;
 
 const ModalDetailsGrid = styled.div`
