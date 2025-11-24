@@ -1,4 +1,7 @@
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { ProfileContext } from "@contexts/ProfileContext";
+import { useContext, useEffect } from "react";
 
 export type TabType = "posts" | "pets" | "adopted" | "history";
 
@@ -9,32 +12,35 @@ interface ProfileTabsProps {
 }
 
 export default function ProfileTabs({ activeTab, onTabChange, accountRole }: ProfileTabsProps) {
+    const profileAccountId = useParams().username;
+    const { account } = useContext(ProfileContext);
+
     return (
         <TabsContainer>
-            <TabButton 
-                active={activeTab === "posts"} 
+            <TabButton
+                active={activeTab === "posts"}
                 onClick={() => onTabChange("posts")}
             >
                 Publicações
             </TabButton>
-            <TabButton 
-                active={activeTab === "pets"} 
+            <TabButton
+                active={activeTab === "pets"}
                 onClick={() => onTabChange("pets")}
             >
                 Pets Desejados
             </TabButton>
-            <TabButton 
-                active={activeTab === "adopted"} 
+            <TabButton
+                active={activeTab === "adopted"}
                 onClick={() => onTabChange("adopted")}
             >
                 {accountRole === "institution" ? "Pets na instituição" : "Pets Adotados"}
             </TabButton>
-            <TabButton 
-                active={activeTab === "history"} 
+            {account?.id === profileAccountId && <TabButton
+                active={activeTab === "history"}
                 onClick={() => onTabChange("history")}
             >
                 Histórico
-            </TabButton>
+            </TabButton>}
         </TabsContainer>
     );
 }
@@ -53,7 +59,7 @@ const TabsContainer = styled.div`
 const TabButton = styled.button<{ active: boolean }>`
     flex: 1;
     padding: 0.5rem 1rem;
-    background-color: ${({ active, theme }) => 
+    background-color: ${({ active, theme }) =>
         active ? (theme.colors.primary || "#008CFF") : "transparent"};
     color: ${({ active }) => active ? "#fff" : "rgba(255, 255, 255, 0.7)"};
     border: none;
@@ -64,8 +70,8 @@ const TabButton = styled.button<{ active: boolean }>`
     transition: all 0.3s ease;
     
     &:hover {
-        background-color: ${({ active, theme }) => 
-            active ? (theme.colors.primary || "#008CFF") : "rgba(255, 255, 255, 0.1)"};
+        background-color: ${({ active, theme }) =>
+        active ? (theme.colors.primary || "#008CFF") : "rgba(255, 255, 255, 0.1)"};
         color: ${({ active }) => active ? "#fff" : "#fff"};
     }
 

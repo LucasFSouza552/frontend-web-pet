@@ -1,34 +1,35 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { historyService } from "@api/historyService";
 import animationFile from "@assets/lottie/loading.lottie?url";
 import type IHistory from "@models/History";
 import { FaHeart, FaHandHoldingHeart, FaDonate, FaPaw, FaBuilding, FaCalendarAlt, FaMoneyBillWave, FaWeight, FaBirthdayCake, FaMars, FaVenus } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type IPet from "@models/Pet";
 import ErrorContainer from "@components/ErrorContainer";
+import { ProfileContext } from "@contexts/ProfileContext";
+import { historyService } from "@/shared/api/historyService";
 
-interface HistoryTabProps {
-    accountId?: string;
-}
 
-export default function HistoryTab({ accountId }: HistoryTabProps) {
+export default function HistoryTab() {
+    const profileAccountId = useParams().username;
     const [historyRecords, setHistoryRecords] = useState<IHistory[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loadingHistory, setLoadingHistory] = useState(false);
+    const { account } = useContext(ProfileContext);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (accountId) {
-            loadHistory();
+        if (profileAccountId != account?.id){
+            navigate(`/profile/${account?.id}`);
         }
-    }, [accountId]);
+    }, [profileAccountId, account?.id, navigate]);
+
+    
 
     const loadHistory = async () => {
-        if (!accountId) return;
-        setLoadingHistory(true);
         try {
+            setLoadingHistory(true);
             const histories = await historyService.listHistoriesByAccount();
             setHistoryRecords(histories || []);
         } catch (error) {
@@ -38,6 +39,11 @@ export default function HistoryTab({ accountId }: HistoryTabProps) {
             setLoadingHistory(false);
         }
     };
+
+    useEffect(() => {
+        if (!profileAccountId) return;
+        loadHistory();
+    }, [profileAccountId]);
 
     const translateType = (type: string): string => {
         const translations: Record<string, string> = {

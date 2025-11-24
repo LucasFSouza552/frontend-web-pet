@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { styled } from "styled-components";
+import { FaPaperPlane } from "react-icons/fa";
 
 import Section from "@styles/SectionStyle";
 import backgroundPage from "@assets/images/background-page.jpg";
@@ -26,7 +27,7 @@ export default function PostPage() {
     handleSubmit,
     newComment,
     handleUpdateNewCommentValue,
-    hasMoreComments, 
+    hasMoreComments,
     loadingComments,
     lastCommentRef
   } = useManagePostController();
@@ -44,9 +45,9 @@ export default function PostPage() {
 
   return (
     <Container>
-      <ResponsiveSidebar 
-        account={account} 
-        isMenuOpen={isMenuOpen} 
+      <ResponsiveSidebar
+        account={account}
+        isMenuOpen={isMenuOpen}
         onCloseMenu={closeMenu}
       />
       <Background />
@@ -59,27 +60,37 @@ export default function PostPage() {
           <HamburgerButton onClick={toggleMenu} />
           <PostsContainerList account={account} posts={[post]} title="" refCallback={() => { }} />
 
-          <CommentBox>
-            <textarea
-              value={newComment}
-              onChange={handleUpdateNewCommentValue}
-              placeholder="Escreva um comentário..."
-              onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
-                const target = e.currentTarget;
-                target.style.height = "auto";
-                target.style.height = target.scrollHeight + "px";
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit();
-                }
-              }}
-            />
-            <button onClick={handleSubmit} disabled={!newComment.trim()}>
-              Enviar
-            </button>
-          </CommentBox>
+          <CommentSection>
+            <CommentTitle>Deixe seu comentário</CommentTitle>
+            <CommentBox>
+              <TextAreaWrapper>
+                <textarea
+                  value={newComment}
+                  onChange={handleUpdateNewCommentValue}
+                  placeholder="Escreva um comentário..."
+                  maxLength={1000}
+                  onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
+                    const target = e.currentTarget;
+                    target.style.height = "auto";
+                    target.style.height = target.scrollHeight + "px";
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSubmit();
+                    }
+                  }}
+                />
+                <CharacterCount $isNearLimit={newComment.length > 900}>
+                  {newComment.length}/1000
+                </CharacterCount>
+              </TextAreaWrapper>
+              <SendButton onClick={handleSubmit} disabled={!newComment.trim()}>
+                <FaPaperPlane size={16} />
+                <span>Enviar</span>
+              </SendButton>
+            </CommentBox>
+          </CommentSection>
           
           <PostComments
             comments={post.comments || []}
@@ -199,79 +210,224 @@ const Main = styled.div`
   }
 `;
 
-const CommentBox = styled.div`
+const CommentSection = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1rem 0;
+`;
+
+const CommentTitle = styled.h3`
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  padding: 0 0.5rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
+
+  &::before {
+    content: "";
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(180deg, ${({ theme }) => theme.colors.primary || "#B648A0"} 0%, rgba(182, 72, 160, 0.6) 100%);
+    border-radius: 2px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+`;
+
+const CommentBox = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 0.875rem;
   width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 1rem;
-  background-color: ${({ theme }) => theme.colors.quinary || "rgba(54, 49, 53, 0.6)"};
-  border-radius: 12px;
-  border: 1px solid rgba(182, 72, 160, 0.3);
-  transition: all 0.3s ease;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, 
+    ${({ theme }) => theme.colors.quinary || "rgba(54, 49, 53, 0.7)"} 0%, 
+    ${({ theme }) => theme.colors.quarternary || "rgba(44, 39, 43, 0.6)"} 100%
+  );
+  border-radius: 16px;
+  border: 1.5px solid rgba(182, 72, 160, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
   &:focus-within {
     border-color: ${({ theme }) => theme.colors.primary || "#B648A0"};
-    box-shadow: 0 0 0 3px rgba(182, 72, 160, 0.1);
+    box-shadow: 0 0 0 4px rgba(182, 72, 160, 0.15), 
+                0 6px 20px rgba(182, 72, 160, 0.25);
+    transform: translateY(-2px);
   }
 
+  @media (max-width: 768px) {
+    padding: 1rem;
+    gap: 0.75rem;
+    border-radius: 12px;
+  }
+`;
+
+const TextAreaWrapper = styled.div`
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
   textarea {
-    flex: 1;
+    width: 100%;
     resize: none;
-    border-radius: 8px;
-    background-color: ${({ theme }) => theme.colors.quarternary || "rgba(44, 39, 43, 0.6)"};
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
     color: white;
-    border: 1px solid rgba(182, 72, 160, 0.2);
-    padding: 0.75rem;
-    min-height: 44px;
-    max-height: 120px;
-    font-size: 0.9rem;
+    border: 2px solid rgba(182, 72, 160, 0.2);
+    padding: 1rem 1rem 2.5rem 1rem;
+    min-height: 56px;
+    max-height: 200px;
+    font-size: 0.95rem;
     font-family: inherit;
-    transition: all 0.2s ease;
+    line-height: 1.5;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
 
     &::placeholder {
-      color: rgba(255, 255, 255, 0.5);
+      color: rgba(255, 255, 255, 0.4);
+      font-style: italic;
     }
 
     &:focus {
       outline: none;
       border-color: ${({ theme }) => theme.colors.primary || "#B648A0"};
-      box-shadow: 0 0 0 2px rgba(182, 72, 160, 0.15);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(182, 72, 160, 0.1);
     }
 
-    &:hover {
+    &:hover:not(:focus) {
       border-color: rgba(182, 72, 160, 0.4);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(182, 72, 160, 0.5);
+      border-radius: 3px;
+
+      &:hover {
+        background: rgba(182, 72, 160, 0.7);
+      }
+    }
+
+    @media (max-width: 768px) {
+      font-size: 0.9rem;
+      padding: 0.875rem 0.875rem 2.25rem 0.875rem;
+      min-height: 52px;
+      border-radius: 10px;
+    }
+  }
+`;
+
+const CharacterCount = styled.span<{ $isNearLimit: boolean }>`
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.75rem;
+  font-size: 0.75rem;
+  color: ${({ $isNearLimit }) => 
+    $isNearLimit ? "rgba(255, 100, 100, 0.9)" : "rgba(255, 255, 255, 0.5)"};
+  font-weight: ${({ $isNearLimit }) => $isNearLimit ? "600" : "400"};
+  pointer-events: none;
+  transition: color 0.2s ease;
+`;
+
+const SendButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, 
+    ${({ theme }) => theme.colors.primary || "#B648A0"} 0%, 
+    rgba(182, 72, 160, 0.85) 100%
+  );
+  border: none;
+  color: white;
+  border-radius: 12px;
+  padding: 0.875rem 1.75rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(182, 72, 160, 0.35);
+  min-height: 56px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.2), 
+      transparent
+    );
+    transition: left 0.5s ease;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(182, 72, 160, 0.5);
+    
+    &::before {
+      left: 100%;
     }
   }
 
-  button {
-    background: ${({ theme }) => theme.colors.primary};
-    border: none;
-    color: white;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    cursor: pointer;
-    font-weight: 500;
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(182, 72, 160, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(182, 72, 160, 0.2);
+  }
+
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  &:hover:not(:disabled) svg {
+    transform: translateX(2px) translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.75rem 1.25rem;
+    min-height: 52px;
     font-size: 0.9rem;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(182, 72, 160, 0.3);
-
-    &:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(182, 72, 160, 0.4);
+    border-radius: 10px;
+    
+    span {
+      display: none;
     }
-
-    &:active:not(:disabled) {
-      transform: translateY(0);
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    
+    svg {
+      margin: 0;
     }
   }
 `;

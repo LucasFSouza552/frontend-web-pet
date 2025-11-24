@@ -34,7 +34,6 @@ export default function ProfileSection() {
         loadViewedProfile(profileAccountId);
     }, [profileAccountId, loadViewedProfile]);
 
-
     useEffect(() => {
         if (!account && !loading) {
             navigate("/");
@@ -61,7 +60,7 @@ export default function ProfileSection() {
             case "adopted":
                 return <AdoptedPetsTab accountId={viewedAccount?.id} accountRole={viewedAccount?.role} />;
             case "history":
-                return <HistoryTab accountId={viewedAccount?.id} />;
+                return <HistoryTab />;
             default:
                 return null;
         }

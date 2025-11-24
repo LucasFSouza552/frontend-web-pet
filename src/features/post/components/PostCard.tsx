@@ -6,7 +6,7 @@ import { FaHeart, FaShareAlt } from "react-icons/fa";
 import { BsChatFill } from "react-icons/bs";
 import { HiDotsVertical } from "react-icons/hi";
 import SmallProfile from "@components/SmallProfile";
-import type { IAccount } from "@models/Account";
+import type { IAccount } from "@/shared/models/Account";
 import PostModal from "./PostModal";
 import PostPictureContainer from "./PostPictureContainer";
 import { formatRelativeDate } from "@utils/dateUtils";

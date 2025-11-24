@@ -133,7 +133,7 @@ export function usePaginatedPosts(
             processAvatars(newPosts);
 
             setHasMore(newPosts.length >= limit);
-            setItems(prevItems => addPostsWithoutDuplicates(prevItems, newPosts, true));
+            setItems(newPosts);
 
             setPage(2);
             pageRef.current = 2;

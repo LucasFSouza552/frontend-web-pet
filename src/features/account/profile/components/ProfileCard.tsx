@@ -1,7 +1,7 @@
 import ProfileDetails from "./ProfileDetails";
 import ProfileAvatar from "@components/ProfileAvatar";
 import styled from "styled-components";
-import type { IAccount } from "@models/Account";
+import type { IAccount } from "@/shared/models/Account";
 import type { IAccountStatus } from "@models/AccountStatus";
 
 export default function ProfileCard({ account, accountStatus, editButtonProfile = false }: { account: IAccount | null, accountStatus?: IAccountStatus | null, editButtonProfile?: boolean }) {
