@@ -136,12 +136,12 @@ const ErrorContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    width: 100%;
+    min-height: 100dvh;
+    width: 100dvw;
     background: linear-gradient(135deg, 
-        ${({ theme }) => theme.colors.quarternary || "rgba(44, 39, 43, 0.98)"} 0%, 
-        ${({ theme }) => theme.colors.quinary || "rgba(54, 49, 53, 0.95)"} 50%,
-        ${({ theme }) => theme.colors.quarternary || "rgba(44, 39, 43, 0.98)"} 100%
+        ${({ theme }) => theme?.colors?.quarternary || "rgba(44, 39, 43, 0.98)"} 0%, 
+        ${({ theme }) => theme?.colors?.quinary || "rgba(54, 49, 53, 0.95)"} 50%,
+        ${({ theme }) => theme?.colors?.quarternary || "rgba(44, 39, 43, 0.98)"} 100%
     );
     padding: 2rem;
     overflow: hidden;
@@ -151,14 +151,13 @@ const ErrorBackgroundPattern = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 100dvw;
     height: 100%;
     background-image: 
         radial-gradient(circle at 20% 50%, rgba(182, 72, 160, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 80% 80%, rgba(182, 72, 160, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 40% 20%, rgba(182, 72, 160, 0.05) 0%, transparent 50%);
     pointer-events: none;
-    z-index: 0;
 `;
 
 const ErrorContent = styled.div`
@@ -203,7 +202,7 @@ const ErrorIconContainer = styled.div`
 const ErrorIcon = styled.div`
     position: relative;
     z-index: 2;
-    color: ${({ theme }) => theme.colors.primary || "#B648A0"};
+    color: ${({ theme }) => theme?.colors?.primary || "#B648A0"};
     font-size: 5rem;
     animation: ${float} 3s ease-in-out infinite;
     filter: drop-shadow(0 4px 12px rgba(182, 72, 160, 0.4));
@@ -343,7 +342,7 @@ const baseErrorButton = `
 const PrimaryErrorButton = styled.button`
     ${baseErrorButton}
     background: linear-gradient(135deg, 
-        ${({ theme }) => theme.colors.primary || "#B648A0"} 0%, 
+        ${({ theme }) => theme?.colors?.primary || "#B648A0"} 0%, 
         rgba(182, 72, 160, 0.85) 100%
     );
     color: white;

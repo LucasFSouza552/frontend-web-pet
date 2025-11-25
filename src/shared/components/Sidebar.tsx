@@ -67,7 +67,7 @@ const LogoWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 
   img {
     width: 100px;
@@ -76,7 +76,7 @@ const LogoWrapper = styled.div`
   }
 
   @media (max-width: 768px) {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 `;
 const SidebarContainer = styled.aside`
@@ -85,9 +85,9 @@ const SidebarContainer = styled.aside`
   max-height: calc(100dvh - var(--header-height, 80px) - 2rem);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  padding: 25px 15px;
+  padding: 20px 15px;
   background-color: ${({ theme }) => theme.colors.quarternary};
   border: 1px solid ${({ theme }) => theme.colors.primary};
   border-radius: 12px;
@@ -95,6 +95,7 @@ const SidebarContainer = styled.aside`
   color: #fff;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  gap: 20px;
 
   &:hover {
     box-shadow: 0 0 20px rgba(182, 72, 160, 0.4);
@@ -106,26 +107,29 @@ const SidebarContainer = styled.aside`
     padding: 10px;
     height: auto;
     max-height: none;
+    gap: 15px;
   }
 `;
 
 const NavLinks = styled.nav`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   width: 100%;
   align-items: center;
+  flex: 1;
 
   @media (max-width: 900px) {
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
+    flex: 0;
   }
 
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: stretch;
-    gap: 6px;
+    gap: 4px;
   }
 `;
 
@@ -172,9 +176,11 @@ const ProfileSection = styled.div`
   align-items: center;
   padding-top: 10px;
   border-top: 1px solid rgba(182, 72, 160, 0.3);
+  margin-top: auto;
 
   @media (max-width: 900px) {
     border-top: none;
     padding-top: 0;
+    margin-top: 0;
   }
 `;

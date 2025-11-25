@@ -6,6 +6,7 @@ import Section from "@styles/SectionStyle";
 import backgroundPage from "@assets/images/background-page.jpg";
 import { ProfileContext } from "@contexts/ProfileContext";
 import { CommentsContext } from "@contexts/CommentContext";
+import { useToast } from "@contexts/ToastContext";
 
 import SideBar from "@components/Sidebar";
 import PostsContainerList from "../components/PostsContainerList";
@@ -21,6 +22,7 @@ export default function PostPage() {
   const { account } = useContext(ProfileContext);
   const { isMenuOpen, toggleMenu, closeMenu } = useResponsiveSidebar();
   const { replyComment, editComment, deleteComment } = useContext(CommentsContext);
+  const { showSuccess, showError } = useToast();
   const { 
     post, 
     loadingPost,
@@ -113,8 +115,10 @@ export default function PostPage() {
             onDelete={async (commentId: string) => {
               try {
                 await deleteComment(post.id, commentId);
+                showSuccess("Comentário excluído com sucesso!");
               } catch (error) {
                 console.error("Erro ao excluir comentário:", error);
+                showError("Erro ao excluir comentário. Tente novamente.");
               }
             }}
           />

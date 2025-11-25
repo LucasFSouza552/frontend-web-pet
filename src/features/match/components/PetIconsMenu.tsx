@@ -9,15 +9,16 @@ interface PetIconsMenuProps {
     setShowInfo: (showInfo: boolean) => void;
     handleLikePet: (petId: string) => void;
     handleDislikePet: (petId: string) => void;
+    handleSharePet: () => void;
 }
 
-export default function PetIconsMenu({ pet, setShowInfo, handleLikePet, handleDislikePet }: PetIconsMenuProps) {
+export default function PetIconsMenu({ pet, setShowInfo, handleLikePet, handleDislikePet, handleSharePet }: PetIconsMenuProps) {
 
     const options = [
         { title: "Gostei", icon: <FaHeart size={25} />, onClick: () => handleLikePet(pet.id) },
         { title: "Não gostei", icon: <FaHeartBroken size={25} />, onClick: () => handleDislikePet(pet.id) },
         { title: "Informações", icon: <FaInfo size={25} />, onClick: () => setShowInfo(true) },
-        { title: "Compartilhar", icon: <FaShareFromSquare size={25} /> },
+        { title: "Compartilhar", icon: <FaShareFromSquare size={25} />, onClick: handleSharePet },
     ];
 
     return (

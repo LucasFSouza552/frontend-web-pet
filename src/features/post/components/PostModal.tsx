@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import useManagePostController from "../controller/useManagePostController";
 import { FaArrowRight, FaShareAlt, FaUser, FaTrash, FaTimes, FaEdit, FaCheck } from "react-icons/fa";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 
 interface PostModalProps {
     postId: string;
@@ -76,26 +77,10 @@ export default function PostModal({ postId, moreOptions = false, closeModal, han
                                 <span>Editar post</span>
                             </ModalButton>
                             <Separator />
-                            {!showDeleteConfirm ? (
-                                <ModalButton $danger onClick={handleDeleteClick}>
-                                    <FaTrash />
-                                    <span>Excluir</span>
-                                </ModalButton>
-                            ) : (
-                                <DeleteConfirmContainer>
-                                    <DeleteConfirmText>Tem certeza?</DeleteConfirmText>
-                                    <DeleteConfirmActions>
-                                        <DeleteConfirmButton onClick={handleConfirmDelete} disabled={deletingPost}>
-                                            <FaCheck size={14} />
-                                            {deletingPost ? "Excluindo..." : "Confirmar"}
-                                        </DeleteConfirmButton>
-                                        <DeleteCancelButton onClick={handleCancelDelete} disabled={deletingPost}>
-                                            <FaTimes size={14} />
-                                            Cancelar
-                                        </DeleteCancelButton>
-                                    </DeleteConfirmActions>
-                                </DeleteConfirmContainer>
-                            )}
+                            <ModalButton $danger onClick={handleDeleteClick}>
+                                <FaTrash />
+                                <span>Excluir</span>
+                            </ModalButton>
                         </>
                     )}
                     <CancelButton onClick={() => closeModal("")}>
@@ -103,6 +88,33 @@ export default function PostModal({ postId, moreOptions = false, closeModal, han
                     </CancelButton>
                 </ModalContent>
             </PostModalContainer>
+            
+            {showDeleteConfirm && createPortal(
+                <DeleteConfirmModalOverlay onClick={handleCancelDelete}>
+                    <DeleteConfirmModal onClick={(e) => e.stopPropagation()}>
+                        <DeleteConfirmHeader>
+                            <DeleteConfirmIcon>
+                                <FaTrash />
+                            </DeleteConfirmIcon>
+                            <DeleteConfirmTitle>Excluir Post</DeleteConfirmTitle>
+                            <DeleteConfirmSubtitle>
+                                Tem certeza que deseja excluir este post? Esta ação não pode ser desfeita.
+                            </DeleteConfirmSubtitle>
+                        </DeleteConfirmHeader>
+                        <DeleteConfirmActions>
+                            <DeleteCancelButton onClick={handleCancelDelete} disabled={deletingPost}>
+                                <FaTimes size={14} />
+                                Cancelar
+                            </DeleteCancelButton>
+                            <DeleteConfirmButton onClick={handleConfirmDelete} disabled={deletingPost}>
+                                <FaCheck size={14} />
+                                {deletingPost ? "Excluindo..." : "Confirmar"}
+                            </DeleteConfirmButton>
+                        </DeleteConfirmActions>
+                    </DeleteConfirmModal>
+                </DeleteConfirmModalOverlay>,
+                document.body
+            )}
         </>
     );
 }
@@ -264,46 +276,144 @@ const CancelButton = styled.button`
     }
 `;
 
-const DeleteConfirmContainer = styled.div`
-    padding: 12px;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: 10px;
-    margin: 4px 0;
+const DeleteConfirmModalOverlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.2s ease-out;
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
 `;
 
-const DeleteConfirmText = styled.p`
-    margin: 0 0 8px 0;
-    font-size: 14px;
-    color: #ef4444;
-    font-weight: 600;
+const DeleteConfirmModal = styled.div`
+    background: ${({ theme }) => theme.colors.quarternary};
+    border: 2px solid ${({ theme }) => theme.colors.primary};
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 30px ${({ theme }) => theme.colors.primary}40;
+    animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 24px;
+        max-width: 90%;
+    }
+`;
+
+const DeleteConfirmHeader = styled.div`
     text-align: center;
+    margin-bottom: 24px;
+`;
+
+const DeleteConfirmIcon = styled.div`
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(239, 68, 68, 0.15);
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    border-radius: 50%;
+    color: #ef4444;
+    font-size: 28px;
+    animation: pulse 2s ease-in-out infinite;
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+`;
+
+const DeleteConfirmTitle = styled.h3`
+    margin: 0 0 12px 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    
+    @media (max-width: 768px) {
+        font-size: 20px;
+    }
+`;
+
+const DeleteConfirmSubtitle = styled.p`
+    margin: 0;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+    
+    @media (max-width: 768px) {
+        font-size: 14px;
+    }
 `;
 
 const DeleteConfirmActions = styled.div`
     display: flex;
-    gap: 8px;
-    justify-content: center;
+    gap: 12px;
+    justify-content: flex-end;
+    
+    @media (max-width: 768px) {
+        flex-direction: column-reverse;
+    }
 `;
 
 const DeleteConfirmButton = styled.button`
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
     background: #ef4444;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     color: white;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    flex: 1;
+    min-width: 120px;
 
     &:hover:not(:disabled) {
         background: #dc2626;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
     }
 
     &:disabled {
@@ -311,29 +421,46 @@ const DeleteConfirmButton = styled.button`
         cursor: not-allowed;
         transform: none;
     }
+
+    @media (max-width: 768px) {
+        width: 100%;
+    }
 `;
 
 const DeleteCancelButton = styled.button`
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
     color: white;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    flex: 1;
+    min-width: 120px;
 
     &:hover:not(:disabled) {
         background: rgba(255, 255, 255, 0.1);
         border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
     }
 
     &:disabled {
         opacity: 0.6;
         cursor: not-allowed;
+        transform: none;
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
     }
 `;
