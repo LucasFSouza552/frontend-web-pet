@@ -22,7 +22,6 @@ const PRIMARY_PINK_LIGHTER = "#F5B8DB";
 const PRIMARY_PINK_DARKER = "#A83A6F";
 
 export default function SideBar({ account }: { account: IAccount | null }) {
-  const theme = useTheme();
   const iconsConfig = useMemo(() => ({ color: PRIMARY_PINK, size: "1.5em" }), []);
 
   const navItems: NavItem[] = [
@@ -282,8 +281,8 @@ const ProfileSection = styled.div`
   flex-direction: column;
   gap: 12px;
   align-items: center;
-  padding-top: 16px;
-  margin-top: auto;
+
+  flex-direction: row;
 
   @media (max-width: 900px) {
     padding-top: 12px;

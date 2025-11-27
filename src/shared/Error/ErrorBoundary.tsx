@@ -137,7 +137,6 @@ const ErrorContainer = styled.div`
     align-items: center;
     justify-content: center;
     min-height: 100dvh;
-    width: 100dvw;
     background: linear-gradient(135deg, 
         ${({ theme }) => theme?.colors?.quarternary || "rgba(44, 39, 43, 0.98)"} 0%, 
         ${({ theme }) => theme?.colors?.quinary || "rgba(54, 49, 53, 0.95)"} 50%,

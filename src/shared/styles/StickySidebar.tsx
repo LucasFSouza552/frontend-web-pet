@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const StickySidebar = styled.div`
     position: sticky;
-    top: 15px;
+    top: 5px;
     align-self: flex-start;
     height: fit-content;
     max-height: calc(100dvh - 30px);

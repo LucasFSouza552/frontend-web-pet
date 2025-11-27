@@ -135,6 +135,19 @@ export default function PetDetailCard({
         return parts.join(", ");
     };
 
+    const formatInstitutionAddress = () => {
+        const { address } = pet.account;
+        if (!address) return "Endereço não informado";
+
+        const parts = [
+            address.street && address.number ? `${address.street}, ${address.number}` : address.street || address.number,
+            address.neighborhood,
+            address.city && address.state ? `${address.city} - ${address.state}` : address.city || address.state
+        ].filter(Boolean);
+
+        return parts.join(", ");
+    };
+
     const formatDate = (dateString?: string | Date) => {
         if (!dateString) return null;
         const date = new Date(dateString);
@@ -259,7 +272,15 @@ export default function PetDetailCard({
                         <FaShieldDog size={20} />
                     </InstitutionIcon>
                     <InstitutionInfo>
-                        <InstitutionLabel>Instituição</InstitutionLabel>
+                        <InstitutionHeader>
+                            <InstitutionLabel>Instituição</InstitutionLabel>
+                            {pet.account.verified && (
+                                <InstitutionVerifiedBadge>
+                                    <FaCheck size={10} />
+                                    Verificada
+                                </InstitutionVerifiedBadge>
+                            )}
+                        </InstitutionHeader>
                         <InstitutionName>{pet.account.name}</InstitutionName>
                     </InstitutionInfo>
                 </InstitutionSection>}
@@ -386,22 +407,43 @@ export default function PetDetailCard({
                                         <FaShieldDog size={24} />
                                     </ModalInstitutionIcon>
                                     <ModalInstitutionInfo>
-                                        <ModalInstitutionLabel>Instituição</ModalInstitutionLabel>
+                                        <ModalInstitutionHeader>
+                                            <ModalInstitutionLabel>Instituição</ModalInstitutionLabel>
+                                            {pet.account.verified && (
+                                                <ModalVerifiedBadge>
+                                                    <FaCheck size={12} />
+                                                    Verificada
+                                                </ModalVerifiedBadge>
+                                            )}
+                                        </ModalInstitutionHeader>
                                         <ModalInstitutionName>{pet.account.name}</ModalInstitutionName>
+                                        {pet.account.cnpj && (
+                                            <ModalInstitutionDetail>
+                                                <FaShieldDog size={14} />
+                                                <span>CNPJ: {pet.account.cnpj}</span>
+                                            </ModalInstitutionDetail>
+                                        )}
                                         {pet.account.email && (
-                                            <ModalInstitutionEmail>{pet.account.email}</ModalInstitutionEmail>
+                                            <ModalInstitutionDetail>
+                                                <FaEnvelope size={14} />
+                                                <span>{pet.account.email}</span>
+                                            </ModalInstitutionDetail>
+                                        )}
+                                        {pet.account.phone_number && (
+                                            <ModalInstitutionDetail>
+                                                <FaPhone size={14} />
+                                                <span>{pet.account.phone_number}</span>
+                                            </ModalInstitutionDetail>
+                                        )}
+                                        {pet.account.address && (
+                                            <ModalInstitutionDetail>
+                                                <FaMapMarkerAlt size={14} />
+                                                <span>{formatInstitutionAddress()}</span>
+                                            </ModalInstitutionDetail>
                                         )}
                                     </ModalInstitutionInfo>
                                 </ModalInstitutionSection>
                             )}
-
-                            <ModalLocationSection>
-                                <ModalLocationIcon>
-                                    <IoMdLocate size={24} />
-                                </ModalLocationIcon>
-                                <ModalLocationText>{formatAddress()}</ModalLocationText>
-                            </ModalLocationSection>
-
                             {onCancelAdoption && (
                                 <CancelSection>
                                     <CancelSectionTitle>Cancelar pedido de adoção</CancelSectionTitle>
@@ -802,11 +844,32 @@ const InstitutionInfo = styled.div`
     flex: 1;
 `;
 
+const InstitutionHeader = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+`;
+
 const InstitutionLabel = styled.span`
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+`;
+
+const InstitutionVerifiedBadge = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.4rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    white-space: nowrap;
 `;
 
 const InstitutionName = styled.span`
@@ -1139,9 +1202,46 @@ const ModalInstitutionName = styled.span`
     font-weight: 600;
 `;
 
-const ModalInstitutionEmail = styled.span`
-    color: rgba(255, 255, 255, 0.7);
+const ModalInstitutionHeader = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+`;
+
+const ModalVerifiedBadge = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+`;
+
+const ModalInstitutionDetail = styled.div`
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
     font-size: 0.875rem;
+    line-height: 1.4;
+
+    svg {
+        color: ${({ theme }) => theme.colors.primary || "#B648A0"};
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    span {
+        flex: 1;
+        word-break: break-word;
+    }
 `;
 
 const ModalLocationSection = styled.div`

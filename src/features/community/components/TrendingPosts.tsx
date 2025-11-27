@@ -106,7 +106,6 @@ const TrendingPostsContainer = styled.aside`
     border-radius: 12px;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
     flex: 1;
     flex-shrink: 0;
     
@@ -122,18 +121,23 @@ const TrendingPostsContainer = styled.aside`
     align-self: flex-start;
     z-index: 5;
     
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    
     &::-webkit-scrollbar {
-        width: 4px;
+        display: none;
+        width: 0;
+        height: 0;
     }
     
     &::-webkit-scrollbar-track {
-        background: transparent;
+        display: none;
     }
     
     &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.colors.primary || "#B648A0"};
-        border-radius: 2px;
+        display: none;
     }
+
 
     @media (max-width: 1024px) {
         display: none;
