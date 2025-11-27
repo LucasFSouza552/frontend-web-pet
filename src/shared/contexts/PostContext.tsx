@@ -356,7 +356,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
             const updated = await postService.updatePost(postId, { content: newContent } as any);
 
             const applyUpdatedContent = (p: IPost) =>
-                p.id === updated.id ? { ...p, content: updated.content } : p;
+                p.id === updated.id ? { ...p, content: updated.content, updatedAt: updated.updatedAt || updated.createdAt } : p;
 
             generalPosts.updatePost(postId, applyUpdatedContent);
             userPostsHook.updatePost(postId, applyUpdatedContent);

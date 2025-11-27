@@ -14,18 +14,23 @@ interface NavItem {
   icon: JSX.Element;
 }
 
-
+// Paleta de cores baseada em #D960A7
+const PRIMARY_PINK = "#D960A7";
+const PRIMARY_PINK_LIGHT = "#E88BC4";
+const PRIMARY_PINK_DARK = "#C44A8A";
+const PRIMARY_PINK_LIGHTER = "#F5B8DB";
+const PRIMARY_PINK_DARKER = "#A83A6F";
 
 export default function SideBar({ account }: { account: IAccount | null }) {
   const theme = useTheme();
-  const iconsConfig = useMemo(() => ({ color: theme.colors.primary, size: "1.5em" }), [theme.colors.primary]);
+  const iconsConfig = useMemo(() => ({ color: PRIMARY_PINK, size: "1.5em" }), []);
 
   const navItems: NavItem[] = [
-    { label: "Página Principal", path: "/", icon: <FaHome color={iconsConfig.color} size={iconsConfig.size} /> },
-    { label: "Match", path: "/match", icon: <FaHeart color={iconsConfig.color} size={iconsConfig.size} /> },
-    { label: "Suporte", path: "/support", icon: <FaHandsHelping color={iconsConfig.color} size={iconsConfig.size} /> },
-    { label: "Doar", path: "/DonatePage", icon: <FaDonate color={iconsConfig.color} size={iconsConfig.size} /> },
-    { label: "Instituições", path: "/institutions", icon: <FaHandHoldingHeart color={iconsConfig.color} size={iconsConfig.size} /> }
+    { label: "Página Principal", path: "/", icon: <FaHome size={iconsConfig.size} /> },
+    { label: "Match", path: "/match", icon: <FaHeart size={iconsConfig.size} /> },
+    { label: "Suporte", path: "/support", icon: <FaHandsHelping size={iconsConfig.size} /> },
+    { label: "Doar", path: "/DonatePage", icon: <FaDonate size={iconsConfig.size} /> },
+    { label: "Instituições", path: "/institutions", icon: <FaHandHoldingHeart size={iconsConfig.size} /> }
   ];
 
   return (
@@ -49,6 +54,12 @@ export default function SideBar({ account }: { account: IAccount | null }) {
         ))}
       </NavLinks>
 
+      <DividerSection>
+        <DividerLine />
+        <DividerText>Adote. Ame. Transforme vidas</DividerText>
+        <DividerLine />
+      </DividerSection>
+
       <ProfileSection>
         {!account ? (
           <>
@@ -67,18 +78,24 @@ const LogoWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 
   img {
     width: 100px;
     height: 100px;
     object-fit: contain;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
   }
 
   @media (max-width: 768px) {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
 `;
+
 const SidebarContainer = styled.aside`
   height: 100%;
   min-height: calc(100dvh - 5dvh);
@@ -87,34 +104,54 @@ const SidebarContainer = styled.aside`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: 20px 15px;
-  background-color: ${({ theme }) => theme.colors.quarternary};
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  border-radius: 12px;
-  box-shadow: 0 0 12px ${({ theme }) => theme.colors.primary};
+  padding: 24px 18px;
+  background: linear-gradient(135deg, rgba(40, 36, 40, 0.98) 0%, rgba(30, 27, 30, 0.95) 100%);
+  border: none;
+  border-radius: 20px;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px ${PRIMARY_PINK}30;
   color: #fff;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  gap: 20px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(12px);
+  gap: 16px;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(135deg, ${PRIMARY_PINK}20, ${PRIMARY_PINK_DARK}10);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.5;
+  }
 
   &:hover {
-    box-shadow: 0 0 20px rgba(182, 72, 160, 0.4);
+    box-shadow: 
+      0 6px 20px rgba(0, 0, 0, 0.35),
+      inset 0 0 0 1px ${PRIMARY_PINK}40;
   }
 
   @media (max-width: 900px) {
     width: 100%;
     justify-content: space-evenly;
-    padding: 10px;
+    padding: 16px 12px;
     height: auto;
     max-height: none;
-    gap: 15px;
+    gap: 12px;
+    border-radius: 16px;
   }
 `;
 
 const NavLinks = styled.nav`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   width: 100%;
   align-items: center;
   flex: 1;
@@ -124,48 +161,119 @@ const NavLinks = styled.nav`
     justify-content: center;
     flex-wrap: wrap;
     flex: 0;
+    gap: 6px;
   }
 
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: stretch;
-    gap: 4px;
+    gap: 6px;
   }
 `;
 
 const NavItemLink = styled(RouterNavLink)`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
+  height: 48px;
   text-decoration: none;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.85);
   text-transform: uppercase;
-  font-weight: light;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  transition: all 0.3s ease;
-  background-color: rgba(30, 27, 30, 0.6);
+  font-weight: 500;
+  font-size: 0.875rem;
+  letter-spacing: 0.3px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: none;
+  transition: all 0.15s ease;
+  background-color: rgba(255, 255, 255, 0.04);
+  position: relative;
 
   .icon {
-    font-size: 12px;
+    font-size: 1.25em;
+    width: 1.25em;
+    height: 1.25em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${PRIMARY_PINK};
+    transition: all 0.15s ease;
+    flex-shrink: 0;
   }
 
   &:hover {
-    background-color: rgba(182, 72, 160, 0.2);
-    border-color: #b648a0;
+    background-color: ${PRIMARY_PINK}20;
+    color: #fff;
+
+    .icon {
+      color: ${PRIMARY_PINK_LIGHT};
+      transform: rotate(3deg);
+    }
   }
 
   &.active {
-    background-color: rgba(182, 72, 160, 0.3);
-    border-color: #b648a0;
+    background: linear-gradient(135deg, ${PRIMARY_PINK}30, ${PRIMARY_PINK_DARK}20);
+    color: #fff;
+    box-shadow: 
+      0 4px 12px ${PRIMARY_PINK}25,
+      0 0 0 1px ${PRIMARY_PINK}40,
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+
+    .icon {
+      color: ${PRIMARY_PINK_LIGHT};
+      filter: drop-shadow(0 0 4px ${PRIMARY_PINK}80);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 70%;
+      background: linear-gradient(180deg, ${PRIMARY_PINK}, ${PRIMARY_PINK_LIGHT});
+      border-radius: 0 2px 2px 0;
+    }
   }
 
   @media (max-width: 900px) {
     justify-content: center;
     font-size: 0.8rem;
+    height: 44px;
+    padding: 0 12px;
+    gap: 10px;
   }
+`;
+
+const DividerSection = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+`;
+
+const DividerLine = styled.div`
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, ${PRIMARY_PINK}40, transparent);
+`;
+
+const DividerText = styled.span`
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 400;
+  font-style: italic;
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
 `;
 
 const ProfileSection = styled.div`
@@ -174,13 +282,12 @@ const ProfileSection = styled.div`
   flex-direction: column;
   gap: 12px;
   align-items: center;
-  padding-top: 10px;
-  border-top: 1px solid rgba(182, 72, 160, 0.3);
+  padding-top: 16px;
   margin-top: auto;
 
   @media (max-width: 900px) {
-    border-top: none;
-    padding-top: 0;
+    padding-top: 12px;
     margin-top: 0;
+    gap: 10px;
   }
 `;

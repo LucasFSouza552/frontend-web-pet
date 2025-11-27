@@ -24,7 +24,14 @@ export default function AboutPost({
                 />
                 <div>
                     <h3>{post?.account?.name}</h3>
-                    <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                    <DateContainer>
+                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                        {post.updatedAt && post.createdAt && post.updatedAt !== post.createdAt && (
+                            <EditedBadge title={`Editado em ${new Date(post.updatedAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}`}>
+                                editado
+                            </EditedBadge>
+                        )}
+                    </DateContainer>
                 </div>
             </Header>
 
@@ -103,6 +110,26 @@ const Header = styled.div`
     span {
         font-size: 0.9rem;
         color: white;
+    }
+`;
+
+const DateContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+`;
+
+const EditedBadge = styled.span`
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 400;
+    font-style: italic;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+        opacity: 1;
     }
 `;
 

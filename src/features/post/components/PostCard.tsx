@@ -52,7 +52,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, accountId, handleOptions, han
                             <ProfileAvatar avatar={post.account.avatar} alt={post.account.name} />
                             <ProfileInfo>
                                 <ProfileName>{post.account.name || "Unknown"}</ProfileName>
-                                <PostDate>{formatRelativeDate(post.createdAt || post.date)}</PostDate>
+                                <PostDateContainer>
+                                    <PostDate>{formatRelativeDate(post.createdAt || post.date)}</PostDate>
+                                    {post.updatedAt && post.createdAt && post.updatedAt !== post.createdAt && (
+                                        <EditedBadge title={`Editado em ${new Date(post.updatedAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}`}>
+                                            editado
+                                        </EditedBadge>
+                                    )}
+                                </PostDateContainer>
                             </ProfileInfo>
                             {showSmallProfile && post.account && <SmallProfile account={post.account as IAccount} />}
                         </PostProfileContainer>
@@ -119,10 +126,30 @@ const ProfileName = styled.span`
     transition: text-decoration 0.2s ease;
 `;
 
+const PostDateContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+`;
+
 const PostDate = styled.span`
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.6);
     font-weight: normal;
+`;
+
+const EditedBadge = styled.span`
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 400;
+    font-style: italic;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+        opacity: 1;
+    }
 `;
 
 const ProfileInfo = styled.div`

@@ -34,28 +34,35 @@ export function HamburgerButton({ onClick }: { onClick: () => void }) {
     );
 }
 
+const PRIMARY_PINK = "#D960A7";
+const PRIMARY_PINK_LIGHT = "#E88BC4";
+
 const HamburgerButtonWrapper = styled.button`
     display: none;
     position: relative;
     align-self: flex-start;
     margin-bottom: 1rem;
     z-index: 10;
-    background: ${({ theme }) => theme.colors.quarternary || "rgba(54, 49, 53, 0.95)"};
-    border: 1px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
-    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(40, 36, 40, 0.98) 0%, rgba(30, 27, 30, 0.95) 100%);
+    border: none;
+    border-radius: 12px;
     padding: 10px;
     cursor: pointer;
     flex-direction: column;
     gap: 5px;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(182, 72, 160, 0.3);
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.25),
+        inset 0 0 0 1px ${PRIMARY_PINK}30;
+    transition: all 0.15s ease;
+    backdrop-filter: blur(12px);
 
     &:hover {
-        background: ${({ theme }) => theme.colors.primary || "#B648A0"};
-        box-shadow: 0 6px 16px rgba(182, 72, 160, 0.4);
+        background: linear-gradient(135deg, ${PRIMARY_PINK}20, ${PRIMARY_PINK}15);
+        box-shadow: 
+            0 6px 16px rgba(0, 0, 0, 0.3),
+            inset 0 0 0 1px ${PRIMARY_PINK}40;
         transform: translateY(-2px);
     }
 
@@ -123,13 +130,15 @@ const MobileSidebar = styled.div<{ $isOpen: boolean }>`
     width: 100%;
     height: 100vh;
     z-index: 1000;
-    background: ${({ theme }) => theme.colors.quarternary || "rgba(54, 49, 53, 0.95)"};
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, rgba(40, 36, 40, 0.98) 0%, rgba(30, 27, 30, 0.95) 100%);
+    box-shadow: 
+        4px 0 24px rgba(0, 0, 0, 0.4),
+        inset -1px 0 0 ${PRIMARY_PINK}20;
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
     overflow-x: hidden;
     padding: 1.5rem 1rem 1rem;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
 
     &::-webkit-scrollbar {
         width: 4px;
@@ -140,8 +149,13 @@ const MobileSidebar = styled.div<{ $isOpen: boolean }>`
     }
     
     &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.colors.primary || "#B648A0"};
+        background: ${PRIMARY_PINK};
         border-radius: 2px;
+        transition: background 0.15s ease;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: ${PRIMARY_PINK_LIGHT};
     }
 
     @media (max-width: 1024px) {
@@ -166,18 +180,23 @@ const CloseButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid ${({ theme }) => theme.colors.primary || "#B648A0"};
-    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    border-radius: 12px;
     color: white;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.15s ease;
     z-index: 1001;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        inset 0 0 0 1px ${PRIMARY_PINK}30;
 
     &:hover {
-        background: ${({ theme }) => theme.colors.primary || "#B648A0"};
+        background: ${PRIMARY_PINK}20;
         transform: rotate(90deg);
-        box-shadow: 0 4px 12px rgba(182, 72, 160, 0.4);
+        box-shadow: 
+            0 4px 12px rgba(0, 0, 0, 0.3),
+            inset 0 0 0 1px ${PRIMARY_PINK}40;
     }
 
     &:active {
