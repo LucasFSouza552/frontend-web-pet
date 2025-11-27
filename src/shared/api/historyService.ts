@@ -28,7 +28,7 @@ export const historyService = {
 
     async createHistory(data: any) {
         try {
-            const response = await api.post("/history/", data);
+            const response = await api.post("/history", data);
             return response.data;
         } catch (error) {
             if (error instanceof ThrowError) {

@@ -39,10 +39,12 @@ interface PetDetailCardProps {
     isCancelling?: boolean;
 }
 
+const EMPTY_ADOPTION_REQUESTS: AdoptionRequest[] = [];
+
 export default function PetDetailCard({ 
     pet, 
     adoptionRequestsCount, 
-    adoptionRequests = [],
+    adoptionRequests,
     isOwner = false,
     onAcceptAdoption,
     onRejectAdoption,
@@ -50,17 +52,18 @@ export default function PetDetailCard({
     onCancelAdoption,
     isCancelling = false
 }: PetDetailCardProps) {
+    const adoptionRequestsList = adoptionRequests ?? EMPTY_ADOPTION_REQUESTS;
     const [imagePage, setImagePage] = useState(0);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [modalImageIndex, setModalImageIndex] = useState(0);
-    const [localAdoptionRequests, setLocalAdoptionRequests] = useState<AdoptionRequest[]>(adoptionRequests);
+    const [localAdoptionRequests, setLocalAdoptionRequests] = useState<AdoptionRequest[]>(adoptionRequestsList);
     const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
 
     useEffect(() => {
         if (!showDetailsModal) {
-            setLocalAdoptionRequests(adoptionRequests);
+            setLocalAdoptionRequests(adoptionRequestsList);
         }
-    }, [adoptionRequests, showDetailsModal]);
+    }, [adoptionRequestsList, showDetailsModal]);
 
     const handleImageClick = () => {
         const imageIndex = imagePage < pet.images.length - 1 ? imagePage + 1 : 0;
@@ -70,7 +73,7 @@ export default function PetDetailCard({
     const handleCardClick = () => {
         setShowDetailsModal(true);
         setModalImageIndex(0);
-        setLocalAdoptionRequests(adoptionRequests);
+        setLocalAdoptionRequests(adoptionRequestsList);
     };
 
     const handleCloseModal = () => {
