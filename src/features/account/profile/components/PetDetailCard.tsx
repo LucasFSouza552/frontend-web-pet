@@ -35,6 +35,8 @@ interface PetDetailCardProps {
     onAcceptAdoption?: (petId: string, adopterAccountId: string) => Promise<void>;
     onRejectAdoption?: (petId: string, adopterAccountId: string) => Promise<void>;
     processingRequest?: string | null;
+    onCancelAdoption?: (petId: string) => Promise<void> | void;
+    isCancelling?: boolean;
 }
 
 export default function PetDetailCard({ 
@@ -44,12 +46,15 @@ export default function PetDetailCard({
     isOwner = false,
     onAcceptAdoption,
     onRejectAdoption,
-    processingRequest = null
+    processingRequest = null,
+    onCancelAdoption,
+    isCancelling = false
 }: PetDetailCardProps) {
     const [imagePage, setImagePage] = useState(0);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [modalImageIndex, setModalImageIndex] = useState(0);
     const [localAdoptionRequests, setLocalAdoptionRequests] = useState<AdoptionRequest[]>(adoptionRequests);
+    const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
 
     useEffect(() => {
         if (!showDetailsModal) {
@@ -71,6 +76,22 @@ export default function PetDetailCard({
     const handleCloseModal = () => {
         setShowDetailsModal(false);
         setModalImageIndex(0);
+    };
+
+    const handleCancelAdoptionClick = (event?: React.MouseEvent) => {
+        event?.stopPropagation();
+        setShowCancelConfirmation(true);
+    };
+
+    const handleDismissCancel = (event?: React.MouseEvent) => {
+        event?.stopPropagation();
+        setShowCancelConfirmation(false);
+    };
+
+    const handleConfirmCancel = async () => {
+        if (!onCancelAdoption) return;
+        await onCancelAdoption(pet.id);
+        setShowCancelConfirmation(false);
     };
 
     const handleNextImage = () => {
@@ -378,6 +399,22 @@ export default function PetDetailCard({
                                 <ModalLocationText>{formatAddress()}</ModalLocationText>
                             </ModalLocationSection>
 
+                            {onCancelAdoption && (
+                                <CancelSection>
+                                    <CancelSectionTitle>Cancelar pedido de adoção</CancelSectionTitle>
+                                    <CancelSectionDescription>
+                                        Se mudou de ideia, você pode desfazer o pedido enviado à instituição.
+                                    </CancelSectionDescription>
+                                    <CancelAdoptionButton
+                                        type="button"
+                                        onClick={handleCancelAdoptionClick}
+                                        disabled={isCancelling}
+                                    >
+                                        {isCancelling ? "Cancelando..." : "Cancelar pedido de adoção"}
+                                    </CancelAdoptionButton>
+                                </CancelSection>
+                            )}
+
                             {pet.adopted && (
                                 <ModalAdoptedBadge>
                                     <FaHeart size={16} />
@@ -492,6 +529,24 @@ export default function PetDetailCard({
                     </ModalBody>
                 </ModalContent>
             </ModalOverlay>
+        )}
+        {showCancelConfirmation && (
+            <CancelConfirmOverlay onClick={handleDismissCancel}>
+                <CancelConfirmContent onClick={(e) => e.stopPropagation()}>
+                    <CancelConfirmTitle>Cancelar pedido?</CancelConfirmTitle>
+                    <CancelConfirmText>
+                        Tem certeza de que deseja cancelar o pedido de adoção para {pet.name}? A instituição será notificada.
+                    </CancelConfirmText>
+                    <CancelConfirmActions>
+                        <CancelConfirmButton type="button" onClick={handleConfirmCancel} disabled={isCancelling}>
+                            {isCancelling ? "Cancelando..." : "Confirmar cancelamento"}
+                        </CancelConfirmButton>
+                        <CancelConfirmDismiss type="button" onClick={handleDismissCancel} disabled={isCancelling}>
+                            Continuar com o pedido
+                        </CancelConfirmDismiss>
+                    </CancelConfirmActions>
+                </CancelConfirmContent>
+            </CancelConfirmOverlay>
         )}
         </>
     );
@@ -1124,6 +1179,141 @@ const ModalAdoptedBadge = styled.div`
     font-weight: 600;
     justify-content: center;
     box-shadow: 0 4px 12px rgba(182, 72, 160, 0.4);
+`;
+
+const CancelSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border-left: 4px solid ${({ theme }) => theme.colors.primary};
+`;
+
+const CancelSectionTitle = styled.h3`
+    margin: 0;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+`;
+
+const CancelSectionDescription = styled.p`
+    margin: 0;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.9rem;
+    line-height: 1.5;
+`;
+
+const CancelAdoptionButton = styled.button`
+    align-self: flex-start;
+    padding: 0.85rem 1.25rem;
+    border-radius: 10px;
+    border: none;
+    background: #ef4444;
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+        background: #dc2626;
+        transform: translateY(-1px);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+`;
+
+const CancelConfirmOverlay = styled.div`
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1500;
+    padding: 1rem;
+`;
+
+const CancelConfirmContent = styled.div`
+    width: min(420px, 100%);
+    background: linear-gradient(135deg, ${({ theme }) => theme.colors.quarternary} 0%, ${({ theme }) => theme.colors.quinary} 100%);
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+`;
+
+const CancelConfirmTitle = styled.h3`
+    margin: 0;
+    font-size: 1.35rem;
+    color: white;
+`;
+
+const CancelConfirmText = styled.p`
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    line-height: 1.5;
+`;
+
+const CancelConfirmActions = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+`;
+
+const CancelConfirmButton = styled.button`
+    flex: 1;
+    min-width: 180px;
+    padding: 0.85rem 1.25rem;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+        filter: brightness(1.05);
+        transform: translateY(-2px);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+`;
+
+const CancelConfirmDismiss = styled.button`
+    flex: 1;
+    min-width: 180px;
+    padding: 0.85rem 1.25rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    font-weight: 600;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-2px);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
 `;
 
 const ModalInterestedSection = styled.div`

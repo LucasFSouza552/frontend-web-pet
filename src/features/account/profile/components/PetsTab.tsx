@@ -8,6 +8,7 @@ import type IPet from "@models/Pet";
 import type { IAccount } from "@models/Account";
 import PetDetailCard from "./PetDetailCard";
 import animationFile from "@assets/lottie/loading.lottie?url";
+import { useToast } from "@contexts/ToastContext";
 
 interface AdoptionRequest {
     account: IAccount;
@@ -39,6 +40,15 @@ export default function PetsTab({ accountId, accountRole, currentAccount }: Pets
     const [desiredPets, setDesiredPets] = useState<PetWithRequests[]>([]);
     const [loadingPets, setLoadingPets] = useState(false);
     const [processingRequest, setProcessingRequest] = useState<string | null>(null);
+    const [cancellingPetId, setCancellingPetId] = useState<string | null>(null);
+    const { showSuccess, showError } = useToast();
+
+    const isProfileOwner = Boolean(
+        currentAccount?.id &&
+        accountId &&
+        String(currentAccount.id) === String(accountId)
+    );
+    const canCancelOwnRequest = accountRole !== "institution" && isProfileOwner;
 
     const loadDesiredPets = useCallback(async () => {
         if (!accountId) return;
@@ -110,6 +120,19 @@ export default function PetsTab({ accountId, accountRole, currentAccount }: Pets
         }
     };
 
+    const handleCancelAdoption = async (petId: string) => {
+        try {
+            setCancellingPetId(petId);
+            await petInteractionService.undoInteraction(petId);
+            showSuccess("Pedido de adoção cancelado com sucesso!");
+            await loadDesiredPets();
+        } catch (error: any) {
+            showError(error?.message || "Erro ao cancelar pedido de adoção");
+        } finally {
+            setCancellingPetId(null);
+        }
+    };
+
     useEffect(() => {
         loadDesiredPets();
     }, [loadDesiredPets]);
@@ -150,6 +173,10 @@ export default function PetsTab({ accountId, accountRole, currentAccount }: Pets
                                 onAcceptAdoption={isOwner ? handleAcceptAdoption : undefined}
                                 onRejectAdoption={isOwner ? handleRejectAdoption : undefined}
                                 processingRequest={processingRequest}
+                                onCancelAdoption={
+                                    canCancelOwnRequest ? () => handleCancelAdoption(pet.id) : undefined
+                                }
+                                isCancelling={cancellingPetId === pet.id}
                             />
                         </PetSection>
                     ))}
