@@ -37,7 +37,8 @@
       "@features/*": ["features/*"],
       "@Error/*": ["shared/Error/*"]
     },
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   
-  "include": ["src"]
+  "include": ["src", "test/**/*", "vitest.d.ts"]
 }
