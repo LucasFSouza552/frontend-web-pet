@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import SideBar from "@components/Sidebar";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { FaDonate, FaServer, FaPaw, FaUsers, FaHandHoldingHeart } from "react-icons/fa";
 import { PrimaryButton } from "@components/PrimaryButton";
 import { ProfileContext } from "@contexts/ProfileContext";
@@ -8,12 +8,14 @@ import { accountService } from "../api/accountService";
 import StickySidebar from "../styles/StickySidebar";
 import ResponsiveSidebar, { HamburgerButton } from "@/shared/components/ResponsiveSidebar";
 import { useResponsiveSidebar } from "@/shared/hooks/useResponsiveSidebar";
+import { useNavigate } from "react-router-dom";
 
 export default function DonatePage() {
   const { account } = useContext(ProfileContext);
   const { isMenuOpen, toggleMenu, closeMenu } = useResponsiveSidebar();
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleDonate = async () => {
 
@@ -39,6 +41,12 @@ export default function DonatePage() {
     }
 
   };
+
+  useEffect(() => {
+    if (!account) {
+      navigate("/");
+    }
+  }, [account, navigate]);
 
   return (
     <PageWrapper>
@@ -109,7 +117,7 @@ export default function DonatePage() {
 
           {error && <Error>{error}</Error>}
 
-          <PrimaryButton text="Doar Agora" type="button" filled onClick={handleDonate} />
+          <PrimaryButton text="Doar Agora" type="button" filled onClick={handleDonate} disabled={!account} />
         </DonateCard>
         </MainContent>
       </ContentWrapper>

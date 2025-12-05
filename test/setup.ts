@@ -1,25 +1,44 @@
 import '@testing-library/jest-dom'
 import { afterEach, vi } from 'vitest'
+
 import { cleanup } from '@testing-library/react'
 
-// Limpa após cada teste
 afterEach(() => {
   cleanup()
 })
 
-// Mock do localStorage
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-}
+const localStorageMock = (() => {
+  let store: Record<string, string> = {}
 
-global.localStorage = localStorageMock as any
+  return {
+    getItem: vi.fn((key: string) => store[key] || null),
+    setItem: vi.fn((key: string, value: string) => {
+      store[key] = value.toString()
+    }),
+    removeItem: vi.fn((key: string) => {
+      delete store[key]
+    }),
+    clear: vi.fn(() => {
+      store = {}
+    }),
+    get length() {
+      return Object.keys(store).length
+    },
+    key: vi.fn((index: number) => {
+      const keys = Object.keys(store)
+      return keys[index] || null
+    }),
+  }
+})()
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+  writable: true,
+})
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query: string) => ({
     matches: false,
     media: query,
     onchange: null,

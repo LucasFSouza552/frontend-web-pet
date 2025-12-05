@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import type IComment from "@models/Comments";
+import type { IAccount } from "@models/Account";
 import CommentCard from "./CommentCard";
 import ReplyCard from "./ReplyCard";
 
@@ -11,9 +12,10 @@ interface PostCommentsProps {
     onEdit: (commentId: string, content: string) => Promise<void> | void;
     onDelete: (commentId: string) => Promise<void> | void;
     currentUserId?: string;
+    account?: IAccount | null;
 }
 
-export default function PostComments({ comments, lastCommentRef, onReply, onEdit, onDelete, currentUserId }: PostCommentsProps) {
+export default function PostComments({ comments, lastCommentRef, onReply, onEdit, onDelete, currentUserId, account }: PostCommentsProps) {
     const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set());
 
     const toggleReplies = (commentId: string) => {
@@ -40,7 +42,7 @@ export default function PostComments({ comments, lastCommentRef, onReply, onEdit
                 
                 return (
                     <CommentContainer key={comment.id} ref={isLast ? lastCommentRef : null}>
-                        <CommentCard comment={comment} onReply={onReply} onEdit={onEdit} onDelete={onDelete} currentUserId={currentUserId} />
+                        <CommentCard comment={comment} onReply={onReply} onEdit={onEdit} onDelete={onDelete} currentUserId={currentUserId} account={account} />
                         {replies.length > 0 && (
                             <RepliesSection>
                                 <RepliesToggle onClick={() => toggleReplies(comment.id)}>

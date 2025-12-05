@@ -12,9 +12,10 @@ interface PostCommentProps {
     onEdit: (commentId: string, content: string) => Promise<void> | void;
     onDelete: (commentId: string) => Promise<void> | void;
     currentUserId?: string;
+    account?: IAccount | null;
 }
 
-export default function CommentCard({ comment, onReply, onEdit, onDelete, currentUserId }: PostCommentProps) {
+export default function CommentCard({ comment, onReply, onEdit, onDelete, currentUserId, account }: PostCommentProps) {
     const navigate = useNavigate();
     const [replyingTo, setReplyingTo] = useState<string | null>(null);
     const [replyText, setReplyText] = useState<string>("");
@@ -22,8 +23,13 @@ export default function CommentCard({ comment, onReply, onEdit, onDelete, curren
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState(comment.content);
     const isOwner = currentUserId === comment.account?.id;
+    const isLoggedIn = !!account;
 
     const handleSendReply = async (parentId: string) => {
+        if (!isLoggedIn) {
+            navigate('/login');
+            return;
+        }
         if (!replyText.trim()) return;
         await onReply(parentId, replyText.trim());
         setReplyText("");
@@ -31,6 +37,10 @@ export default function CommentCard({ comment, onReply, onEdit, onDelete, curren
     }
 
     const handleToReply = (commentId: string) => {
+        if (!isLoggedIn) {
+            navigate('/login');
+            return;
+        }
         setReplyingTo(prev => prev === commentId ? null : commentId)
     }
 
@@ -83,7 +93,13 @@ export default function CommentCard({ comment, onReply, onEdit, onDelete, curren
             )}
 
             <CommentOptions>
-                <p className="no-select" onClick={() => handleToReply(comment.id)}>Responder</p>
+                <ReplyOption 
+                    className="no-select" 
+                    onClick={() => handleToReply(comment.id)}
+                    $disabled={!isLoggedIn}
+                >
+                    Responder
+                </ReplyOption>
                 {isOwner && (
                     <>
                         <p className="no-select" onClick={() => setIsEditing(true)}>Editar</p>
@@ -96,7 +112,8 @@ export default function CommentCard({ comment, onReply, onEdit, onDelete, curren
                     <ReplyInput
                         value={replyText}
                         onChange={(e) => setReplyText(e.target.value)}
-                        placeholder="Escreva uma resposta..."
+                        placeholder={isLoggedIn ? "Escreva uma resposta..." : "Faça login para responder"}
+                        disabled={!isLoggedIn}
                         onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
                             const target = e.currentTarget;
                             target.style.height = "auto";
@@ -104,7 +121,9 @@ export default function CommentCard({ comment, onReply, onEdit, onDelete, curren
                         }}
                     />
                     <ReplyActions>
-                        <ReplyButton onClick={() => handleSendReply(replyingTo)}>Responder</ReplyButton>
+                        <ReplyButton onClick={() => handleSendReply(replyingTo)} disabled={!isLoggedIn || !replyText.trim()}>
+                            Responder
+                        </ReplyButton>
                         <CancelButton onClick={() => setReplyingTo(null)}>Cancelar</CancelButton>
                     </ReplyActions>
                 </ReplyBox>
@@ -211,6 +230,15 @@ p {
     }
 ` ;
 
+const ReplyOption = styled.p<{ $disabled?: boolean }>`
+    cursor: ${({ $disabled }) => $disabled ? 'not-allowed' : 'pointer'} !important;
+    opacity: ${({ $disabled }) => $disabled ? 0.5 : 1};
+    
+    &:hover {
+        background-color: ${({ theme, $disabled }) => $disabled ? theme.colors.quarternary : theme.colors.tertiary} !important;
+    }
+`;
+
 
 const ReplyBox = styled.div`
     display: flex;
@@ -228,6 +256,16 @@ const ReplyInput = styled.textarea`
     color: white;
     min-height: 36px;
     resize: none;
+    
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background-color: ${({ theme }) => theme.colors.quarternary};
+    }
+    
+    &::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
 `;
 
 const ReplyActions = styled.div`
@@ -245,8 +283,13 @@ const ReplyButton = styled.button`
     cursor: pointer;
     transition: opacity 0.2s;
 
-    &:hover {
+    &:hover:not(:disabled) {
         opacity: 0.9;
+    }
+    
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 `;
 

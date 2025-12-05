@@ -3,8 +3,18 @@ import { render, screen, waitFor } from './test-utils'
 import userEvent from '@testing-library/user-event'
 import CommentCard from '@features/post/components/CommentCard'
 import type { IComment } from '@models/Comments'
+import type { IAccount } from '@models/Account'
 
-// Mock do SmallProfile
+const mockNavigate = vi.fn()
+
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom')
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate
+  }
+})
+
 vi.mock('@components/SmallProfile', () => ({
   default: ({ account }: any) => <div data-testid="small-profile">{account.name}</div>
 }))
@@ -25,8 +35,16 @@ describe('CommentCard', () => {
   const mockOnEdit = vi.fn()
   const mockOnDelete = vi.fn()
 
+  const mockAccount: IAccount = {
+    id: 'user1',
+    name: 'Test User',
+    email: 'test@example.com',
+    avatar: 'avatar.jpg'
+  } as IAccount
+
   beforeEach(() => {
     vi.clearAllMocks()
+    mockNavigate.mockClear()
   })
 
   it('deve renderizar conteúdo do comentário', () => {
@@ -36,6 +54,7 @@ describe('CommentCard', () => {
         onReply={mockOnReply}
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
+        account={mockAccount}
       />
     )
 
@@ -50,10 +69,30 @@ describe('CommentCard', () => {
         onReply={mockOnReply}
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
+        account={mockAccount}
       />
     )
 
     expect(screen.getByText('Responder')).toBeInTheDocument()
+  })
+
+  it('deve redirecionar para login ao clicar em Responder quando não estiver logado', async () => {
+    const user = userEvent.setup()
+    render(
+      <CommentCard
+        comment={mockComment}
+        onReply={mockOnReply}
+        onEdit={mockOnEdit}
+        onDelete={mockOnDelete}
+        account={null}
+      />
+    )
+
+    const replyButton = screen.getByText('Responder')
+    await user.click(replyButton)
+
+    expect(mockNavigate).toHaveBeenCalledWith('/login')
+    expect(screen.queryByPlaceholderText('Escreva uma resposta...')).not.toBeInTheDocument()
   })
 
   it('deve abrir campo de resposta ao clicar em Responder', async () => {
@@ -64,6 +103,7 @@ describe('CommentCard', () => {
         onReply={mockOnReply}
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
+        account={mockAccount}
       />
     )
 
@@ -71,6 +111,7 @@ describe('CommentCard', () => {
     await user.click(replyButton)
 
     expect(screen.getByPlaceholderText('Escreva uma resposta...')).toBeInTheDocument()
+    expect(mockNavigate).not.toHaveBeenCalled()
   })
 
   it('deve enviar resposta ao preencher e clicar em Responder', async () => {
@@ -83,6 +124,7 @@ describe('CommentCard', () => {
         onReply={mockOnReply}
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
+        account={mockAccount}
       />
     )
 
@@ -100,6 +142,7 @@ describe('CommentCard', () => {
     await waitFor(() => {
       expect(mockOnReply).toHaveBeenCalledWith('1', 'Esta é uma resposta')
     })
+    expect(mockNavigate).not.toHaveBeenCalled()
   })
 
   it('deve mostrar opções de editar e excluir quando é o dono do comentário', () => {
@@ -110,6 +153,7 @@ describe('CommentCard', () => {
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
         currentUserId="user1"
+        account={mockAccount}
       />
     )
 
@@ -125,6 +169,7 @@ describe('CommentCard', () => {
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
         currentUserId="user2"
+        account={mockAccount}
       />
     )
 
@@ -141,6 +186,7 @@ describe('CommentCard', () => {
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
         currentUserId="user1"
+        account={mockAccount}
       />
     )
 
@@ -164,6 +210,7 @@ describe('CommentCard', () => {
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
         currentUserId="user1"
+        account={mockAccount}
       />
     )
 
@@ -191,6 +238,7 @@ describe('CommentCard', () => {
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
         currentUserId="user1"
+        account={mockAccount}
       />
     )
 
@@ -215,6 +263,7 @@ describe('CommentCard', () => {
         onEdit={mockOnEdit}
         onDelete={mockOnDelete}
         currentUserId="user1"
+        account={mockAccount}
       />
     )
 

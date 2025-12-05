@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState, useRef, useCallback } from "react";
+import { useContext, useEffect, useState, useRef, useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { PostsContext } from "@contexts/PostContext";
 import type { IPost } from "@models/Post";
 import { useNavigate } from "react-router-dom";
 
-const REFRESH_INTERVAL = 30000;
+const REFRESH_INTERVAL = 300000; // 5 minutos em milissegundos
 const MAX_POSTS_TO_SHOW = 5;
 
 export default function TrendingPosts() {
@@ -14,6 +14,12 @@ export default function TrendingPosts() {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const navigate = useNavigate();
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const topPostsRef = useRef(topPosts);
+
+    // Atualiza a referência quando topPosts muda
+    useEffect(() => {
+        topPostsRef.current = topPosts;
+    }, [topPosts]);
 
     const fetchTopPosts = useCallback(async (showLoading = true) => {
         try {
@@ -22,8 +28,19 @@ export default function TrendingPosts() {
             } else {
                 setIsRefreshing(true);
             }
-            const topPostsData = await topPosts();
-            setPosts(topPostsData || []);
+            const topPostsData = await topPostsRef.current();
+            
+            // Só atualiza se os dados realmente mudaram (comparando IDs)
+            setPosts(prevPosts => {
+                const prevIds = prevPosts.map(p => p.id).sort().join(',');
+                const newIds = (topPostsData || []).map(p => p.id).sort().join(',');
+                
+                if (prevIds === newIds && prevPosts.length === (topPostsData || []).length) {
+                    return prevPosts; // Não atualiza se os IDs são os mesmos
+                }
+                
+                return topPostsData || [];
+            });
         } catch (error) {
             console.error("Erro ao carregar posts populares:", error);
             setPosts([]);
@@ -31,7 +48,7 @@ export default function TrendingPosts() {
             setLoading(false);
             setIsRefreshing(false);
         }
-    }, [topPosts]);
+    }, []);
 
     useEffect(() => {
         fetchTopPosts(true);
@@ -47,9 +64,13 @@ export default function TrendingPosts() {
         };
     }, [fetchTopPosts]);
 
-    const handlePostClick = (postId: string) => {
+    const handlePostClick = useCallback((postId: string) => {
         navigate(`/post/${postId}`);
-    };
+    }, [navigate]);
+
+    const displayedPosts = useMemo(() => {
+        return posts.slice(0, MAX_POSTS_TO_SHOW);
+    }, [posts]);
 
     return (
         <TrendingPostsContainer>
@@ -85,7 +106,7 @@ export default function TrendingPosts() {
                 </EmptyState>
             ) : (
                 <PostsList>
-                    {posts.slice(0, MAX_POSTS_TO_SHOW).map((post, index) => (
+                    {displayedPosts.map((post, index) => (
                         <PostItem key={post.id} onClick={() => handlePostClick(post.id)}>
                             <PostRank>{index + 1}</PostRank>
                             <PostContent>

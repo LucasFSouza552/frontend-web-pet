@@ -1,4 +1,4 @@
-import { createContext, useState, useCallback, type ReactNode, useEffect } from "react";
+import { createContext, useState, useCallback, type ReactNode } from "react";
 import type { IPost } from "@/shared/models/Post";
 import { postService } from "@api/postService";
 import type IComment from "@models/Comments";
@@ -74,10 +74,6 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
             throw error;
         }
     }
-
-    useEffect(() => {
-        console.log('generalPosts.items', generalPosts.items.length);
-    }, [generalPosts.items])
 
     const loadMorePosts = useCallback(async () => {
         await generalPosts.loadMore();
@@ -343,13 +339,13 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
-    const topPosts = async () => {
+    const topPosts = useCallback(async () => {
         try {
             return await postService.fetchTopPosts();
         } catch (error) {
             throw error;
         }
-    }
+    }, [])
 
     const updatePostContent = async (postId: string, newContent: string) => {
         try {

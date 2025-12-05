@@ -69,8 +69,9 @@ export default function PostPage() {
                 <textarea
                   value={newComment}
                   onChange={handleUpdateNewCommentValue}
-                  placeholder="Escreva um comentário..."
+                  placeholder={account ? "Escreva um comentário..." : "Faça login para comentar"}
                   maxLength={1000}
+                  disabled={!account}
                   onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
                     const target = e.currentTarget;
                     target.style.height = "auto";
@@ -79,7 +80,9 @@ export default function PostPage() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
-                      handleSubmit();
+                      if (account) {
+                        handleSubmit();
+                      }
                     }
                   }}
                 />
@@ -87,7 +90,7 @@ export default function PostPage() {
                   {newComment.length}/1000
                 </CharacterCount>
               </TextAreaWrapper>
-              <SendButton onClick={handleSubmit} disabled={!newComment.trim()}>
+              <SendButton onClick={handleSubmit} disabled={!newComment.trim() || !account}>
                 <FaPaperPlane size={16} />
                 <span>Enviar</span>
               </SendButton>
@@ -98,6 +101,7 @@ export default function PostPage() {
             comments={post.comments || []}
             lastCommentRef={lastCommentRef}
             currentUserId={account?.id}
+            account={account}
             onReply={async (parentId: string, content: string) => {
               try {
                 await replyComment(parentId, content);
@@ -302,14 +306,21 @@ const TextAreaWrapper = styled.div`
       font-style: italic;
     }
 
-    &:focus {
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(182, 72, 160, 0.1);
+    }
+
+    &:focus:not(:disabled) {
       outline: none;
       border-color: ${({ theme }) => theme.colors.primary || "#B648A0"};
       background: rgba(255, 255, 255, 0.08);
       box-shadow: 0 0 0 3px rgba(182, 72, 160, 0.1);
     }
 
-    &:hover:not(:focus) {
+    &:hover:not(:focus):not(:disabled) {
       border-color: rgba(182, 72, 160, 0.4);
       background: rgba(255, 255, 255, 0.06);
     }

@@ -1,6 +1,7 @@
 import { useState, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { PostsContext } from "@contexts/PostContext";
+import { ProfileContext } from "@contexts/ProfileContext";
 import type { IPost } from "@models/Post";
 
 interface UsePostCardControllerProps {
@@ -12,6 +13,7 @@ interface UsePostCardControllerProps {
 export function usePostCardController({ post, accountId, handleOptions }: UsePostCardControllerProps) {
     const navigate = useNavigate();
     const { likePost, updatePostContent } = useContext(PostsContext);
+    const { account } = useContext(ProfileContext);
     
     const [animateLike, setAnimateLike] = useState(false);
     const [showSmallProfile, setShowSmallProfile] = useState(false);
@@ -22,18 +24,21 @@ export function usePostCardController({ post, accountId, handleOptions }: UsePos
     const [contentError, setContentError] = useState("");
 
     const handleLike = useCallback(() => {
+        if (!account) {
+            navigate('/login');
+            return;
+        }
         setAnimateLike(true);
         if (!post.id) return console.error("Post id not found");
         if (!accountId) return;
         likePost(post.id);
 
         setTimeout(() => setAnimateLike(false), 400);
-    }, [post.id, accountId, likePost]);
+    }, [post.id, accountId, likePost, account, navigate]);
 
     const handleComments = useCallback((postId: string) => {
-        if (!accountId) return;
         navigate(`/post/${postId}`);
-    }, [accountId, navigate]);
+    }, [accountId, navigate, account]);
 
     const handleProfile = useCallback((accountId: string) => {
         navigate(`/profile/${accountId}`);

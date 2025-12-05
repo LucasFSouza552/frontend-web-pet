@@ -4,7 +4,7 @@ import Section from "@styles/SectionStyle";
 
 export default function IntroSection() {
   return (
-    <Section>
+    <Section height="auto">
       <Container>
         <LeftDiv>
           <h1>

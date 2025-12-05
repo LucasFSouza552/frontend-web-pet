@@ -18,7 +18,6 @@ export default function PostsTab({ account, profileAccountId }: PostsTabProps) {
 
     useEffect(() => {
         if (!profileAccountId) {
-            console.log('profileAccountId', profileAccountId);
             setInitialLoading(false);
             return;
         }

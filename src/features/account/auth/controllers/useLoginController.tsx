@@ -34,7 +34,6 @@ export default function useLoginController() {
             await loadProfile();
             navigate(`/profile/${accountId}`);
         } catch (error: unknown) {
-            console.log(error);
             handleError(error);
             if (error instanceof Error) {
                 setError(error.message);

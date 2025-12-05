@@ -14,7 +14,7 @@ import RegisterPage from "@features/account/auth/views/RegisterPage"
 import MatchPage from "./features/match/views/matchPage"
 import CommunityPage from "./features/community/views/CommunityPage"
 import FAQPage from "@features/support/views/FAQPage"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { ProfileContext } from "@contexts/ProfileContext"
 import InstitutePage from "./features/institution/views/InstitutePage"
 import PostPage from "./features/post/views/postPage"
@@ -26,16 +26,18 @@ function App() {
 
   const { account } = useContext(ProfileContext);
 
+
   return (
     <ThemeProvider>
       <ToastContainer />
       <NavigationRouter>
         <Route path="/" element={account ? <CommunityPage /> : <HomePage />} />
+        <Route path="/community" element={<CommunityPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/profile/:username" element={<ProfilePage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/post/:id" element={<PostPage />} />
-        <Route path="/match" element={<MatchPage />} />
+        <Route path="/match" element={account ? <MatchPage /> : <LoginPage />} />
         <Route path="/DonatePage" element={<DonatePage />} />
         <Route path="/institutions" element={<InstitutionsListPage />} />
         <Route path="/support" element={<FAQPage />} />

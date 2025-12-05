@@ -1,10 +1,34 @@
 import styled, { keyframes, css } from "styled-components";
 import { useEffect, useRef, useState } from "react";
-import { FaStar, FaRegStar } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FaHeart, FaComment } from "react-icons/fa";
+import { postService } from "@api/postService";
+import { pictureService } from "@api/pictureService";
+import type { IPost } from "@models/Post";
 
-export default function FamousStoriesSection() {
+export default function TopPostsSection() {
+  const navigate = useNavigate();
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const [visibleCards, setVisibleCards] = useState<number[]>([]);
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTopPosts = async () => {
+      try {
+        setLoading(true);
+        const topPosts = await postService.fetchTopPosts();
+        setPosts(Array.isArray(topPosts) ? topPosts.slice(0, 4) : []);
+      } catch (error) {
+        console.error("Erro ao buscar top posts:", error);
+        setPosts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTopPosts();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -24,65 +48,68 @@ export default function FamousStoriesSection() {
     cardsRef.current.forEach((el) => el && observer.observe(el));
 
     return () => observer.disconnect();
-  }, []);
+  }, [posts]);
 
-  const cards = [
-    {
-      nome: "Lucas",
-      adotou: "Adotou Rex",
-      estrelas: 5,
-      texto: "A adoção me ensinou sobre responsabilidade, paciência e, acima de tudo, amor incondicional."
-    },
-    {
-      nome: "Pedro Caçador",
-      adotou: "Adotou Thor",
-      estrelas: 3,
-      texto: "A adaptação foi rápida e agora temos um novo membro da família que todos amam."
-    },
-    {
-      nome: "Thiago",
-      adotou: "Adotou Pipoca",
-      estrelas: 4,
-      texto: "O amor que recebo todos os dias é muito maior do que eu poderia oferecer, ele realmente mudou minha vida."
-    },
-    {
-      nome: "Gabriel",
-      adotou: "Adotou Mel",
-      estrelas: 5,
-      texto: "Adotar meu cachorro foi a melhor decisão da minha vida, ele trouxe alegria e amor para minha casa."
-    }
-  ];
+  if (loading) {
+    return (
+      <Section>
+        <Titulo>Top Posts</Titulo>
+        <ContainerCards>
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} $visible={false}>
+              <SkeletonContent />
+            </Card>
+          ))}
+        </ContainerCards>
+      </Section>
+    );
+  }
+
+  if (posts.length === 0) {
+    return null;
+  }
 
   return (
     <Section>
-      <Titulo>Histórias famosas</Titulo>
+      <Titulo>Top Posts</Titulo>
       <ContainerCards>
-        {cards.map((c, i) => (
-          <Card
-            key={i}
-            ref={(el) => {
-              if (el) cardsRef.current[i] = el;
-            }}
-            data-index={i}
-            $visible={visibleCards.includes(i)}
-          >
-            <Cabecalho>
-              <Avatar />
-              <div>
-                <Nome>{c.nome}</Nome>
-                <Adotou>{c.adotou}</Adotou>
-              </div>
-            </Cabecalho>
+        {posts.map((post, i) => {
+          const firstImage = post.image && post.image.length > 0 
+            ? pictureService.fetchPicture(post.image[0]) 
+            : null;
+          const likesCount = post.likes?.length || 0;
+          const commentsCount = post.comments?.length || 0;
 
-            <Estrelas>
-              {Array.from({ length: 5 }).map((_, idx) =>
-                idx < c.estrelas ? <FaStar key={idx} /> : <FaRegStar key={idx} />
+          return (
+            <Card
+              key={post.id}
+              ref={(el) => {
+                if (el) cardsRef.current[i] = el;
+              }}
+              data-index={i}
+              $visible={visibleCards.includes(i)}
+              onClick={() => navigate(`/post/${post.id}`)}
+            >
+
+              {firstImage && (
+                <PostImage src={firstImage} alt={post.title || "Post"} />
               )}
-            </Estrelas>
 
-            <Texto>{c.texto}</Texto>
-          </Card>
-        ))}
+              <Texto>{post.content}</Texto>
+
+              <Estatisticas>
+                <EstatisticaItem>
+                  <FaHeart />
+                  <span>{likesCount}</span>
+                </EstatisticaItem>
+                <EstatisticaItem>
+                  <FaComment />
+                  <span>{commentsCount}</span>
+                </EstatisticaItem>
+              </Estatisticas>
+            </Card>
+          );
+        })}
       </ContainerCards>
     </Section>
   );
@@ -125,7 +152,8 @@ const Card = styled.div<{ $visible: boolean }>`
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   opacity: 0;
   transform: translateY(60px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.6s ease, transform 0.6s ease, cursor 0.3s ease;
+  cursor: pointer;
   ${({ $visible }) =>
     $visible &&
     css`
@@ -138,42 +166,66 @@ const Card = styled.div<{ $visible: boolean }>`
     transform: scale(1.05);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   }
+
+  &:active {
+    transform: scale(1.02);
+  }
 `;
 
-const Cabecalho = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
-`;
-
-const Avatar = styled.div`
-  width: 50px;
-  height: 50px;
-  background-color: white;
-  border-radius: 50%;
-`;
-
-const Nome = styled.h3`
-  font-size: 18px;
-  margin: 0;
-`;
-
-const Adotou = styled.p`
-  font-size: 14px;
-  color: #ccc;
-  margin: 0;
-`;
-
-const Estrelas = styled.div`
-  display: flex;
-  color: #f7c944;
-  margin: 15px 0 20px 0;
-  font-size: 18px;
+const PostImage = styled.img`
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin: 15px 0;
 `;
 
 const Texto = styled.p`
   font-size: 15px;
   color: #eaeaea;
   line-height: 1.5;
+  margin: 15px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const Estatisticas = styled.div`
+  display: flex;
+  gap: 20px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const EstatisticaItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #eaeaea;
+  font-size: 14px;
+
+  svg {
+    color: #B648A0;
+    font-size: 16px;
+  }
+`;
+
+const SkeletonContent = styled.div`
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  background-size: 2000px 100%;
+  animation: ${keyframes`
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  `} 2s infinite linear;
+  border-radius: 12px;
 `;
