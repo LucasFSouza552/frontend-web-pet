@@ -7,7 +7,6 @@ import type { IAccount } from '@models/Account'
 import { AuthContext } from '@contexts/AuthContext'
 import { ProfileContext } from '@contexts/ProfileContext'
 
-// Mock do navigate
 const mockNavigate = vi.fn()
 
 vi.mock('react-router-dom', async () => {
@@ -18,7 +17,6 @@ vi.mock('react-router-dom', async () => {
   }
 })
 
-// Wrapper customizado para ProfileMenu com contextos mockados
 const ProfileMenuWrapper = ({ 
   children, 
   account, 

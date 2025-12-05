@@ -1,10 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor, within } from './test-utils'
+import { render, screen, waitFor } from './test-utils'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import PostModal from '@features/post/components/PostModal'
 
-// Mock do controller
 const mockUseManagePostController = vi.fn()
 const mockNavigate = vi.fn()
 
@@ -218,9 +217,7 @@ describe('PostModal', () => {
       expect(screen.getByText('Excluir Post')).toBeInTheDocument()
     })
 
-    // O botão Cancelar no modal de confirmação tem um ícone, então vamos buscar pelo texto dentro do botão
     const cancelButtons = screen.getAllByText('Cancelar')
-    // O último botão Cancelar deve ser o do modal de confirmação
     const modalCancelButton = cancelButtons[cancelButtons.length - 1]
     await user.click(modalCancelButton)
 

@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 import React from 'react'
 import RegisterForm from '@features/account/auth/components/RegisterForm'
 
-// Mock do controller
 const mockUseRegisterController = vi.fn()
 
 vi.mock('@features/account/auth/controllers/useRegisterController', () => ({
@@ -61,7 +60,6 @@ describe('RegisterForm', () => {
     const user = userEvent.setup()
     const { container } = render(<RegisterForm />)
     
-    // Preencher campos obrigatórios primeiro
     const firstNameInput = container.querySelector('input[name="firstName"]') as HTMLInputElement
     if (firstNameInput) {
       await user.type(firstNameInput, 'Test')
@@ -70,7 +68,6 @@ describe('RegisterForm', () => {
     const nextButton = screen.getByText('Próximo')
     await user.click(nextButton)
     
-    // O formulário valida antes de chamar nextStep, então vamos verificar se o botão foi clicado
     expect(nextButton).toBeInTheDocument()
   })
 
@@ -157,7 +154,6 @@ describe('RegisterForm', () => {
     expect(screen.getByText('Crie uma senha')).toBeInTheDocument()
     expect(screen.getByText('Confirme sua senha')).toBeInTheDocument()
     expect(screen.getByText('Criar conta')).toBeInTheDocument()
-    // Verificar que os campos de senha existem pelo atributo name
     expect(container.querySelector('input[name="password"]')).toBeInTheDocument()
     expect(container.querySelector('input[name="confirmPassword"]')).toBeInTheDocument()
   })

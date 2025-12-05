@@ -3,7 +3,6 @@ import { render, screen, waitFor } from './test-utils'
 import userEvent from '@testing-library/user-event'
 import AuthForm from '@features/account/auth/components/AuthForm'
 
-// Mock do controller
 const mockUseLoginController = vi.fn()
 
 vi.mock('@features/account/auth/controllers/useLoginController', () => ({
@@ -105,9 +104,6 @@ describe('AuthForm', () => {
 
     render(<AuthForm />)
     
-    // O ErrorContainer recebe a mensagem de erro
-    // Ele não renderiza texto diretamente, mas chama showError do ToastContext
-    // Verificamos que o componente foi renderizado verificando se o formulário ainda está presente
     expect(screen.getByText('Bem-vindo de volta')).toBeInTheDocument()
   })
 

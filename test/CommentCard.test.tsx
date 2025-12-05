@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from './test-utils'
 import userEvent from '@testing-library/user-event'
 import CommentCard from '@features/post/components/CommentCard'
-import type { IComment } from '@models/Comments'
+import type IComment from '@models/Comments'
 import type { IAccount } from '@models/Account'
 
 const mockNavigate = vi.fn()
@@ -16,20 +16,23 @@ vi.mock('react-router-dom', async () => {
 })
 
 vi.mock('@components/SmallProfile', () => ({
-  default: ({ account }: any) => <div data-testid="small-profile">{account.name}</div>
+  default: ({ account }: { account: IAccount }) => <div data-testid="small-profile">{account.name}</div>
 }))
 
 describe('CommentCard', () => {
   const mockComment: IComment = {
     id: '1',
+    post: 'post1',
     content: 'Este é um comentário de teste',
     account: {
       id: 'user1',
       name: 'Test User',
       avatar: 'avatar.jpg'
-    },
-    createdAt: new Date().toISOString()
-  } as IComment
+    } as IAccount,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    isDeleted: false
+  }
 
   const mockOnReply = vi.fn()
   const mockOnEdit = vi.fn()
@@ -134,7 +137,6 @@ describe('CommentCard', () => {
     const replyInput = screen.getByPlaceholderText('Escreva uma resposta...')
     await user.type(replyInput, 'Esta é uma resposta')
 
-    // Pegar o botão de enviar resposta (dentro do ReplyBox, não o link de abrir)
     const replyButtons = screen.getAllByText('Responder')
     const sendButton = replyButtons.find(button => button.tagName === 'BUTTON') || replyButtons[replyButtons.length - 1]
     await user.click(sendButton)

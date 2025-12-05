@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 import ToastContainer from '@components/Toast'
 import { ToastProvider, useToast } from '@contexts/ToastContext'
 
-// Componente wrapper para testar o Toast
 function ToastTestWrapper() {
   const { showSuccess, showError, showWarning, showInfo, toasts, removeToast } = useToast()
   
@@ -112,7 +111,6 @@ describe('Toast', () => {
   }, { timeout: 10000 })
 
   it('deve remover toast automaticamente após duração', async () => {
-    // Criar um wrapper que expõe removeToast para teste direto
     function ToastTestWrapperWithRemove() {
       const { showSuccess, toasts, removeToast } = useToast()
       
@@ -147,7 +145,6 @@ describe('Toast', () => {
       expect(screen.getByText('Teste Auto Remove')).toBeInTheDocument()
     }, { timeout: 2000 })
 
-    // Simular a remoção automática clicando no botão que remove o toast
     const removeButton = screen.getByTestId('simulate-auto-remove')
     await user.click(removeButton)
 
@@ -168,12 +165,10 @@ describe('Toast', () => {
     const errorButton = screen.getByText('Show Error')
     const warningButton = screen.getByText('Show Warning')
 
-    // Clicar em todos os botões rapidamente
     await user.click(successButton)
     await user.click(errorButton)
     await user.click(warningButton)
 
-    // Aguardar que todos os toasts sejam renderizados
     await waitFor(() => {
       const successToast = screen.queryByText('Sucesso!')
       const errorToast = screen.queryByText('Erro!')

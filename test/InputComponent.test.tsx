@@ -59,7 +59,6 @@ describe('InputComponent', () => {
     expect(handleChange).toHaveBeenCalled()
     expect(handleChange).toHaveBeenCalledWith('email', 't')
     expect(handleChange).toHaveBeenCalledWith('email', 'e')
-    // ... e assim por diante para cada caractere
   })
 
   it('deve exibir o valor atual do input', () => {

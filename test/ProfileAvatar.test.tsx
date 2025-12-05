@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from './test-utils'
 import ProfileAvatar from '@components/ProfileAvatar'
 
-// Mock do pictureService
 vi.mock('@api/pictureService', () => ({
   pictureService: {
     fetchPicture: (path: string) => path || '/default-avatar.png'
