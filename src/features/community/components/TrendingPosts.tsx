@@ -4,7 +4,7 @@ import { PostsContext } from "@contexts/PostContext";
 import type { IPost } from "@models/Post";
 import { useNavigate } from "react-router-dom";
 
-const REFRESH_INTERVAL = 300000; // 5 minutos em milissegundos
+const REFRESH_INTERVAL = 300000;
 const MAX_POSTS_TO_SHOW = 5;
 
 export default function TrendingPosts() {
@@ -16,7 +16,6 @@ export default function TrendingPosts() {
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const topPostsRef = useRef(topPosts);
 
-    // Atualiza a referência quando topPosts muda
     useEffect(() => {
         topPostsRef.current = topPosts;
     }, [topPosts]);
@@ -30,13 +29,12 @@ export default function TrendingPosts() {
             }
             const topPostsData = await topPostsRef.current();
             
-            // Só atualiza se os dados realmente mudaram (comparando IDs)
             setPosts(prevPosts => {
                 const prevIds = prevPosts.map(p => p.id).sort().join(',');
                 const newIds = (topPostsData || []).map(p => p.id).sort().join(',');
                 
                 if (prevIds === newIds && prevPosts.length === (topPostsData || []).length) {
-                    return prevPosts; // Não atualiza se os IDs são os mesmos
+                    return prevPosts; 
                 }
                 
                 return topPostsData || [];
